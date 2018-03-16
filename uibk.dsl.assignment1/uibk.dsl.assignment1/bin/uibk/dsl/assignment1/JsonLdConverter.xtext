@@ -1,0 +1,9 @@
+grammar uibk.dsl.assignment1.JsonLdConverter with org.eclipse.xtext.common.Terminals
+
+generate jsonLdConverter "http://www.dsl.uibk/assignment1/JsonLdConverter"
+
+Model:
+	greetings+=Greeting*;
+	
+Greeting:
+	'Hello' name=ID '!';
