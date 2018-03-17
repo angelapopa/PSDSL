@@ -1,0 +1,17 @@
+grammar uik.dsl.assignment1b.JsonldConverter with org.eclipse.xtext.common.Terminals
+
+generate jsonldConverter "http://www.dsl.uik/assignment1b/JsonldConverter"
+
+Model:
+	(elements+=Type)*;
+Type:
+	Entity;
+
+Entity:
+	'entity' name=ID ('extends' superType=[Entity])? '{'
+		
+		(features+=Property (',' features+=Property)*)?
+	'}';
+Property:
+	(many?='many') name= (STRING|ID) ':' type=[Type];
+
