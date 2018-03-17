@@ -1,0 +1,23 @@
+datatype String 
+datatype Date
+
+entity Event {
+	image: list Image,
+	identifier: String,
+	description: String,
+	startDate: Date,
+	location: one PostalAddress
+	
+}
+entity Image {
+	
+}
+
+entity PostalAddress {
+	
+}
+
+enum SchemaType {
+	EVENT = "Event",
+	VENUE = "EventVenue"
+}
