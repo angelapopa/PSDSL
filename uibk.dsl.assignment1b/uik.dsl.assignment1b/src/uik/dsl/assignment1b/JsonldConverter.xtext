@@ -1,0 +1,9 @@
+grammar uik.dsl.assignment1b.JsonldConverter with org.eclipse.xtext.common.Terminals
+
+generate jsonldConverter "http://www.dsl.uik/assignment1b/JsonldConverter"
+
+Model:
+	greetings+=Greeting*;
+	
+Greeting:
+	'Hello' name=ID '!';
