@@ -1,41 +1,55 @@
-grammar uik.dsl.assignment1b.JsonldConverter with org.eclipse.xtext.common.Terminals
+/*Nga Pham, Angela Popa*/
 
-generate jsonldConverter "http://www.dsl.uik/assignment1b/JsonldConverter"
+grammar uibk.dsl.assignment1b.JsonldConverter with org.eclipse.xtext.common.Terminals
+
+generate jsonldConverter "http://www.dsl.uibk/assignment1b/JsonldConverter"
 import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 
+
+/* The entry rule of our DSL.
+ * Our DSL Model contains an arbitrary number (*) of Types which are added (+=) to a feature called elements. 
+ */
 Model:
 	(elements+=Type)*;
-	
-terminal URL : "(((http|https|ftp)+:)?\\/\\/)?(([\\d\\w]|%[a-fA-f\\d]{2,2})+(:([\\d\\w]|%[a-fA-f\\d]{2,2})+)?@)?([\\d\\w][-\\d\\w]{0,253}[\\d\\w]\\.)+[\\w]{2,63}(:[\\d]+)?(\\/([-+_~.\\d\\w]|%[a-fA-f\\d]{2,2})*)*(\\?(&?([-+_~.\\d\\w]|%[a-fA-f\\d]{2,2})=?)*)?(#([-+_~.\\d\\w]|%[a-fA-f\\d]{2,2})*)?";
-terminal DATE : "([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))T([01]?\\d|2[0-3]):([0-5]\\d)?([0-5]\\d)"
-	
-;
+
+// Entity (or class) types which our DSL supports.
 Type:
 	DataType | Entity | Enum ;
 
+// Defines a data type, e.g. String, Int, Url, Date
 DataType:
 	'datatype' name=ID;
 		
+/* Defines an entity (or class) which can be instantiated later.
+ * An entity may extend a super type.
+ * An entity should have at least one property (or attribute).
+ */
 Entity:
 	'entity' name=ID ('extends' superType=[Entity])? '{'
 		(features+=Property & (',' features+=Property)*)?
 		
-	'}'
-;
+	'}';
 
-/* Define property of an Entity
- * Define one-to-one relation with the keyword 'one'
- * Define one-to-many relation with the keyword 'list'
+/* Defines property of an Entity.
+ * Defines one-to-one relation with the keyword 'one'.
+ * Defines one-to-many relation with the keyword 'list'.
  */
 Property:
 	name=ID ':' (many?='list')? (one?='one')? type=[Type];
 
+/* Defines an enumeration type by using the keyword 'enum'.
+ * An enumeration needs to have at least one item (or element). 
+ */
 Enum:
 	'enum' name=ID '{'
 		(features+=EnumItem (',' features+=EnumItem)*)?
-	'}'
-;
+	'}';
 
+// An item of an enumeration.
 EnumItem:
 	name=ID '=' type=STRING;
+
+// Regex expressions for URL and DATE types respectively.
+terminal URL : "(((http|https|ftp)+:)?\\/\\/)?(([\\d\\w]|%[a-fA-f\\d]{2,2})+(:([\\d\\w]|%[a-fA-f\\d]{2,2})+)?@)?([\\d\\w][-\\d\\w]{0,253}[\\d\\w]\\.)+[\\w]{2,63}(:[\\d]+)?(\\/([-+_~.\\d\\w]|%[a-fA-f\\d]{2,2})*)*(\\?(&?([-+_~.\\d\\w]|%[a-fA-f\\d]{2,2})=?)*)?(#([-+_~.\\d\\w]|%[a-fA-f\\d]{2,2})*)?";
+terminal DATE : "([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))T([01]?\\d|2[0-3]):([0-5]\\d)?([0-5]\\d)";
 
