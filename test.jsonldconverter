@@ -1,23 +1,45 @@
 datatype String 
+datatype UnsignedInt
 datatype Date
+datatype Url
 
 entity Event {
-	image: list Image,
 	identifier: String,
+	name: String,
 	description: String,
 	startDate: Date,
+	endDate: Date,
+	duration: Date,
+	url: Url,
+	image: list Image,
 	location: one PostalAddress
-	
 }
+
+entity EventVenue {
+	identifier: String,
+	name: String,
+	description: String,
+	url: Url,
+	image: list Image,
+	address: one PostalAddress
+}
+
 entity Image {
-	
+	caption: String,
+	url: Url	
 }
 
 entity PostalAddress {
-	
+	addressCountry: String,
+	addressRegion: String,
+	addressLocality: String,
+	postalCode: UnsignedInt,
+	streetAddress: String
 }
 
 enum SchemaType {
 	EVENT = "Event",
-	VENUE = "EventVenue"
+	VENUE = "EventVenue",
+	IMAGE = "Image",
+	POSTAL_ADDRESS = "PostalAddress"
 }
