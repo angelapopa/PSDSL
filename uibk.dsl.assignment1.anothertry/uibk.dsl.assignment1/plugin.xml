@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+	<extension point="org.eclipse.emf.ecore.generated_package">
+		<package 
+			uri = "http://www.dsl.uibk/assignment1/JsonldConverter"
+			class = "uibk.dsl.assignment1.jsonldConverter.JsonldConverterPackage"
+			genModel = "model/generated/JsonldConverter.genmodel" />
+	</extension>
+</plugin>
