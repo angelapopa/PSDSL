@@ -51,17 +51,17 @@ object big_monster extends DangerousObject {
 }
 
 # # Define Steps:
-* In the Start Scene: There is one object: Mario with initial state.
-* If Mario meets mushrhoom, he will have to choose one of following actions:
+1. In the Start Scene: There is one object: Mario with initial state.
+2. If Mario meets mushrhoom, he will have to choose one of following actions:
 * If he pick up, the HP will increase to 3.
 * If he jump over, nothing change.
-* If Mario meets bomb, he will have to choose one of following actions:
+3. If Mario meets bomb, he will have to choose one of following actions:
 * If he pick up, the weapon will increase to 1.
 * If he jump over, nothing change.
-* If Mario meets hole, he will have to choose one of following actions:
+4. If Mario meets hole, he will have to choose one of following actions:
 * If he jumps over, he will pass and then continue to next Scene.
 * If he walks through, he will fail (HP = 0) and then lose the game.
-* If Mario meets monster, he will have to choose one of following actions:
+5. If Mario meets monster, he will have to choose one of following actions:
 * If he attack the monster, the program will compare the HP of Mario and the monster.
 * If HP of Mario < HP of monster: Mario will die (HP = 0), monster will still alive.
 * If HP of Mario = HP of monster: both Mario and monster will die.
@@ -69,6 +69,6 @@ object big_monster extends DangerousObject {
 * If he walk through the monster, Mario will die (HP = 0), monster will still alive.
 * If he jump over the monster: both Mario and monster will alive, Mario will continue to next Scene.
 
-* In the End Scene: There are Mario, the big_monster and the princess. Mario have to attack the big_monster
+6. In the End Scene: There are Mario, the big_monster and the princess. Mario have to attack the big_monster
 * If he wins, he will meet the Princess and win the game.
 * If he loses, he will lose the game.
