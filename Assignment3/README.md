@@ -11,45 +11,46 @@ Object: DangerousObject | UsefulObject
 DangerousObject: big monster | monster | hole  
 UsefulObject: bomb | mushroom  
 
-1. Define Objects:
-object hero {
-name: Mario,
-HP: 10,
-weapon: 0 bomb
+# # Define Objects:
+
+object hero {  
+name: Mario,  
+HP: 10,  
+weapon: 0 bomb  
+}  
+
+object princess {  
+	name: Princess Anna  
+}  
+
+object UsefulObject {  
+	action: pick up, jump over  
+}  
+
+object bomb extends UsefulObject {  
+	name: bomb,  
+	value: 1  
+}  
+
+object mushroom extends UsefulObject {...}  
+
+object DangerousObject {  
+	action: jump over, walk through  
+}  
+
+object monster extends DangerousObject {  
+	name: ...  
+	HP: 7  
+	action: attack, jump over, walk through  
+}  
+
+object big_monster extends DangerousObject {  
+	name: ...  
+	HP: 7  
+	action: attack, jump over, walk through	 
 }
 
-object princess {
-	name: Princess Anna
-}
-
-object UsefulObject {
-	action: pick up, jump over
-}
-
-object bomb extends UsefulObject {
-	name: bomb,
-	value: 1
-}
-
-object mushroom extends UsefulObject {...}
-
-object DangerousObject {
-	action: jump over, walk through
-}
-
-object monster extends DangerousObject {
-	name: ...
-	HP: 7
-	action: attack, jump over, walk through
-}
-
-object big_monster extends DangerousObject {
-	name: ...
-	HP: 7
-	action: attack, jump over, walk through	
-}
-
-2. Define Steps:
+# # Define Steps:
 * In the Start Scene: There is one object: Mario with initial state.
 * If Mario meets mushrhoom, he will have to choose one of following actions:
 * If he pick up, the HP will increase to 3.
