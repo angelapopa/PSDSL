@@ -55,7 +55,7 @@ Object:
 	'object' name = (STRING | ID) ('is' 'a' superType=[Object])? '{'
 	'description' description = STRING
 	'healthPoints' healthPoints = INT
-	('actions' '(' objects += [Object] (',' objects += [Object])* ')')?
+	('actions' '(' actions += Action (',' objects += Action)* ')')?
 	'}'
 ;
 
