@@ -5,11 +5,11 @@ Level: assignment 3
 
 # Description
 
-Main character: Mario
-Side character: the Princess
-Object: DangerousObject | UsefulObject
-DangerousObject: big monster | monster | hole
-UsefulObject: bomb | mushroom
+Main character: Mario  
+Side character: the Princess  
+Object: DangerousObject | UsefulObject  
+DangerousObject: big monster | monster | hole  
+UsefulObject: bomb | mushroom  
 
 1. Define Objects:
 object hero {
