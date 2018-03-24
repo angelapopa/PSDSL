@@ -26,7 +26,7 @@ Adventure:
 
 // what the adventure is composed of
 Ingredient:
-	Scene | Object | Character  
+	Scene | Object | Character | Weapon
 ;
 	
 // a scene bundles objects and contains steps to escape to a new scene
@@ -38,11 +38,16 @@ Scene:
 	'}'
 ;
 
+Weapon:
+	'weapon' name = ID
+;
+
 Character:
-	'character' name = (STRING | ID)
+	'character' name = (STRING | ID) '{'
 	'healthPoints' healthPoints = INT
-	('weapons' '(' objects += [Object] (',' objects += [Object])* ')')?
+	('weapons' '(' objects += [Weapon] ':' nr=INT (',' objects += [Weapon])* ':' nr = INT')')?
 	('actions' '(' actions += Step (',' actions += Step)* ')')?
+	'}'
 ;
 
 // objects are registered with a scene, e.g. "bomb", "mushroom", ...
