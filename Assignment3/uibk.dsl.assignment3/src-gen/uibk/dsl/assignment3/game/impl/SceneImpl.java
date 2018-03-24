@@ -5,12 +5,15 @@ package uibk.dsl.assignment3.game.impl;
 
 import java.util.Collection;
 
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
+
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
@@ -29,6 +32,7 @@ import uibk.dsl.assignment3.game.Step;
  * </p>
  * <ul>
  *   <li>{@link uibk.dsl.assignment3.game.impl.SceneImpl#getObjects <em>Objects</em>}</li>
+ *   <li>{@link uibk.dsl.assignment3.game.impl.SceneImpl#getDescription <em>Description</em>}</li>
  *   <li>{@link uibk.dsl.assignment3.game.impl.SceneImpl#getActions <em>Actions</em>}</li>
  * </ul>
  *
@@ -45,6 +49,26 @@ public class SceneImpl extends IngredientImpl implements Scene
    * @ordered
    */
   protected EList<uibk.dsl.assignment3.game.Object> objects;
+
+  /**
+   * The default value of the '{@link #getDescription() <em>Description</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDescription()
+   * @generated
+   * @ordered
+   */
+  protected static final String DESCRIPTION_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getDescription() <em>Description</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDescription()
+   * @generated
+   * @ordered
+   */
+  protected String description = DESCRIPTION_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getActions() <em>Actions</em>}' containment reference list.
@@ -96,6 +120,29 @@ public class SceneImpl extends IngredientImpl implements Scene
    * <!-- end-user-doc -->
    * @generated
    */
+  public String getDescription()
+  {
+    return description;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setDescription(String newDescription)
+  {
+    String oldDescription = description;
+    description = newDescription;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, GamePackage.SCENE__DESCRIPTION, oldDescription, description));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EList<Step> getActions()
   {
     if (actions == null)
@@ -133,6 +180,8 @@ public class SceneImpl extends IngredientImpl implements Scene
     {
       case GamePackage.SCENE__OBJECTS:
         return getObjects();
+      case GamePackage.SCENE__DESCRIPTION:
+        return getDescription();
       case GamePackage.SCENE__ACTIONS:
         return getActions();
     }
@@ -153,6 +202,9 @@ public class SceneImpl extends IngredientImpl implements Scene
       case GamePackage.SCENE__OBJECTS:
         getObjects().clear();
         getObjects().addAll((Collection<? extends uibk.dsl.assignment3.game.Object>)newValue);
+        return;
+      case GamePackage.SCENE__DESCRIPTION:
+        setDescription((String)newValue);
         return;
       case GamePackage.SCENE__ACTIONS:
         getActions().clear();
@@ -175,6 +227,9 @@ public class SceneImpl extends IngredientImpl implements Scene
       case GamePackage.SCENE__OBJECTS:
         getObjects().clear();
         return;
+      case GamePackage.SCENE__DESCRIPTION:
+        setDescription(DESCRIPTION_EDEFAULT);
+        return;
       case GamePackage.SCENE__ACTIONS:
         getActions().clear();
         return;
@@ -194,10 +249,29 @@ public class SceneImpl extends IngredientImpl implements Scene
     {
       case GamePackage.SCENE__OBJECTS:
         return objects != null && !objects.isEmpty();
+      case GamePackage.SCENE__DESCRIPTION:
+        return DESCRIPTION_EDEFAULT == null ? description != null : !DESCRIPTION_EDEFAULT.equals(description);
       case GamePackage.SCENE__ACTIONS:
         return actions != null && !actions.isEmpty();
     }
     return super.eIsSet(featureID);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String toString()
+  {
+    if (eIsProxy()) return super.toString();
+
+    StringBuffer result = new StringBuffer(super.toString());
+    result.append(" (description: ");
+    result.append(description);
+    result.append(')');
+    return result.toString();
   }
 
 } //SceneImpl

@@ -11,9 +11,12 @@ import org.eclipse.xtext.Action;
 import org.eclipse.xtext.Parameter;
 import org.eclipse.xtext.ParserRule;
 import org.eclipse.xtext.serializer.ISerializationContext;
+import org.eclipse.xtext.serializer.acceptor.SequenceFeeder;
 import org.eclipse.xtext.serializer.sequencer.AbstractDelegatingSemanticSequencer;
+import org.eclipse.xtext.serializer.sequencer.ITransientValueService.ValueTransient;
 import uibk.dsl.assignment3.game.Adventure;
 import uibk.dsl.assignment3.game.GamePackage;
+import uibk.dsl.assignment3.game.Hero;
 import uibk.dsl.assignment3.game.Scene;
 import uibk.dsl.assignment3.game.Step;
 import uibk.dsl.assignment3.services.GameGrammarAccess;
@@ -34,6 +37,9 @@ public class GameSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 			switch (semanticObject.eClass().getClassifierID()) {
 			case GamePackage.ADVENTURE:
 				sequence_Adventure(context, (Adventure) semanticObject); 
+				return; 
+			case GamePackage.HERO:
+				sequence_Hero(context, (Hero) semanticObject); 
 				return; 
 			case GamePackage.OBJECT:
 				sequence_Object(context, (uibk.dsl.assignment3.game.Object) semanticObject); 
@@ -63,11 +69,33 @@ public class GameSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 	
 	/**
 	 * Contexts:
+	 *     Ingredient returns Hero
+	 *     Hero returns Hero
+	 *
+	 * Constraint:
+	 *     (name=ID healthPoints=STRING)
+	 */
+	protected void sequence_Hero(ISerializationContext context, Hero semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, GamePackage.Literals.INGREDIENT__NAME) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, GamePackage.Literals.INGREDIENT__NAME));
+			if (transientValues.isValueTransient(semanticObject, GamePackage.Literals.HERO__HEALTH_POINTS) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, GamePackage.Literals.HERO__HEALTH_POINTS));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getHeroAccess().getNameIDTerminalRuleCall_1_0(), semanticObject.getName());
+		feeder.accept(grammarAccess.getHeroAccess().getHealthPointsSTRINGTerminalRuleCall_3_0(), semanticObject.getHealthPoints());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Contexts:
 	 *     Ingredient returns Object
 	 *     Object returns Object
 	 *
 	 * Constraint:
-	 *     ((name=STRING | name=ID) description=STRING)
+	 *     ((name=STRING | name=ID) superType=[Object|ID]? description=STRING)
 	 */
 	protected void sequence_Object(ISerializationContext context, uibk.dsl.assignment3.game.Object semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
@@ -92,10 +120,25 @@ public class GameSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 	 *     Step returns Step
 	 *
 	 * Constraint:
-	 *     (action=Action targetObject=[Object|ID] (preposition=Preposition otherObject=[Object|ID])? (valid=STRING | default=STRING)+ scene=[Scene|ID])
+	 *     (action=Action targetObject=[Object|ID] valid=STRING scene=[Scene|ID])
 	 */
 	protected void sequence_Step(ISerializationContext context, Step semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, GamePackage.Literals.STEP__ACTION) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, GamePackage.Literals.STEP__ACTION));
+			if (transientValues.isValueTransient(semanticObject, GamePackage.Literals.STEP__TARGET_OBJECT) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, GamePackage.Literals.STEP__TARGET_OBJECT));
+			if (transientValues.isValueTransient(semanticObject, GamePackage.Literals.STEP__VALID) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, GamePackage.Literals.STEP__VALID));
+			if (transientValues.isValueTransient(semanticObject, GamePackage.Literals.STEP__SCENE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, GamePackage.Literals.STEP__SCENE));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getStepAccess().getActionActionEnumRuleCall_0_0(), semanticObject.getAction());
+		feeder.accept(grammarAccess.getStepAccess().getTargetObjectObjectIDTerminalRuleCall_1_0_1(), semanticObject.eGet(GamePackage.Literals.STEP__TARGET_OBJECT, false));
+		feeder.accept(grammarAccess.getStepAccess().getValidSTRINGTerminalRuleCall_3_1_0(), semanticObject.getValid());
+		feeder.accept(grammarAccess.getStepAccess().getSceneSceneIDTerminalRuleCall_5_0_1(), semanticObject.eGet(GamePackage.Literals.STEP__SCENE, false));
+		feeder.finish();
 	}
 	
 	

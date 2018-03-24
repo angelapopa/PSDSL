@@ -10,6 +10,7 @@ import org.eclipse.emf.ecore.util.Switch;
 
 import uibk.dsl.assignment3.game.Adventure;
 import uibk.dsl.assignment3.game.GamePackage;
+import uibk.dsl.assignment3.game.Hero;
 import uibk.dsl.assignment3.game.Ingredient;
 import uibk.dsl.assignment3.game.Scene;
 import uibk.dsl.assignment3.game.Step;
@@ -91,6 +92,14 @@ public class GameSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case GamePackage.HERO:
+      {
+        Hero hero = (Hero)theEObject;
+        T result = caseHero(hero);
+        if (result == null) result = caseIngredient(hero);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case GamePackage.SCENE:
       {
         Scene scene = (Scene)theEObject;
@@ -146,6 +155,22 @@ public class GameSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseIngredient(Ingredient object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Hero</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Hero</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseHero(Hero object)
   {
     return null;
   }

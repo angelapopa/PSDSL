@@ -8,52 +8,51 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import uibk.dsl.assignment3.game.GamePackage;
-import uibk.dsl.assignment3.game.Ingredient;
+import uibk.dsl.assignment3.game.Hero;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Ingredient</b></em>'.
+ * An implementation of the model object '<em><b>Hero</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link uibk.dsl.assignment3.game.impl.IngredientImpl#getName <em>Name</em>}</li>
+ *   <li>{@link uibk.dsl.assignment3.game.impl.HeroImpl#getHealthPoints <em>Health Points</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class IngredientImpl extends MinimalEObjectImpl.Container implements Ingredient
+public class HeroImpl extends IngredientImpl implements Hero
 {
   /**
-   * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+   * The default value of the '{@link #getHealthPoints() <em>Health Points</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getName()
+   * @see #getHealthPoints()
    * @generated
    * @ordered
    */
-  protected static final String NAME_EDEFAULT = null;
+  protected static final String HEALTH_POINTS_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+   * The cached value of the '{@link #getHealthPoints() <em>Health Points</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getName()
+   * @see #getHealthPoints()
    * @generated
    * @ordered
    */
-  protected String name = NAME_EDEFAULT;
+  protected String healthPoints = HEALTH_POINTS_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected IngredientImpl()
+  protected HeroImpl()
   {
     super();
   }
@@ -66,7 +65,7 @@ public class IngredientImpl extends MinimalEObjectImpl.Container implements Ingr
   @Override
   protected EClass eStaticClass()
   {
-    return GamePackage.Literals.INGREDIENT;
+    return GamePackage.Literals.HERO;
   }
 
   /**
@@ -74,9 +73,9 @@ public class IngredientImpl extends MinimalEObjectImpl.Container implements Ingr
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getName()
+  public String getHealthPoints()
   {
-    return name;
+    return healthPoints;
   }
 
   /**
@@ -84,12 +83,12 @@ public class IngredientImpl extends MinimalEObjectImpl.Container implements Ingr
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setName(String newName)
+  public void setHealthPoints(String newHealthPoints)
   {
-    String oldName = name;
-    name = newName;
+    String oldHealthPoints = healthPoints;
+    healthPoints = newHealthPoints;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, GamePackage.INGREDIENT__NAME, oldName, name));
+      eNotify(new ENotificationImpl(this, Notification.SET, GamePackage.HERO__HEALTH_POINTS, oldHealthPoints, healthPoints));
   }
 
   /**
@@ -102,8 +101,8 @@ public class IngredientImpl extends MinimalEObjectImpl.Container implements Ingr
   {
     switch (featureID)
     {
-      case GamePackage.INGREDIENT__NAME:
-        return getName();
+      case GamePackage.HERO__HEALTH_POINTS:
+        return getHealthPoints();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -118,8 +117,8 @@ public class IngredientImpl extends MinimalEObjectImpl.Container implements Ingr
   {
     switch (featureID)
     {
-      case GamePackage.INGREDIENT__NAME:
-        setName((String)newValue);
+      case GamePackage.HERO__HEALTH_POINTS:
+        setHealthPoints((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -135,8 +134,8 @@ public class IngredientImpl extends MinimalEObjectImpl.Container implements Ingr
   {
     switch (featureID)
     {
-      case GamePackage.INGREDIENT__NAME:
-        setName(NAME_EDEFAULT);
+      case GamePackage.HERO__HEALTH_POINTS:
+        setHealthPoints(HEALTH_POINTS_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -152,8 +151,8 @@ public class IngredientImpl extends MinimalEObjectImpl.Container implements Ingr
   {
     switch (featureID)
     {
-      case GamePackage.INGREDIENT__NAME:
-        return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+      case GamePackage.HERO__HEALTH_POINTS:
+        return HEALTH_POINTS_EDEFAULT == null ? healthPoints != null : !HEALTH_POINTS_EDEFAULT.equals(healthPoints);
     }
     return super.eIsSet(featureID);
   }
@@ -169,10 +168,10 @@ public class IngredientImpl extends MinimalEObjectImpl.Container implements Ingr
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (name: ");
-    result.append(name);
+    result.append(" (healthPoints: ");
+    result.append(healthPoints);
     result.append(')');
     return result.toString();
   }
 
-} //IngredientImpl
+} //HeroImpl

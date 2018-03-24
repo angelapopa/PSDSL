@@ -13,7 +13,6 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import uibk.dsl.assignment3.game.Action;
 import uibk.dsl.assignment3.game.GamePackage;
-import uibk.dsl.assignment3.game.Preposition;
 import uibk.dsl.assignment3.game.Scene;
 import uibk.dsl.assignment3.game.Step;
 
@@ -27,10 +26,7 @@ import uibk.dsl.assignment3.game.Step;
  * <ul>
  *   <li>{@link uibk.dsl.assignment3.game.impl.StepImpl#getAction <em>Action</em>}</li>
  *   <li>{@link uibk.dsl.assignment3.game.impl.StepImpl#getTargetObject <em>Target Object</em>}</li>
- *   <li>{@link uibk.dsl.assignment3.game.impl.StepImpl#getPreposition <em>Preposition</em>}</li>
- *   <li>{@link uibk.dsl.assignment3.game.impl.StepImpl#getOtherObject <em>Other Object</em>}</li>
  *   <li>{@link uibk.dsl.assignment3.game.impl.StepImpl#getValid <em>Valid</em>}</li>
- *   <li>{@link uibk.dsl.assignment3.game.impl.StepImpl#getDefault <em>Default</em>}</li>
  *   <li>{@link uibk.dsl.assignment3.game.impl.StepImpl#getScene <em>Scene</em>}</li>
  * </ul>
  *
@@ -46,7 +42,7 @@ public class StepImpl extends MinimalEObjectImpl.Container implements Step
    * @generated
    * @ordered
    */
-  protected static final Action ACTION_EDEFAULT = Action.LOOK;
+  protected static final Action ACTION_EDEFAULT = Action.JUMP;
 
   /**
    * The cached value of the '{@link #getAction() <em>Action</em>}' attribute.
@@ -69,36 +65,6 @@ public class StepImpl extends MinimalEObjectImpl.Container implements Step
   protected uibk.dsl.assignment3.game.Object targetObject;
 
   /**
-   * The default value of the '{@link #getPreposition() <em>Preposition</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getPreposition()
-   * @generated
-   * @ordered
-   */
-  protected static final Preposition PREPOSITION_EDEFAULT = Preposition.WITH;
-
-  /**
-   * The cached value of the '{@link #getPreposition() <em>Preposition</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getPreposition()
-   * @generated
-   * @ordered
-   */
-  protected Preposition preposition = PREPOSITION_EDEFAULT;
-
-  /**
-   * The cached value of the '{@link #getOtherObject() <em>Other Object</em>}' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getOtherObject()
-   * @generated
-   * @ordered
-   */
-  protected uibk.dsl.assignment3.game.Object otherObject;
-
-  /**
    * The default value of the '{@link #getValid() <em>Valid</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -117,26 +83,6 @@ public class StepImpl extends MinimalEObjectImpl.Container implements Step
    * @ordered
    */
   protected String valid = VALID_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getDefault() <em>Default</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDefault()
-   * @generated
-   * @ordered
-   */
-  protected static final String DEFAULT_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getDefault() <em>Default</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDefault()
-   * @generated
-   * @ordered
-   */
-  protected String default_ = DEFAULT_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getScene() <em>Scene</em>}' reference.
@@ -240,72 +186,6 @@ public class StepImpl extends MinimalEObjectImpl.Container implements Step
    * <!-- end-user-doc -->
    * @generated
    */
-  public Preposition getPreposition()
-  {
-    return preposition;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setPreposition(Preposition newPreposition)
-  {
-    Preposition oldPreposition = preposition;
-    preposition = newPreposition == null ? PREPOSITION_EDEFAULT : newPreposition;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, GamePackage.STEP__PREPOSITION, oldPreposition, preposition));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public uibk.dsl.assignment3.game.Object getOtherObject()
-  {
-    if (otherObject != null && otherObject.eIsProxy())
-    {
-      InternalEObject oldOtherObject = (InternalEObject)otherObject;
-      otherObject = (uibk.dsl.assignment3.game.Object)eResolveProxy(oldOtherObject);
-      if (otherObject != oldOtherObject)
-      {
-        if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, GamePackage.STEP__OTHER_OBJECT, oldOtherObject, otherObject));
-      }
-    }
-    return otherObject;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public uibk.dsl.assignment3.game.Object basicGetOtherObject()
-  {
-    return otherObject;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setOtherObject(uibk.dsl.assignment3.game.Object newOtherObject)
-  {
-    uibk.dsl.assignment3.game.Object oldOtherObject = otherObject;
-    otherObject = newOtherObject;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, GamePackage.STEP__OTHER_OBJECT, oldOtherObject, otherObject));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public String getValid()
   {
     return valid;
@@ -322,29 +202,6 @@ public class StepImpl extends MinimalEObjectImpl.Container implements Step
     valid = newValid;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, GamePackage.STEP__VALID, oldValid, valid));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public String getDefault()
-  {
-    return default_;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setDefault(String newDefault)
-  {
-    String oldDefault = default_;
-    default_ = newDefault;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, GamePackage.STEP__DEFAULT, oldDefault, default_));
   }
 
   /**
@@ -405,15 +262,8 @@ public class StepImpl extends MinimalEObjectImpl.Container implements Step
       case GamePackage.STEP__TARGET_OBJECT:
         if (resolve) return getTargetObject();
         return basicGetTargetObject();
-      case GamePackage.STEP__PREPOSITION:
-        return getPreposition();
-      case GamePackage.STEP__OTHER_OBJECT:
-        if (resolve) return getOtherObject();
-        return basicGetOtherObject();
       case GamePackage.STEP__VALID:
         return getValid();
-      case GamePackage.STEP__DEFAULT:
-        return getDefault();
       case GamePackage.STEP__SCENE:
         if (resolve) return getScene();
         return basicGetScene();
@@ -437,17 +287,8 @@ public class StepImpl extends MinimalEObjectImpl.Container implements Step
       case GamePackage.STEP__TARGET_OBJECT:
         setTargetObject((uibk.dsl.assignment3.game.Object)newValue);
         return;
-      case GamePackage.STEP__PREPOSITION:
-        setPreposition((Preposition)newValue);
-        return;
-      case GamePackage.STEP__OTHER_OBJECT:
-        setOtherObject((uibk.dsl.assignment3.game.Object)newValue);
-        return;
       case GamePackage.STEP__VALID:
         setValid((String)newValue);
-        return;
-      case GamePackage.STEP__DEFAULT:
-        setDefault((String)newValue);
         return;
       case GamePackage.STEP__SCENE:
         setScene((Scene)newValue);
@@ -472,17 +313,8 @@ public class StepImpl extends MinimalEObjectImpl.Container implements Step
       case GamePackage.STEP__TARGET_OBJECT:
         setTargetObject((uibk.dsl.assignment3.game.Object)null);
         return;
-      case GamePackage.STEP__PREPOSITION:
-        setPreposition(PREPOSITION_EDEFAULT);
-        return;
-      case GamePackage.STEP__OTHER_OBJECT:
-        setOtherObject((uibk.dsl.assignment3.game.Object)null);
-        return;
       case GamePackage.STEP__VALID:
         setValid(VALID_EDEFAULT);
-        return;
-      case GamePackage.STEP__DEFAULT:
-        setDefault(DEFAULT_EDEFAULT);
         return;
       case GamePackage.STEP__SCENE:
         setScene((Scene)null);
@@ -505,14 +337,8 @@ public class StepImpl extends MinimalEObjectImpl.Container implements Step
         return action != ACTION_EDEFAULT;
       case GamePackage.STEP__TARGET_OBJECT:
         return targetObject != null;
-      case GamePackage.STEP__PREPOSITION:
-        return preposition != PREPOSITION_EDEFAULT;
-      case GamePackage.STEP__OTHER_OBJECT:
-        return otherObject != null;
       case GamePackage.STEP__VALID:
         return VALID_EDEFAULT == null ? valid != null : !VALID_EDEFAULT.equals(valid);
-      case GamePackage.STEP__DEFAULT:
-        return DEFAULT_EDEFAULT == null ? default_ != null : !DEFAULT_EDEFAULT.equals(default_);
       case GamePackage.STEP__SCENE:
         return scene != null;
     }
@@ -532,12 +358,8 @@ public class StepImpl extends MinimalEObjectImpl.Container implements Step
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (action: ");
     result.append(action);
-    result.append(", preposition: ");
-    result.append(preposition);
     result.append(", valid: ");
     result.append(valid);
-    result.append(", default: ");
-    result.append(default_);
     result.append(')');
     return result.toString();
   }

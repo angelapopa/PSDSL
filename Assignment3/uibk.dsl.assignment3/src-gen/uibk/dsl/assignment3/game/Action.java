@@ -21,14 +21,14 @@ import org.eclipse.emf.common.util.Enumerator;
 public enum Action implements Enumerator
 {
   /**
-   * The '<em><b>LOOK</b></em>' literal object.
+   * The '<em><b>JUMP</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #LOOK_VALUE
+   * @see #JUMP_VALUE
    * @generated
    * @ordered
    */
-  LOOK(0, "LOOK", "look at"),
+  JUMP(0, "JUMP", "jump over"),
 
   /**
    * The '<em><b>PICK</b></em>' literal object.
@@ -41,39 +41,39 @@ public enum Action implements Enumerator
   PICK(1, "PICK", "pick up"),
 
   /**
-   * The '<em><b>GOTO</b></em>' literal object.
+   * The '<em><b>WALK</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #GOTO_VALUE
+   * @see #WALK_VALUE
    * @generated
    * @ordered
    */
-  GOTO(2, "GOTO", "goto"),
+  WALK(2, "WALK", "walk through"),
 
   /**
-   * The '<em><b>USE</b></em>' literal object.
+   * The '<em><b>ATTACK</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #USE_VALUE
+   * @see #ATTACK_VALUE
    * @generated
    * @ordered
    */
-  USE(3, "USE", "use");
+  ATTACK(3, "ATTACK", "attack");
 
   /**
-   * The '<em><b>LOOK</b></em>' literal value.
+   * The '<em><b>JUMP</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of '<em><b>LOOK</b></em>' literal object isn't clear,
+   * If the meaning of '<em><b>JUMP</b></em>' literal object isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @see #LOOK
-   * @model literal="look at"
+   * @see #JUMP
+   * @model literal="jump over"
    * @generated
    * @ordered
    */
-  public static final int LOOK_VALUE = 0;
+  public static final int JUMP_VALUE = 0;
 
   /**
    * The '<em><b>PICK</b></em>' literal value.
@@ -91,34 +91,34 @@ public enum Action implements Enumerator
   public static final int PICK_VALUE = 1;
 
   /**
-   * The '<em><b>GOTO</b></em>' literal value.
+   * The '<em><b>WALK</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of '<em><b>GOTO</b></em>' literal object isn't clear,
+   * If the meaning of '<em><b>WALK</b></em>' literal object isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @see #GOTO
-   * @model literal="goto"
+   * @see #WALK
+   * @model literal="walk through"
    * @generated
    * @ordered
    */
-  public static final int GOTO_VALUE = 2;
+  public static final int WALK_VALUE = 2;
 
   /**
-   * The '<em><b>USE</b></em>' literal value.
+   * The '<em><b>ATTACK</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of '<em><b>USE</b></em>' literal object isn't clear,
+   * If the meaning of '<em><b>ATTACK</b></em>' literal object isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @see #USE
-   * @model literal="use"
+   * @see #ATTACK
+   * @model literal="attack"
    * @generated
    * @ordered
    */
-  public static final int USE_VALUE = 3;
+  public static final int ATTACK_VALUE = 3;
 
   /**
    * An array of all the '<em><b>Action</b></em>' enumerators.
@@ -129,10 +129,10 @@ public enum Action implements Enumerator
   private static final Action[] VALUES_ARRAY =
     new Action[]
     {
-      LOOK,
+      JUMP,
       PICK,
-      GOTO,
-      USE,
+      WALK,
+      ATTACK,
     };
 
   /**
@@ -197,10 +197,10 @@ public enum Action implements Enumerator
   {
     switch (value)
     {
-      case LOOK_VALUE: return LOOK;
+      case JUMP_VALUE: return JUMP;
       case PICK_VALUE: return PICK;
-      case GOTO_VALUE: return GOTO;
-      case USE_VALUE: return USE;
+      case WALK_VALUE: return WALK;
+      case ATTACK_VALUE: return ATTACK;
     }
     return null;
   }

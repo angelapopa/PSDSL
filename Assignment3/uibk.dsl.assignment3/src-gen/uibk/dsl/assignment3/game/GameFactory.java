@@ -42,6 +42,15 @@ public interface GameFactory extends EFactory
   Ingredient createIngredient();
 
   /**
+   * Returns a new object of class '<em>Hero</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Hero</em>'.
+   * @generated
+   */
+  Hero createHero();
+
+  /**
    * Returns a new object of class '<em>Scene</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

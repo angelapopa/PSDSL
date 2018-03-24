@@ -15,8 +15,8 @@ import uibk.dsl.assignment3.game.Action;
 import uibk.dsl.assignment3.game.Adventure;
 import uibk.dsl.assignment3.game.GameFactory;
 import uibk.dsl.assignment3.game.GamePackage;
+import uibk.dsl.assignment3.game.Hero;
 import uibk.dsl.assignment3.game.Ingredient;
-import uibk.dsl.assignment3.game.Preposition;
 import uibk.dsl.assignment3.game.Scene;
 import uibk.dsl.assignment3.game.Step;
 
@@ -47,6 +47,13 @@ public class GamePackageImpl extends EPackageImpl implements GamePackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass heroEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass sceneEClass = null;
 
   /**
@@ -69,13 +76,6 @@ public class GamePackageImpl extends EPackageImpl implements GamePackage
    * @generated
    */
   private EEnum actionEEnum = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EEnum prepositionEEnum = null;
 
   /**
    * Creates an instance of the model <b>Package</b>, registered with
@@ -205,9 +205,19 @@ public class GamePackageImpl extends EPackageImpl implements GamePackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getIngredient_Description()
+  public EClass getHero()
   {
-    return (EAttribute)ingredientEClass.getEStructuralFeatures().get(1);
+    return heroEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getHero_HealthPoints()
+  {
+    return (EAttribute)heroEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -235,9 +245,19 @@ public class GamePackageImpl extends EPackageImpl implements GamePackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getScene_Description()
+  {
+    return (EAttribute)sceneEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EReference getScene_Actions()
   {
-    return (EReference)sceneEClass.getEStructuralFeatures().get(1);
+    return (EReference)sceneEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -248,6 +268,26 @@ public class GamePackageImpl extends EPackageImpl implements GamePackage
   public EClass getObject()
   {
     return objectEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getObject_SuperType()
+  {
+    return (EReference)objectEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getObject_Description()
+  {
+    return (EAttribute)objectEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -285,7 +325,7 @@ public class GamePackageImpl extends EPackageImpl implements GamePackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getStep_Preposition()
+  public EAttribute getStep_Valid()
   {
     return (EAttribute)stepEClass.getEStructuralFeatures().get(2);
   }
@@ -295,39 +335,9 @@ public class GamePackageImpl extends EPackageImpl implements GamePackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getStep_OtherObject()
-  {
-    return (EReference)stepEClass.getEStructuralFeatures().get(3);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getStep_Valid()
-  {
-    return (EAttribute)stepEClass.getEStructuralFeatures().get(4);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getStep_Default()
-  {
-    return (EAttribute)stepEClass.getEStructuralFeatures().get(5);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EReference getStep_Scene()
   {
-    return (EReference)stepEClass.getEStructuralFeatures().get(6);
+    return (EReference)stepEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -338,16 +348,6 @@ public class GamePackageImpl extends EPackageImpl implements GamePackage
   public EEnum getAction()
   {
     return actionEEnum;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EEnum getPreposition()
-  {
-    return prepositionEEnum;
   }
 
   /**
@@ -387,26 +387,27 @@ public class GamePackageImpl extends EPackageImpl implements GamePackage
 
     ingredientEClass = createEClass(INGREDIENT);
     createEAttribute(ingredientEClass, INGREDIENT__NAME);
-    createEAttribute(ingredientEClass, INGREDIENT__DESCRIPTION);
+
+    heroEClass = createEClass(HERO);
+    createEAttribute(heroEClass, HERO__HEALTH_POINTS);
 
     sceneEClass = createEClass(SCENE);
     createEReference(sceneEClass, SCENE__OBJECTS);
+    createEAttribute(sceneEClass, SCENE__DESCRIPTION);
     createEReference(sceneEClass, SCENE__ACTIONS);
 
     objectEClass = createEClass(OBJECT);
+    createEReference(objectEClass, OBJECT__SUPER_TYPE);
+    createEAttribute(objectEClass, OBJECT__DESCRIPTION);
 
     stepEClass = createEClass(STEP);
     createEAttribute(stepEClass, STEP__ACTION);
     createEReference(stepEClass, STEP__TARGET_OBJECT);
-    createEAttribute(stepEClass, STEP__PREPOSITION);
-    createEReference(stepEClass, STEP__OTHER_OBJECT);
     createEAttribute(stepEClass, STEP__VALID);
-    createEAttribute(stepEClass, STEP__DEFAULT);
     createEReference(stepEClass, STEP__SCENE);
 
     // Create enums
     actionEEnum = createEEnum(ACTION);
-    prepositionEEnum = createEEnum(PREPOSITION);
   }
 
   /**
@@ -438,6 +439,7 @@ public class GamePackageImpl extends EPackageImpl implements GamePackage
     // Set bounds for type parameters
 
     // Add supertypes to classes
+    heroEClass.getESuperTypes().add(this.getIngredient());
     sceneEClass.getESuperTypes().add(this.getIngredient());
     objectEClass.getESuperTypes().add(this.getIngredient());
 
@@ -449,33 +451,31 @@ public class GamePackageImpl extends EPackageImpl implements GamePackage
 
     initEClass(ingredientEClass, Ingredient.class, "Ingredient", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getIngredient_Name(), ecorePackage.getEString(), "name", null, 0, 1, Ingredient.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getIngredient_Description(), ecorePackage.getEString(), "description", null, 0, 1, Ingredient.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(heroEClass, Hero.class, "Hero", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getHero_HealthPoints(), ecorePackage.getEString(), "healthPoints", null, 0, 1, Hero.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(sceneEClass, Scene.class, "Scene", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getScene_Objects(), this.getObject(), null, "objects", null, 0, -1, Scene.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getScene_Description(), ecorePackage.getEString(), "description", null, 0, 1, Scene.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getScene_Actions(), this.getStep(), null, "actions", null, 0, -1, Scene.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(objectEClass, uibk.dsl.assignment3.game.Object.class, "Object", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getObject_SuperType(), this.getObject(), null, "superType", null, 0, 1, uibk.dsl.assignment3.game.Object.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getObject_Description(), ecorePackage.getEString(), "description", null, 0, 1, uibk.dsl.assignment3.game.Object.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(stepEClass, Step.class, "Step", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getStep_Action(), this.getAction(), "action", null, 0, 1, Step.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getStep_TargetObject(), this.getObject(), null, "targetObject", null, 0, 1, Step.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getStep_Preposition(), this.getPreposition(), "preposition", null, 0, 1, Step.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getStep_OtherObject(), this.getObject(), null, "otherObject", null, 0, 1, Step.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getStep_Valid(), ecorePackage.getEString(), "valid", null, 0, 1, Step.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getStep_Default(), ecorePackage.getEString(), "default", null, 0, 1, Step.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getStep_Scene(), this.getScene(), null, "scene", null, 0, 1, Step.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Initialize enums and add enum literals
     initEEnum(actionEEnum, Action.class, "Action");
-    addEEnumLiteral(actionEEnum, Action.LOOK);
+    addEEnumLiteral(actionEEnum, Action.JUMP);
     addEEnumLiteral(actionEEnum, Action.PICK);
-    addEEnumLiteral(actionEEnum, Action.GOTO);
-    addEEnumLiteral(actionEEnum, Action.USE);
-
-    initEEnum(prepositionEEnum, Preposition.class, "Preposition");
-    addEEnumLiteral(prepositionEEnum, Preposition.WITH);
-    addEEnumLiteral(prepositionEEnum, Preposition.INTO);
+    addEEnumLiteral(actionEEnum, Action.WALK);
+    addEEnumLiteral(actionEEnum, Action.ATTACK);
 
     // Create resource
     createResource(eNS_URI);

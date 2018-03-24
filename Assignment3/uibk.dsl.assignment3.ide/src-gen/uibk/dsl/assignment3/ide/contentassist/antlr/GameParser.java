@@ -34,22 +34,23 @@ public class GameParser extends AbstractContentAssistParser {
 					put(grammarAccess.getIngredientAccess().getAlternatives(), "rule__Ingredient__Alternatives");
 					put(grammarAccess.getObjectAccess().getNameAlternatives_1_0(), "rule__Object__NameAlternatives_1_0");
 					put(grammarAccess.getActionAccess().getAlternatives(), "rule__Action__Alternatives");
-					put(grammarAccess.getPrepositionAccess().getAlternatives(), "rule__Preposition__Alternatives");
 					put(grammarAccess.getAdventureAccess().getGroup_0(), "rule__Adventure__Group_0__0");
 					put(grammarAccess.getAdventureAccess().getGroup_1(), "rule__Adventure__Group_1__0");
+					put(grammarAccess.getHeroAccess().getGroup(), "rule__Hero__Group__0");
 					put(grammarAccess.getSceneAccess().getGroup(), "rule__Scene__Group__0");
 					put(grammarAccess.getSceneAccess().getGroup_2(), "rule__Scene__Group_2__0");
 					put(grammarAccess.getSceneAccess().getGroup_2_3(), "rule__Scene__Group_2_3__0");
 					put(grammarAccess.getSceneAccess().getGroup_5(), "rule__Scene__Group_5__0");
 					put(grammarAccess.getSceneAccess().getGroup_5_3(), "rule__Scene__Group_5_3__0");
 					put(grammarAccess.getObjectAccess().getGroup(), "rule__Object__Group__0");
+					put(grammarAccess.getObjectAccess().getGroup_2(), "rule__Object__Group_2__0");
 					put(grammarAccess.getStepAccess().getGroup(), "rule__Step__Group__0");
-					put(grammarAccess.getStepAccess().getGroup_2(), "rule__Step__Group_2__0");
-					put(grammarAccess.getStepAccess().getGroup_4_0(), "rule__Step__Group_4_0__0");
-					put(grammarAccess.getStepAccess().getGroup_4_1(), "rule__Step__Group_4_1__0");
+					put(grammarAccess.getStepAccess().getGroup_3(), "rule__Step__Group_3__0");
 					put(grammarAccess.getAdventureAccess().getStartSceneAssignment_0_1(), "rule__Adventure__StartSceneAssignment_0_1");
 					put(grammarAccess.getAdventureAccess().getEndSceneAssignment_1_1(), "rule__Adventure__EndSceneAssignment_1_1");
 					put(grammarAccess.getAdventureAccess().getIngredientsAssignment_2(), "rule__Adventure__IngredientsAssignment_2");
+					put(grammarAccess.getHeroAccess().getNameAssignment_1(), "rule__Hero__NameAssignment_1");
+					put(grammarAccess.getHeroAccess().getHealthPointsAssignment_3(), "rule__Hero__HealthPointsAssignment_3");
 					put(grammarAccess.getSceneAccess().getNameAssignment_1(), "rule__Scene__NameAssignment_1");
 					put(grammarAccess.getSceneAccess().getObjectsAssignment_2_2(), "rule__Scene__ObjectsAssignment_2_2");
 					put(grammarAccess.getSceneAccess().getObjectsAssignment_2_3_1(), "rule__Scene__ObjectsAssignment_2_3_1");
@@ -57,16 +58,13 @@ public class GameParser extends AbstractContentAssistParser {
 					put(grammarAccess.getSceneAccess().getActionsAssignment_5_2(), "rule__Scene__ActionsAssignment_5_2");
 					put(grammarAccess.getSceneAccess().getActionsAssignment_5_3_1(), "rule__Scene__ActionsAssignment_5_3_1");
 					put(grammarAccess.getObjectAccess().getNameAssignment_1(), "rule__Object__NameAssignment_1");
-					put(grammarAccess.getObjectAccess().getDescriptionAssignment_3(), "rule__Object__DescriptionAssignment_3");
+					put(grammarAccess.getObjectAccess().getSuperTypeAssignment_2_1(), "rule__Object__SuperTypeAssignment_2_1");
+					put(grammarAccess.getObjectAccess().getDescriptionAssignment_5(), "rule__Object__DescriptionAssignment_5");
 					put(grammarAccess.getStepAccess().getActionAssignment_0(), "rule__Step__ActionAssignment_0");
 					put(grammarAccess.getStepAccess().getTargetObjectAssignment_1(), "rule__Step__TargetObjectAssignment_1");
-					put(grammarAccess.getStepAccess().getPrepositionAssignment_2_0(), "rule__Step__PrepositionAssignment_2_0");
-					put(grammarAccess.getStepAccess().getOtherObjectAssignment_2_1(), "rule__Step__OtherObjectAssignment_2_1");
-					put(grammarAccess.getStepAccess().getValidAssignment_4_0_1(), "rule__Step__ValidAssignment_4_0_1");
-					put(grammarAccess.getStepAccess().getDefaultAssignment_4_1_1(), "rule__Step__DefaultAssignment_4_1_1");
-					put(grammarAccess.getStepAccess().getSceneAssignment_6(), "rule__Step__SceneAssignment_6");
+					put(grammarAccess.getStepAccess().getValidAssignment_3_1(), "rule__Step__ValidAssignment_3_1");
+					put(grammarAccess.getStepAccess().getSceneAssignment_5(), "rule__Step__SceneAssignment_5");
 					put(grammarAccess.getAdventureAccess().getUnorderedGroup(), "rule__Adventure__UnorderedGroup");
-					put(grammarAccess.getStepAccess().getUnorderedGroup_4(), "rule__Step__UnorderedGroup_4");
 				}
 			};
 		}

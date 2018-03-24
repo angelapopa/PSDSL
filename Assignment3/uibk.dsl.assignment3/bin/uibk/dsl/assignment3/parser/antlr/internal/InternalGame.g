@@ -210,6 +210,78 @@ ruleIngredient returns [EObject current=null]
 			$current = $this_Object_1.current;
 			afterParserOrEnumRuleCall();
 		}
+		    |
+		{
+			newCompositeNode(grammarAccess.getIngredientAccess().getHeroParserRuleCall_2());
+		}
+		this_Hero_2=ruleHero
+		{
+			$current = $this_Hero_2.current;
+			afterParserOrEnumRuleCall();
+		}
+	)
+;
+
+// Entry rule entryRuleHero
+entryRuleHero returns [EObject current=null]:
+	{ newCompositeNode(grammarAccess.getHeroRule()); }
+	iv_ruleHero=ruleHero
+	{ $current=$iv_ruleHero.current; }
+	EOF;
+
+// Rule Hero
+ruleHero returns [EObject current=null]
+@init {
+	enterRule();
+}
+@after {
+	leaveRule();
+}:
+	(
+		otherlv_0='name'
+		{
+			newLeafNode(otherlv_0, grammarAccess.getHeroAccess().getNameKeyword_0());
+		}
+		(
+			(
+				lv_name_1_0=RULE_ID
+				{
+					newLeafNode(lv_name_1_0, grammarAccess.getHeroAccess().getNameIDTerminalRuleCall_1_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getHeroRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"name",
+						lv_name_1_0,
+						"org.eclipse.xtext.common.Terminals.ID");
+				}
+			)
+		)
+		otherlv_2='HP'
+		{
+			newLeafNode(otherlv_2, grammarAccess.getHeroAccess().getHPKeyword_2());
+		}
+		(
+			(
+				lv_healthPoints_3_0=RULE_STRING
+				{
+					newLeafNode(lv_healthPoints_3_0, grammarAccess.getHeroAccess().getHealthPointsSTRINGTerminalRuleCall_3_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getHeroRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"healthPoints",
+						lv_healthPoints_3_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
 	)
 ;
 
@@ -439,15 +511,38 @@ ruleObject returns [EObject current=null]
 				)
 			)
 		)
-		otherlv_2='description'
+		(
+			otherlv_2='extends'
+			{
+				newLeafNode(otherlv_2, grammarAccess.getObjectAccess().getExtendsKeyword_2_0());
+			}
+			(
+				(
+					{
+						if ($current==null) {
+							$current = createModelElement(grammarAccess.getObjectRule());
+						}
+					}
+					otherlv_3=RULE_ID
+					{
+						newLeafNode(otherlv_3, grammarAccess.getObjectAccess().getSuperTypeObjectCrossReference_2_1_0());
+					}
+				)
+			)
+		)?
+		otherlv_4='{'
 		{
-			newLeafNode(otherlv_2, grammarAccess.getObjectAccess().getDescriptionKeyword_2());
+			newLeafNode(otherlv_4, grammarAccess.getObjectAccess().getLeftCurlyBracketKeyword_3());
+		}
+		otherlv_5='description'
+		{
+			newLeafNode(otherlv_5, grammarAccess.getObjectAccess().getDescriptionKeyword_4());
 		}
 		(
 			(
-				lv_description_3_0=RULE_STRING
+				lv_description_6_0=RULE_STRING
 				{
-					newLeafNode(lv_description_3_0, grammarAccess.getObjectAccess().getDescriptionSTRINGTerminalRuleCall_3_0());
+					newLeafNode(lv_description_6_0, grammarAccess.getObjectAccess().getDescriptionSTRINGTerminalRuleCall_5_0());
 				}
 				{
 					if ($current==null) {
@@ -456,14 +551,14 @@ ruleObject returns [EObject current=null]
 					setWithLastConsumed(
 						$current,
 						"description",
-						lv_description_3_0,
+						lv_description_6_0,
 						"org.eclipse.xtext.common.Terminals.STRING");
 				}
 			)
 		)
-		otherlv_4='end'
+		otherlv_7='end'
 		{
-			newLeafNode(otherlv_4, grammarAccess.getObjectAccess().getEndKeyword_4());
+			newLeafNode(otherlv_7, grammarAccess.getObjectAccess().getEndKeyword_6());
 		}
 	)
 ;
@@ -516,128 +611,37 @@ ruleStep returns [EObject current=null]
 				}
 			)
 		)
+		otherlv_2='if'
+		{
+			newLeafNode(otherlv_2, grammarAccess.getStepAccess().getIfKeyword_2());
+		}
 		(
+			otherlv_3='valid'
+			{
+				newLeafNode(otherlv_3, grammarAccess.getStepAccess().getValidKeyword_3_0());
+			}
 			(
 				(
+					lv_valid_4_0=RULE_STRING
 					{
-						newCompositeNode(grammarAccess.getStepAccess().getPrepositionPrepositionEnumRuleCall_2_0_0());
+						newLeafNode(lv_valid_4_0, grammarAccess.getStepAccess().getValidSTRINGTerminalRuleCall_3_1_0());
 					}
-					lv_preposition_2_0=rulePreposition
-					{
-						if ($current==null) {
-							$current = createModelElementForParent(grammarAccess.getStepRule());
-						}
-						set(
-							$current,
-							"preposition",
-							lv_preposition_2_0,
-							"uibk.dsl.assignment3.Game.Preposition");
-						afterParserOrEnumRuleCall();
-					}
-				)
-			)
-			(
-				(
 					{
 						if ($current==null) {
 							$current = createModelElement(grammarAccess.getStepRule());
 						}
-					}
-					otherlv_3=RULE_ID
-					{
-						newLeafNode(otherlv_3, grammarAccess.getStepAccess().getOtherObjectObjectCrossReference_2_1_0());
-					}
-				)
-			)
-		)?
-		otherlv_4='if'
-		{
-			newLeafNode(otherlv_4, grammarAccess.getStepAccess().getIfKeyword_3());
-		}
-		(
-			(
-				{ 
-				  getUnorderedGroupHelper().enter(grammarAccess.getStepAccess().getUnorderedGroup_4());
-				}
-				(
-					(
-			(
-				{getUnorderedGroupHelper().canSelect(grammarAccess.getStepAccess().getUnorderedGroup_4(), 0)}?=>(
-					{
-						getUnorderedGroupHelper().select(grammarAccess.getStepAccess().getUnorderedGroup_4(), 0);
-					}
-								({true}?=>(otherlv_6='valid'
-								{
-									newLeafNode(otherlv_6, grammarAccess.getStepAccess().getValidKeyword_4_0_0());
-								}
-								(
-									(
-										lv_valid_7_0=RULE_STRING
-										{
-											newLeafNode(lv_valid_7_0, grammarAccess.getStepAccess().getValidSTRINGTerminalRuleCall_4_0_1_0());
-										}
-										{
-											if ($current==null) {
-												$current = createModelElement(grammarAccess.getStepRule());
-											}
-											setWithLastConsumed(
-												$current,
-												"valid",
-												lv_valid_7_0,
-												"org.eclipse.xtext.common.Terminals.STRING");
-										}
-									)
-								)
-								))
-					{ 
-						getUnorderedGroupHelper().returnFromSelection(grammarAccess.getStepAccess().getUnorderedGroup_4());
-					}
-				)
-			)|
-			(
-				{getUnorderedGroupHelper().canSelect(grammarAccess.getStepAccess().getUnorderedGroup_4(), 1)}?=>(
-					{
-						getUnorderedGroupHelper().select(grammarAccess.getStepAccess().getUnorderedGroup_4(), 1);
-					}
-								({true}?=>(otherlv_8='default'
-								{
-									newLeafNode(otherlv_8, grammarAccess.getStepAccess().getDefaultKeyword_4_1_0());
-								}
-								(
-									(
-										lv_default_9_0=RULE_STRING
-										{
-											newLeafNode(lv_default_9_0, grammarAccess.getStepAccess().getDefaultSTRINGTerminalRuleCall_4_1_1_0());
-										}
-										{
-											if ($current==null) {
-												$current = createModelElement(grammarAccess.getStepRule());
-											}
-											setWithLastConsumed(
-												$current,
-												"default",
-												lv_default_9_0,
-												"org.eclipse.xtext.common.Terminals.STRING");
-										}
-									)
-								)
-								))
-					{ 
-						getUnorderedGroupHelper().returnFromSelection(grammarAccess.getStepAccess().getUnorderedGroup_4());
+						setWithLastConsumed(
+							$current,
+							"valid",
+							lv_valid_4_0,
+							"org.eclipse.xtext.common.Terminals.STRING");
 					}
 				)
 			)
-					)+
-					{getUnorderedGroupHelper().canLeave(grammarAccess.getStepAccess().getUnorderedGroup_4())}?
-				)
-			)
-				{ 
-				  getUnorderedGroupHelper().leave(grammarAccess.getStepAccess().getUnorderedGroup_4());
-				}
 		)
-		otherlv_10='then'
+		otherlv_5='then'
 		{
-			newLeafNode(otherlv_10, grammarAccess.getStepAccess().getThenKeyword_5());
+			newLeafNode(otherlv_5, grammarAccess.getStepAccess().getThenKeyword_4());
 		}
 		(
 			(
@@ -646,9 +650,9 @@ ruleStep returns [EObject current=null]
 						$current = createModelElement(grammarAccess.getStepRule());
 					}
 				}
-				otherlv_11=RULE_ID
+				otherlv_6=RULE_ID
 				{
-					newLeafNode(otherlv_11, grammarAccess.getStepAccess().getSceneSceneCrossReference_6_0());
+					newLeafNode(otherlv_6, grammarAccess.getStepAccess().getSceneSceneCrossReference_5_0());
 				}
 			)
 		)
@@ -665,10 +669,10 @@ ruleAction returns [Enumerator current=null]
 }:
 	(
 		(
-			enumLiteral_0='look at'
+			enumLiteral_0='jump over'
 			{
-				$current = grammarAccess.getActionAccess().getLOOKEnumLiteralDeclaration_0().getEnumLiteral().getInstance();
-				newLeafNode(enumLiteral_0, grammarAccess.getActionAccess().getLOOKEnumLiteralDeclaration_0());
+				$current = grammarAccess.getActionAccess().getJUMPEnumLiteralDeclaration_0().getEnumLiteral().getInstance();
+				newLeafNode(enumLiteral_0, grammarAccess.getActionAccess().getJUMPEnumLiteralDeclaration_0());
 			}
 		)
 		    |
@@ -681,45 +685,18 @@ ruleAction returns [Enumerator current=null]
 		)
 		    |
 		(
-			enumLiteral_2='goto'
+			enumLiteral_2='walk through'
 			{
-				$current = grammarAccess.getActionAccess().getGOTOEnumLiteralDeclaration_2().getEnumLiteral().getInstance();
-				newLeafNode(enumLiteral_2, grammarAccess.getActionAccess().getGOTOEnumLiteralDeclaration_2());
+				$current = grammarAccess.getActionAccess().getWALKEnumLiteralDeclaration_2().getEnumLiteral().getInstance();
+				newLeafNode(enumLiteral_2, grammarAccess.getActionAccess().getWALKEnumLiteralDeclaration_2());
 			}
 		)
 		    |
 		(
-			enumLiteral_3='use'
+			enumLiteral_3='attack'
 			{
-				$current = grammarAccess.getActionAccess().getUSEEnumLiteralDeclaration_3().getEnumLiteral().getInstance();
-				newLeafNode(enumLiteral_3, grammarAccess.getActionAccess().getUSEEnumLiteralDeclaration_3());
-			}
-		)
-	)
-;
-
-// Rule Preposition
-rulePreposition returns [Enumerator current=null]
-@init {
-	enterRule();
-}
-@after {
-	leaveRule();
-}:
-	(
-		(
-			enumLiteral_0='with'
-			{
-				$current = grammarAccess.getPrepositionAccess().getWITHEnumLiteralDeclaration_0().getEnumLiteral().getInstance();
-				newLeafNode(enumLiteral_0, grammarAccess.getPrepositionAccess().getWITHEnumLiteralDeclaration_0());
-			}
-		)
-		    |
-		(
-			enumLiteral_1='into'
-			{
-				$current = grammarAccess.getPrepositionAccess().getINTOEnumLiteralDeclaration_1().getEnumLiteral().getInstance();
-				newLeafNode(enumLiteral_1, grammarAccess.getPrepositionAccess().getINTOEnumLiteralDeclaration_1());
+				$current = grammarAccess.getActionAccess().getATTACKEnumLiteralDeclaration_3().getEnumLiteral().getInstance();
+				newLeafNode(enumLiteral_3, grammarAccess.getActionAccess().getATTACKEnumLiteralDeclaration_3());
 			}
 		)
 	)

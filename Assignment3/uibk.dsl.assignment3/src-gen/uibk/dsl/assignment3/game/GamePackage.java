@@ -124,22 +124,50 @@ public interface GamePackage extends EPackage
   int INGREDIENT__NAME = 0;
 
   /**
-   * The feature id for the '<em><b>Description</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int INGREDIENT__DESCRIPTION = 1;
-
-  /**
    * The number of structural features of the '<em>Ingredient</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int INGREDIENT_FEATURE_COUNT = 2;
+  int INGREDIENT_FEATURE_COUNT = 1;
+
+  /**
+   * The meta object id for the '{@link uibk.dsl.assignment3.game.impl.HeroImpl <em>Hero</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see uibk.dsl.assignment3.game.impl.HeroImpl
+   * @see uibk.dsl.assignment3.game.impl.GamePackageImpl#getHero()
+   * @generated
+   */
+  int HERO = 2;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int HERO__NAME = INGREDIENT__NAME;
+
+  /**
+   * The feature id for the '<em><b>Health Points</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int HERO__HEALTH_POINTS = INGREDIENT_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Hero</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int HERO_FEATURE_COUNT = INGREDIENT_FEATURE_COUNT + 1;
 
   /**
    * The meta object id for the '{@link uibk.dsl.assignment3.game.impl.SceneImpl <em>Scene</em>}' class.
@@ -149,7 +177,7 @@ public interface GamePackage extends EPackage
    * @see uibk.dsl.assignment3.game.impl.GamePackageImpl#getScene()
    * @generated
    */
-  int SCENE = 2;
+  int SCENE = 3;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -161,15 +189,6 @@ public interface GamePackage extends EPackage
   int SCENE__NAME = INGREDIENT__NAME;
 
   /**
-   * The feature id for the '<em><b>Description</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int SCENE__DESCRIPTION = INGREDIENT__DESCRIPTION;
-
-  /**
    * The feature id for the '<em><b>Objects</b></em>' reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -179,13 +198,22 @@ public interface GamePackage extends EPackage
   int SCENE__OBJECTS = INGREDIENT_FEATURE_COUNT + 0;
 
   /**
+   * The feature id for the '<em><b>Description</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SCENE__DESCRIPTION = INGREDIENT_FEATURE_COUNT + 1;
+
+  /**
    * The feature id for the '<em><b>Actions</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int SCENE__ACTIONS = INGREDIENT_FEATURE_COUNT + 1;
+  int SCENE__ACTIONS = INGREDIENT_FEATURE_COUNT + 2;
 
   /**
    * The number of structural features of the '<em>Scene</em>' class.
@@ -194,7 +222,7 @@ public interface GamePackage extends EPackage
    * @generated
    * @ordered
    */
-  int SCENE_FEATURE_COUNT = INGREDIENT_FEATURE_COUNT + 2;
+  int SCENE_FEATURE_COUNT = INGREDIENT_FEATURE_COUNT + 3;
 
   /**
    * The meta object id for the '{@link uibk.dsl.assignment3.game.impl.ObjectImpl <em>Object</em>}' class.
@@ -204,7 +232,7 @@ public interface GamePackage extends EPackage
    * @see uibk.dsl.assignment3.game.impl.GamePackageImpl#getObject()
    * @generated
    */
-  int OBJECT = 3;
+  int OBJECT = 4;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -216,13 +244,22 @@ public interface GamePackage extends EPackage
   int OBJECT__NAME = INGREDIENT__NAME;
 
   /**
+   * The feature id for the '<em><b>Super Type</b></em>' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OBJECT__SUPER_TYPE = INGREDIENT_FEATURE_COUNT + 0;
+
+  /**
    * The feature id for the '<em><b>Description</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int OBJECT__DESCRIPTION = INGREDIENT__DESCRIPTION;
+  int OBJECT__DESCRIPTION = INGREDIENT_FEATURE_COUNT + 1;
 
   /**
    * The number of structural features of the '<em>Object</em>' class.
@@ -231,7 +268,7 @@ public interface GamePackage extends EPackage
    * @generated
    * @ordered
    */
-  int OBJECT_FEATURE_COUNT = INGREDIENT_FEATURE_COUNT + 0;
+  int OBJECT_FEATURE_COUNT = INGREDIENT_FEATURE_COUNT + 2;
 
   /**
    * The meta object id for the '{@link uibk.dsl.assignment3.game.impl.StepImpl <em>Step</em>}' class.
@@ -241,7 +278,7 @@ public interface GamePackage extends EPackage
    * @see uibk.dsl.assignment3.game.impl.GamePackageImpl#getStep()
    * @generated
    */
-  int STEP = 4;
+  int STEP = 5;
 
   /**
    * The feature id for the '<em><b>Action</b></em>' attribute.
@@ -262,40 +299,13 @@ public interface GamePackage extends EPackage
   int STEP__TARGET_OBJECT = 1;
 
   /**
-   * The feature id for the '<em><b>Preposition</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int STEP__PREPOSITION = 2;
-
-  /**
-   * The feature id for the '<em><b>Other Object</b></em>' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int STEP__OTHER_OBJECT = 3;
-
-  /**
    * The feature id for the '<em><b>Valid</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int STEP__VALID = 4;
-
-  /**
-   * The feature id for the '<em><b>Default</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int STEP__DEFAULT = 5;
+  int STEP__VALID = 2;
 
   /**
    * The feature id for the '<em><b>Scene</b></em>' reference.
@@ -304,7 +314,7 @@ public interface GamePackage extends EPackage
    * @generated
    * @ordered
    */
-  int STEP__SCENE = 6;
+  int STEP__SCENE = 3;
 
   /**
    * The number of structural features of the '<em>Step</em>' class.
@@ -313,7 +323,7 @@ public interface GamePackage extends EPackage
    * @generated
    * @ordered
    */
-  int STEP_FEATURE_COUNT = 7;
+  int STEP_FEATURE_COUNT = 4;
 
   /**
    * The meta object id for the '{@link uibk.dsl.assignment3.game.Action <em>Action</em>}' enum.
@@ -323,17 +333,7 @@ public interface GamePackage extends EPackage
    * @see uibk.dsl.assignment3.game.impl.GamePackageImpl#getAction()
    * @generated
    */
-  int ACTION = 5;
-
-  /**
-   * The meta object id for the '{@link uibk.dsl.assignment3.game.Preposition <em>Preposition</em>}' enum.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see uibk.dsl.assignment3.game.Preposition
-   * @see uibk.dsl.assignment3.game.impl.GamePackageImpl#getPreposition()
-   * @generated
-   */
-  int PREPOSITION = 6;
+  int ACTION = 6;
 
 
   /**
@@ -401,15 +401,25 @@ public interface GamePackage extends EPackage
   EAttribute getIngredient_Name();
 
   /**
-   * Returns the meta object for the attribute '{@link uibk.dsl.assignment3.game.Ingredient#getDescription <em>Description</em>}'.
+   * Returns the meta object for class '{@link uibk.dsl.assignment3.game.Hero <em>Hero</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Description</em>'.
-   * @see uibk.dsl.assignment3.game.Ingredient#getDescription()
-   * @see #getIngredient()
+   * @return the meta object for class '<em>Hero</em>'.
+   * @see uibk.dsl.assignment3.game.Hero
    * @generated
    */
-  EAttribute getIngredient_Description();
+  EClass getHero();
+
+  /**
+   * Returns the meta object for the attribute '{@link uibk.dsl.assignment3.game.Hero#getHealthPoints <em>Health Points</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Health Points</em>'.
+   * @see uibk.dsl.assignment3.game.Hero#getHealthPoints()
+   * @see #getHero()
+   * @generated
+   */
+  EAttribute getHero_HealthPoints();
 
   /**
    * Returns the meta object for class '{@link uibk.dsl.assignment3.game.Scene <em>Scene</em>}'.
@@ -433,6 +443,17 @@ public interface GamePackage extends EPackage
   EReference getScene_Objects();
 
   /**
+   * Returns the meta object for the attribute '{@link uibk.dsl.assignment3.game.Scene#getDescription <em>Description</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Description</em>'.
+   * @see uibk.dsl.assignment3.game.Scene#getDescription()
+   * @see #getScene()
+   * @generated
+   */
+  EAttribute getScene_Description();
+
+  /**
    * Returns the meta object for the containment reference list '{@link uibk.dsl.assignment3.game.Scene#getActions <em>Actions</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -452,6 +473,28 @@ public interface GamePackage extends EPackage
    * @generated
    */
   EClass getObject();
+
+  /**
+   * Returns the meta object for the reference '{@link uibk.dsl.assignment3.game.Object#getSuperType <em>Super Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the reference '<em>Super Type</em>'.
+   * @see uibk.dsl.assignment3.game.Object#getSuperType()
+   * @see #getObject()
+   * @generated
+   */
+  EReference getObject_SuperType();
+
+  /**
+   * Returns the meta object for the attribute '{@link uibk.dsl.assignment3.game.Object#getDescription <em>Description</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Description</em>'.
+   * @see uibk.dsl.assignment3.game.Object#getDescription()
+   * @see #getObject()
+   * @generated
+   */
+  EAttribute getObject_Description();
 
   /**
    * Returns the meta object for class '{@link uibk.dsl.assignment3.game.Step <em>Step</em>}'.
@@ -486,28 +529,6 @@ public interface GamePackage extends EPackage
   EReference getStep_TargetObject();
 
   /**
-   * Returns the meta object for the attribute '{@link uibk.dsl.assignment3.game.Step#getPreposition <em>Preposition</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Preposition</em>'.
-   * @see uibk.dsl.assignment3.game.Step#getPreposition()
-   * @see #getStep()
-   * @generated
-   */
-  EAttribute getStep_Preposition();
-
-  /**
-   * Returns the meta object for the reference '{@link uibk.dsl.assignment3.game.Step#getOtherObject <em>Other Object</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the reference '<em>Other Object</em>'.
-   * @see uibk.dsl.assignment3.game.Step#getOtherObject()
-   * @see #getStep()
-   * @generated
-   */
-  EReference getStep_OtherObject();
-
-  /**
    * Returns the meta object for the attribute '{@link uibk.dsl.assignment3.game.Step#getValid <em>Valid</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -517,17 +538,6 @@ public interface GamePackage extends EPackage
    * @generated
    */
   EAttribute getStep_Valid();
-
-  /**
-   * Returns the meta object for the attribute '{@link uibk.dsl.assignment3.game.Step#getDefault <em>Default</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Default</em>'.
-   * @see uibk.dsl.assignment3.game.Step#getDefault()
-   * @see #getStep()
-   * @generated
-   */
-  EAttribute getStep_Default();
 
   /**
    * Returns the meta object for the reference '{@link uibk.dsl.assignment3.game.Step#getScene <em>Scene</em>}'.
@@ -549,16 +559,6 @@ public interface GamePackage extends EPackage
    * @generated
    */
   EEnum getAction();
-
-  /**
-   * Returns the meta object for enum '{@link uibk.dsl.assignment3.game.Preposition <em>Preposition</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for enum '<em>Preposition</em>'.
-   * @see uibk.dsl.assignment3.game.Preposition
-   * @generated
-   */
-  EEnum getPreposition();
 
   /**
    * Returns the factory that creates the instances of the model.
@@ -636,12 +636,22 @@ public interface GamePackage extends EPackage
     EAttribute INGREDIENT__NAME = eINSTANCE.getIngredient_Name();
 
     /**
-     * The meta object literal for the '<em><b>Description</b></em>' attribute feature.
+     * The meta object literal for the '{@link uibk.dsl.assignment3.game.impl.HeroImpl <em>Hero</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see uibk.dsl.assignment3.game.impl.HeroImpl
+     * @see uibk.dsl.assignment3.game.impl.GamePackageImpl#getHero()
+     * @generated
+     */
+    EClass HERO = eINSTANCE.getHero();
+
+    /**
+     * The meta object literal for the '<em><b>Health Points</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute INGREDIENT__DESCRIPTION = eINSTANCE.getIngredient_Description();
+    EAttribute HERO__HEALTH_POINTS = eINSTANCE.getHero_HealthPoints();
 
     /**
      * The meta object literal for the '{@link uibk.dsl.assignment3.game.impl.SceneImpl <em>Scene</em>}' class.
@@ -662,6 +672,14 @@ public interface GamePackage extends EPackage
     EReference SCENE__OBJECTS = eINSTANCE.getScene_Objects();
 
     /**
+     * The meta object literal for the '<em><b>Description</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute SCENE__DESCRIPTION = eINSTANCE.getScene_Description();
+
+    /**
      * The meta object literal for the '<em><b>Actions</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -678,6 +696,22 @@ public interface GamePackage extends EPackage
      * @generated
      */
     EClass OBJECT = eINSTANCE.getObject();
+
+    /**
+     * The meta object literal for the '<em><b>Super Type</b></em>' reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference OBJECT__SUPER_TYPE = eINSTANCE.getObject_SuperType();
+
+    /**
+     * The meta object literal for the '<em><b>Description</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute OBJECT__DESCRIPTION = eINSTANCE.getObject_Description();
 
     /**
      * The meta object literal for the '{@link uibk.dsl.assignment3.game.impl.StepImpl <em>Step</em>}' class.
@@ -706,36 +740,12 @@ public interface GamePackage extends EPackage
     EReference STEP__TARGET_OBJECT = eINSTANCE.getStep_TargetObject();
 
     /**
-     * The meta object literal for the '<em><b>Preposition</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute STEP__PREPOSITION = eINSTANCE.getStep_Preposition();
-
-    /**
-     * The meta object literal for the '<em><b>Other Object</b></em>' reference feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference STEP__OTHER_OBJECT = eINSTANCE.getStep_OtherObject();
-
-    /**
      * The meta object literal for the '<em><b>Valid</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
     EAttribute STEP__VALID = eINSTANCE.getStep_Valid();
-
-    /**
-     * The meta object literal for the '<em><b>Default</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute STEP__DEFAULT = eINSTANCE.getStep_Default();
 
     /**
      * The meta object literal for the '<em><b>Scene</b></em>' reference feature.
@@ -754,16 +764,6 @@ public interface GamePackage extends EPackage
      * @generated
      */
     EEnum ACTION = eINSTANCE.getAction();
-
-    /**
-     * The meta object literal for the '{@link uibk.dsl.assignment3.game.Preposition <em>Preposition</em>}' enum.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see uibk.dsl.assignment3.game.Preposition
-     * @see uibk.dsl.assignment3.game.impl.GamePackageImpl#getPreposition()
-     * @generated
-     */
-    EEnum PREPOSITION = eINSTANCE.getPreposition();
 
   }
 

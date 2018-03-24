@@ -16,10 +16,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link uibk.dsl.assignment3.game.Step#getAction <em>Action</em>}</li>
  *   <li>{@link uibk.dsl.assignment3.game.Step#getTargetObject <em>Target Object</em>}</li>
- *   <li>{@link uibk.dsl.assignment3.game.Step#getPreposition <em>Preposition</em>}</li>
- *   <li>{@link uibk.dsl.assignment3.game.Step#getOtherObject <em>Other Object</em>}</li>
  *   <li>{@link uibk.dsl.assignment3.game.Step#getValid <em>Valid</em>}</li>
- *   <li>{@link uibk.dsl.assignment3.game.Step#getDefault <em>Default</em>}</li>
  *   <li>{@link uibk.dsl.assignment3.game.Step#getScene <em>Scene</em>}</li>
  * </ul>
  *
@@ -85,61 +82,6 @@ public interface Step extends EObject
   void setTargetObject(uibk.dsl.assignment3.game.Object value);
 
   /**
-   * Returns the value of the '<em><b>Preposition</b></em>' attribute.
-   * The literals are from the enumeration {@link uibk.dsl.assignment3.game.Preposition}.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Preposition</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Preposition</em>' attribute.
-   * @see uibk.dsl.assignment3.game.Preposition
-   * @see #setPreposition(Preposition)
-   * @see uibk.dsl.assignment3.game.GamePackage#getStep_Preposition()
-   * @model
-   * @generated
-   */
-  Preposition getPreposition();
-
-  /**
-   * Sets the value of the '{@link uibk.dsl.assignment3.game.Step#getPreposition <em>Preposition</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Preposition</em>' attribute.
-   * @see uibk.dsl.assignment3.game.Preposition
-   * @see #getPreposition()
-   * @generated
-   */
-  void setPreposition(Preposition value);
-
-  /**
-   * Returns the value of the '<em><b>Other Object</b></em>' reference.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Other Object</em>' reference isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Other Object</em>' reference.
-   * @see #setOtherObject(uibk.dsl.assignment3.game.Object)
-   * @see uibk.dsl.assignment3.game.GamePackage#getStep_OtherObject()
-   * @model
-   * @generated
-   */
-  uibk.dsl.assignment3.game.Object getOtherObject();
-
-  /**
-   * Sets the value of the '{@link uibk.dsl.assignment3.game.Step#getOtherObject <em>Other Object</em>}' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Other Object</em>' reference.
-   * @see #getOtherObject()
-   * @generated
-   */
-  void setOtherObject(uibk.dsl.assignment3.game.Object value);
-
-  /**
    * Returns the value of the '<em><b>Valid</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <p>
@@ -164,32 +106,6 @@ public interface Step extends EObject
    * @generated
    */
   void setValid(String value);
-
-  /**
-   * Returns the value of the '<em><b>Default</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Default</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Default</em>' attribute.
-   * @see #setDefault(String)
-   * @see uibk.dsl.assignment3.game.GamePackage#getStep_Default()
-   * @model
-   * @generated
-   */
-  String getDefault();
-
-  /**
-   * Sets the value of the '{@link uibk.dsl.assignment3.game.Step#getDefault <em>Default</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Default</em>' attribute.
-   * @see #getDefault()
-   * @generated
-   */
-  void setDefault(String value);
 
   /**
    * Returns the value of the '<em><b>Scene</b></em>' reference.

@@ -12,6 +12,7 @@ import org.eclipse.emf.ecore.EObject;
 
 import uibk.dsl.assignment3.game.Adventure;
 import uibk.dsl.assignment3.game.GamePackage;
+import uibk.dsl.assignment3.game.Hero;
 import uibk.dsl.assignment3.game.Ingredient;
 import uibk.dsl.assignment3.game.Scene;
 import uibk.dsl.assignment3.game.Step;
@@ -90,6 +91,11 @@ public class GameAdapterFactory extends AdapterFactoryImpl
         return createIngredientAdapter();
       }
       @Override
+      public Adapter caseHero(Hero object)
+      {
+        return createHeroAdapter();
+      }
+      @Override
       public Adapter caseScene(Scene object)
       {
         return createSceneAdapter();
@@ -152,6 +158,21 @@ public class GameAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createIngredientAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link uibk.dsl.assignment3.game.Hero <em>Hero</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see uibk.dsl.assignment3.game.Hero
+   * @generated
+   */
+  public Adapter createHeroAdapter()
   {
     return null;
   }

@@ -16,8 +16,8 @@ import uibk.dsl.assignment3.game.Action;
 import uibk.dsl.assignment3.game.Adventure;
 import uibk.dsl.assignment3.game.GameFactory;
 import uibk.dsl.assignment3.game.GamePackage;
+import uibk.dsl.assignment3.game.Hero;
 import uibk.dsl.assignment3.game.Ingredient;
-import uibk.dsl.assignment3.game.Preposition;
 import uibk.dsl.assignment3.game.Scene;
 import uibk.dsl.assignment3.game.Step;
 
@@ -75,6 +75,7 @@ public class GameFactoryImpl extends EFactoryImpl implements GameFactory
     {
       case GamePackage.ADVENTURE: return createAdventure();
       case GamePackage.INGREDIENT: return createIngredient();
+      case GamePackage.HERO: return createHero();
       case GamePackage.SCENE: return createScene();
       case GamePackage.OBJECT: return createObject();
       case GamePackage.STEP: return createStep();
@@ -95,8 +96,6 @@ public class GameFactoryImpl extends EFactoryImpl implements GameFactory
     {
       case GamePackage.ACTION:
         return createActionFromString(eDataType, initialValue);
-      case GamePackage.PREPOSITION:
-        return createPrepositionFromString(eDataType, initialValue);
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -114,8 +113,6 @@ public class GameFactoryImpl extends EFactoryImpl implements GameFactory
     {
       case GamePackage.ACTION:
         return convertActionToString(eDataType, instanceValue);
-      case GamePackage.PREPOSITION:
-        return convertPrepositionToString(eDataType, instanceValue);
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -141,6 +138,17 @@ public class GameFactoryImpl extends EFactoryImpl implements GameFactory
   {
     IngredientImpl ingredient = new IngredientImpl();
     return ingredient;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Hero createHero()
+  {
+    HeroImpl hero = new HeroImpl();
+    return hero;
   }
 
   /**
@@ -194,28 +202,6 @@ public class GameFactoryImpl extends EFactoryImpl implements GameFactory
    * @generated
    */
   public String convertActionToString(EDataType eDataType, Object instanceValue)
-  {
-    return instanceValue == null ? null : instanceValue.toString();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public Preposition createPrepositionFromString(EDataType eDataType, String initialValue)
-  {
-    Preposition result = Preposition.get(initialValue);
-    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-    return result;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public String convertPrepositionToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }

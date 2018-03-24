@@ -53,14 +53,6 @@ public class GameGrammarAccess extends AbstractGrammarElementFinder {
 		// * 4) a Scene's performStep prints the "valid" or "default" (i.e. invalid) message
 		// * 5) evaluate valid or invalid according to an internal step counter, which is incremented on a valid step
 		// *
-		// * Alternative 2
-		// * 1) Write a game engine.
-		// * 2) The game engine interprets the DSL instances (either config or code to fill in the gaps) and creates 
-		// *    a new game from it when started. (Example interpreter: 
-		// *    https://eclipse.org/Xtext/documentation/208_tortoise.html)
-		// * 
-		// *  
-		// *
 		// * NOTE: The following DSL should be understood to guide you through defining your own grammar. Don't let
 		// * yourself be bound to what you see below - be creative! Of course you can still make use of any concept
 		// * here that you find useful for your own adventure game definition.
@@ -115,13 +107,14 @@ public class GameGrammarAccess extends AbstractGrammarElementFinder {
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
 		private final RuleCall cSceneParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
 		private final RuleCall cObjectParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
+		private final RuleCall cHeroParserRuleCall_2 = (RuleCall)cAlternatives.eContents().get(2);
 		
 		//// what the adventure is composed of
 		//Ingredient:
-		//	Scene | Object;
+		//	Scene | Object | Hero;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//Scene | Object
+		//Scene | Object | Hero
 		public Alternatives getAlternatives() { return cAlternatives; }
 		
 		//Scene
@@ -129,6 +122,45 @@ public class GameGrammarAccess extends AbstractGrammarElementFinder {
 		
 		//Object
 		public RuleCall getObjectParserRuleCall_1() { return cObjectParserRuleCall_1; }
+		
+		//Hero
+		public RuleCall getHeroParserRuleCall_2() { return cHeroParserRuleCall_2; }
+	}
+	public class HeroElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "uibk.dsl.assignment3.Game.Hero");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cNameKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cNameIDTerminalRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
+		private final Keyword cHPKeyword_2 = (Keyword)cGroup.eContents().get(2);
+		private final Assignment cHealthPointsAssignment_3 = (Assignment)cGroup.eContents().get(3);
+		private final RuleCall cHealthPointsSTRINGTerminalRuleCall_3_0 = (RuleCall)cHealthPointsAssignment_3.eContents().get(0);
+		
+		//Hero:
+		//	'name' name=ID
+		//	'HP' healthPoints=STRING;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//'name' name=ID 'HP' healthPoints=STRING
+		public Group getGroup() { return cGroup; }
+		
+		//'name'
+		public Keyword getNameKeyword_0() { return cNameKeyword_0; }
+		
+		//name=ID
+		public Assignment getNameAssignment_1() { return cNameAssignment_1; }
+		
+		//ID
+		public RuleCall getNameIDTerminalRuleCall_1_0() { return cNameIDTerminalRuleCall_1_0; }
+		
+		//'HP'
+		public Keyword getHPKeyword_2() { return cHPKeyword_2; }
+		
+		//healthPoints=STRING
+		public Assignment getHealthPointsAssignment_3() { return cHealthPointsAssignment_3; }
+		
+		//STRING
+		public RuleCall getHealthPointsSTRINGTerminalRuleCall_3_0() { return cHealthPointsSTRINGTerminalRuleCall_3_0; }
 	}
 	public class SceneElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "uibk.dsl.assignment3.Game.Scene");
@@ -269,19 +301,25 @@ public class GameGrammarAccess extends AbstractGrammarElementFinder {
 		private final Alternatives cNameAlternatives_1_0 = (Alternatives)cNameAssignment_1.eContents().get(0);
 		private final RuleCall cNameSTRINGTerminalRuleCall_1_0_0 = (RuleCall)cNameAlternatives_1_0.eContents().get(0);
 		private final RuleCall cNameIDTerminalRuleCall_1_0_1 = (RuleCall)cNameAlternatives_1_0.eContents().get(1);
-		private final Keyword cDescriptionKeyword_2 = (Keyword)cGroup.eContents().get(2);
-		private final Assignment cDescriptionAssignment_3 = (Assignment)cGroup.eContents().get(3);
-		private final RuleCall cDescriptionSTRINGTerminalRuleCall_3_0 = (RuleCall)cDescriptionAssignment_3.eContents().get(0);
-		private final Keyword cEndKeyword_4 = (Keyword)cGroup.eContents().get(4);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Keyword cExtendsKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cSuperTypeAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final CrossReference cSuperTypeObjectCrossReference_2_1_0 = (CrossReference)cSuperTypeAssignment_2_1.eContents().get(0);
+		private final RuleCall cSuperTypeObjectIDTerminalRuleCall_2_1_0_1 = (RuleCall)cSuperTypeObjectCrossReference_2_1_0.eContents().get(1);
+		private final Keyword cLeftCurlyBracketKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		private final Keyword cDescriptionKeyword_4 = (Keyword)cGroup.eContents().get(4);
+		private final Assignment cDescriptionAssignment_5 = (Assignment)cGroup.eContents().get(5);
+		private final RuleCall cDescriptionSTRINGTerminalRuleCall_5_0 = (RuleCall)cDescriptionAssignment_5.eContents().get(0);
+		private final Keyword cEndKeyword_6 = (Keyword)cGroup.eContents().get(6);
 		
-		//// objects are registered with a scene, e.g. "key", "door", ...
+		//// objects are registered with a scene, e.g. "bomb", "mushroom", ...
 		//Object:
-		//	'object' name=(STRING | ID)
+		//	'object' name=(STRING | ID) ('extends' superType=[Object])? '{'
 		//	'description' description=STRING
 		//	'end';
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'object' name=(STRING | ID) 'description' description=STRING 'end'
+		//'object' name=(STRING | ID) ('extends' superType=[Object])? '{' 'description' description=STRING 'end'
 		public Group getGroup() { return cGroup; }
 		
 		//'object'
@@ -299,17 +337,35 @@ public class GameGrammarAccess extends AbstractGrammarElementFinder {
 		//ID
 		public RuleCall getNameIDTerminalRuleCall_1_0_1() { return cNameIDTerminalRuleCall_1_0_1; }
 		
+		//('extends' superType=[Object])?
+		public Group getGroup_2() { return cGroup_2; }
+		
+		//'extends'
+		public Keyword getExtendsKeyword_2_0() { return cExtendsKeyword_2_0; }
+		
+		//superType=[Object]
+		public Assignment getSuperTypeAssignment_2_1() { return cSuperTypeAssignment_2_1; }
+		
+		//[Object]
+		public CrossReference getSuperTypeObjectCrossReference_2_1_0() { return cSuperTypeObjectCrossReference_2_1_0; }
+		
+		//ID
+		public RuleCall getSuperTypeObjectIDTerminalRuleCall_2_1_0_1() { return cSuperTypeObjectIDTerminalRuleCall_2_1_0_1; }
+		
+		//'{'
+		public Keyword getLeftCurlyBracketKeyword_3() { return cLeftCurlyBracketKeyword_3; }
+		
 		//'description'
-		public Keyword getDescriptionKeyword_2() { return cDescriptionKeyword_2; }
+		public Keyword getDescriptionKeyword_4() { return cDescriptionKeyword_4; }
 		
 		//description=STRING
-		public Assignment getDescriptionAssignment_3() { return cDescriptionAssignment_3; }
+		public Assignment getDescriptionAssignment_5() { return cDescriptionAssignment_5; }
 		
 		//STRING
-		public RuleCall getDescriptionSTRINGTerminalRuleCall_3_0() { return cDescriptionSTRINGTerminalRuleCall_3_0; }
+		public RuleCall getDescriptionSTRINGTerminalRuleCall_5_0() { return cDescriptionSTRINGTerminalRuleCall_5_0; }
 		
 		//'end'
-		public Keyword getEndKeyword_4() { return cEndKeyword_4; }
+		public Keyword getEndKeyword_6() { return cEndKeyword_6; }
 	}
 	public class StepElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "uibk.dsl.assignment3.Game.Step");
@@ -319,40 +375,27 @@ public class GameGrammarAccess extends AbstractGrammarElementFinder {
 		private final Assignment cTargetObjectAssignment_1 = (Assignment)cGroup.eContents().get(1);
 		private final CrossReference cTargetObjectObjectCrossReference_1_0 = (CrossReference)cTargetObjectAssignment_1.eContents().get(0);
 		private final RuleCall cTargetObjectObjectIDTerminalRuleCall_1_0_1 = (RuleCall)cTargetObjectObjectCrossReference_1_0.eContents().get(1);
-		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
-		private final Assignment cPrepositionAssignment_2_0 = (Assignment)cGroup_2.eContents().get(0);
-		private final RuleCall cPrepositionPrepositionEnumRuleCall_2_0_0 = (RuleCall)cPrepositionAssignment_2_0.eContents().get(0);
-		private final Assignment cOtherObjectAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
-		private final CrossReference cOtherObjectObjectCrossReference_2_1_0 = (CrossReference)cOtherObjectAssignment_2_1.eContents().get(0);
-		private final RuleCall cOtherObjectObjectIDTerminalRuleCall_2_1_0_1 = (RuleCall)cOtherObjectObjectCrossReference_2_1_0.eContents().get(1);
-		private final Keyword cIfKeyword_3 = (Keyword)cGroup.eContents().get(3);
-		private final UnorderedGroup cUnorderedGroup_4 = (UnorderedGroup)cGroup.eContents().get(4);
-		private final Group cGroup_4_0 = (Group)cUnorderedGroup_4.eContents().get(0);
-		private final Keyword cValidKeyword_4_0_0 = (Keyword)cGroup_4_0.eContents().get(0);
-		private final Assignment cValidAssignment_4_0_1 = (Assignment)cGroup_4_0.eContents().get(1);
-		private final RuleCall cValidSTRINGTerminalRuleCall_4_0_1_0 = (RuleCall)cValidAssignment_4_0_1.eContents().get(0);
-		private final Group cGroup_4_1 = (Group)cUnorderedGroup_4.eContents().get(1);
-		private final Keyword cDefaultKeyword_4_1_0 = (Keyword)cGroup_4_1.eContents().get(0);
-		private final Assignment cDefaultAssignment_4_1_1 = (Assignment)cGroup_4_1.eContents().get(1);
-		private final RuleCall cDefaultSTRINGTerminalRuleCall_4_1_1_0 = (RuleCall)cDefaultAssignment_4_1_1.eContents().get(0);
-		private final Keyword cThenKeyword_5 = (Keyword)cGroup.eContents().get(5);
-		private final Assignment cSceneAssignment_6 = (Assignment)cGroup.eContents().get(6);
-		private final CrossReference cSceneSceneCrossReference_6_0 = (CrossReference)cSceneAssignment_6.eContents().get(0);
-		private final RuleCall cSceneSceneIDTerminalRuleCall_6_0_1 = (RuleCall)cSceneSceneCrossReference_6_0.eContents().get(1);
+		private final Keyword cIfKeyword_2 = (Keyword)cGroup.eContents().get(2);
+		private final Group cGroup_3 = (Group)cGroup.eContents().get(3);
+		private final Keyword cValidKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
+		private final Assignment cValidAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
+		private final RuleCall cValidSTRINGTerminalRuleCall_3_1_0 = (RuleCall)cValidAssignment_3_1.eContents().get(0);
+		private final Keyword cThenKeyword_4 = (Keyword)cGroup.eContents().get(4);
+		private final Assignment cSceneAssignment_5 = (Assignment)cGroup.eContents().get(5);
+		private final CrossReference cSceneSceneCrossReference_5_0 = (CrossReference)cSceneAssignment_5.eContents().get(0);
+		private final RuleCall cSceneSceneIDTerminalRuleCall_5_0_1 = (RuleCall)cSceneSceneCrossReference_5_0.eContents().get(1);
 		
 		//Step:
-		//	action=Action targetObject=[Object] (preposition=Preposition otherObject=[Object])? 'if' ('valid' valid=STRING &
-		//	'default' default=STRING) // some (default) message for an action, e.g. "I can't do that"
+		//	action=Action targetObject=[Object] 'if' ('valid' valid=STRING) // some message if the action was valid
 		//	'then' scene=[Scene];
 		@Override public ParserRule getRule() { return rule; }
 		
-		//// a step to solve the adventure, e.g., "pick up key" or "use key with door"	
-		//action=Action targetObject=[Object] (preposition=Preposition otherObject=[Object])? 'if' ('valid' valid=STRING &
-		//'default' default=STRING) // some (default) message for an action, e.g. "I can't do that"
+		//// a step to solve the adventure, e.g., "pick up bomb" or "jump over the hole"	
+		//action=Action targetObject=[Object] 'if' ('valid' valid=STRING) // some message if the action was valid
 		//'then' scene=[Scene]
 		public Group getGroup() { return cGroup; }
 		
-		//// a step to solve the adventure, e.g., "pick up key" or "use key with door"	
+		//// a step to solve the adventure, e.g., "pick up bomb" or "jump over the hole"	
 		//action=Action
 		public Assignment getActionAssignment_0() { return cActionAssignment_0; }
 		
@@ -368,94 +411,60 @@ public class GameGrammarAccess extends AbstractGrammarElementFinder {
 		//ID
 		public RuleCall getTargetObjectObjectIDTerminalRuleCall_1_0_1() { return cTargetObjectObjectIDTerminalRuleCall_1_0_1; }
 		
-		//(preposition=Preposition otherObject=[Object])?
-		public Group getGroup_2() { return cGroup_2; }
-		
-		//preposition=Preposition
-		public Assignment getPrepositionAssignment_2_0() { return cPrepositionAssignment_2_0; }
-		
-		//Preposition
-		public RuleCall getPrepositionPrepositionEnumRuleCall_2_0_0() { return cPrepositionPrepositionEnumRuleCall_2_0_0; }
-		
-		//otherObject=[Object]
-		public Assignment getOtherObjectAssignment_2_1() { return cOtherObjectAssignment_2_1; }
-		
-		//[Object]
-		public CrossReference getOtherObjectObjectCrossReference_2_1_0() { return cOtherObjectObjectCrossReference_2_1_0; }
-		
-		//ID
-		public RuleCall getOtherObjectObjectIDTerminalRuleCall_2_1_0_1() { return cOtherObjectObjectIDTerminalRuleCall_2_1_0_1; }
-		
 		//'if'
-		public Keyword getIfKeyword_3() { return cIfKeyword_3; }
-		
-		//'valid' valid=STRING & 'default' default=STRING
-		public UnorderedGroup getUnorderedGroup_4() { return cUnorderedGroup_4; }
+		public Keyword getIfKeyword_2() { return cIfKeyword_2; }
 		
 		//'valid' valid=STRING
-		public Group getGroup_4_0() { return cGroup_4_0; }
+		public Group getGroup_3() { return cGroup_3; }
 		
 		//'valid'
-		public Keyword getValidKeyword_4_0_0() { return cValidKeyword_4_0_0; }
+		public Keyword getValidKeyword_3_0() { return cValidKeyword_3_0; }
 		
 		//valid=STRING
-		public Assignment getValidAssignment_4_0_1() { return cValidAssignment_4_0_1; }
+		public Assignment getValidAssignment_3_1() { return cValidAssignment_3_1; }
 		
 		//STRING
-		public RuleCall getValidSTRINGTerminalRuleCall_4_0_1_0() { return cValidSTRINGTerminalRuleCall_4_0_1_0; }
+		public RuleCall getValidSTRINGTerminalRuleCall_3_1_0() { return cValidSTRINGTerminalRuleCall_3_1_0; }
 		
 		//// some message if the action was valid
-		//'default' default=STRING
-		public Group getGroup_4_1() { return cGroup_4_1; }
-		
-		//'default'
-		public Keyword getDefaultKeyword_4_1_0() { return cDefaultKeyword_4_1_0; }
-		
-		//default=STRING
-		public Assignment getDefaultAssignment_4_1_1() { return cDefaultAssignment_4_1_1; }
-		
-		//STRING
-		public RuleCall getDefaultSTRINGTerminalRuleCall_4_1_1_0() { return cDefaultSTRINGTerminalRuleCall_4_1_1_0; }
-		
-		//// some (default) message for an action, e.g. "I can't do that"
 		//'then'
-		public Keyword getThenKeyword_5() { return cThenKeyword_5; }
+		public Keyword getThenKeyword_4() { return cThenKeyword_4; }
 		
 		//scene=[Scene]
-		public Assignment getSceneAssignment_6() { return cSceneAssignment_6; }
+		public Assignment getSceneAssignment_5() { return cSceneAssignment_5; }
 		
 		//[Scene]
-		public CrossReference getSceneSceneCrossReference_6_0() { return cSceneSceneCrossReference_6_0; }
+		public CrossReference getSceneSceneCrossReference_5_0() { return cSceneSceneCrossReference_5_0; }
 		
 		//ID
-		public RuleCall getSceneSceneIDTerminalRuleCall_6_0_1() { return cSceneSceneIDTerminalRuleCall_6_0_1; }
+		public RuleCall getSceneSceneIDTerminalRuleCall_5_0_1() { return cSceneSceneIDTerminalRuleCall_5_0_1; }
 	}
 	
 	public class ActionElements extends AbstractEnumRuleElementFinder {
 		private final EnumRule rule = (EnumRule) GrammarUtil.findRuleForName(getGrammar(), "uibk.dsl.assignment3.Game.Action");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
-		private final EnumLiteralDeclaration cLOOKEnumLiteralDeclaration_0 = (EnumLiteralDeclaration)cAlternatives.eContents().get(0);
-		private final Keyword cLOOKLookAtKeyword_0_0 = (Keyword)cLOOKEnumLiteralDeclaration_0.eContents().get(0);
+		private final EnumLiteralDeclaration cJUMPEnumLiteralDeclaration_0 = (EnumLiteralDeclaration)cAlternatives.eContents().get(0);
+		private final Keyword cJUMPJumpOverKeyword_0_0 = (Keyword)cJUMPEnumLiteralDeclaration_0.eContents().get(0);
 		private final EnumLiteralDeclaration cPICKEnumLiteralDeclaration_1 = (EnumLiteralDeclaration)cAlternatives.eContents().get(1);
 		private final Keyword cPICKPickUpKeyword_1_0 = (Keyword)cPICKEnumLiteralDeclaration_1.eContents().get(0);
-		private final EnumLiteralDeclaration cGOTOEnumLiteralDeclaration_2 = (EnumLiteralDeclaration)cAlternatives.eContents().get(2);
-		private final Keyword cGOTOGotoKeyword_2_0 = (Keyword)cGOTOEnumLiteralDeclaration_2.eContents().get(0);
-		private final EnumLiteralDeclaration cUSEEnumLiteralDeclaration_3 = (EnumLiteralDeclaration)cAlternatives.eContents().get(3);
-		private final Keyword cUSEUseKeyword_3_0 = (Keyword)cUSEEnumLiteralDeclaration_3.eContents().get(0);
+		private final EnumLiteralDeclaration cWALKEnumLiteralDeclaration_2 = (EnumLiteralDeclaration)cAlternatives.eContents().get(2);
+		private final Keyword cWALKWalkThroughKeyword_2_0 = (Keyword)cWALKEnumLiteralDeclaration_2.eContents().get(0);
+		private final EnumLiteralDeclaration cATTACKEnumLiteralDeclaration_3 = (EnumLiteralDeclaration)cAlternatives.eContents().get(3);
+		private final Keyword cATTACKAttackKeyword_3_0 = (Keyword)cATTACKEnumLiteralDeclaration_3.eContents().get(0);
 		
 		//enum Action:
-		//	LOOK='look at' | PICK='pick up' | GOTO='goto' | USE='use' // | ...
+		//	JUMP='jump over' | PICK='pick up' | WALK='walk through' | ATTACK='attack' // | ...
 		//;
 		public EnumRule getRule() { return rule; }
 		
-		//LOOK='look at' | PICK='pick up' | GOTO='goto' | USE='use'
+		//JUMP='jump over' | PICK='pick up' | WALK='walk through' | ATTACK='attack'
 		public Alternatives getAlternatives() { return cAlternatives; }
 		
-		//LOOK='look at'
-		public EnumLiteralDeclaration getLOOKEnumLiteralDeclaration_0() { return cLOOKEnumLiteralDeclaration_0; }
+		//JUMP='jump over'
+		public EnumLiteralDeclaration getJUMPEnumLiteralDeclaration_0() { return cJUMPEnumLiteralDeclaration_0; }
 		
-		//'look at'
-		public Keyword getLOOKLookAtKeyword_0_0() { return cLOOKLookAtKeyword_0_0; }
+		//'jump over'
+		public Keyword getJUMPJumpOverKeyword_0_0() { return cJUMPJumpOverKeyword_0_0; }
 		
 		//PICK='pick up'
 		public EnumLiteralDeclaration getPICKEnumLiteralDeclaration_1() { return cPICKEnumLiteralDeclaration_1; }
@@ -463,54 +472,26 @@ public class GameGrammarAccess extends AbstractGrammarElementFinder {
 		//'pick up'
 		public Keyword getPICKPickUpKeyword_1_0() { return cPICKPickUpKeyword_1_0; }
 		
-		//GOTO='goto'
-		public EnumLiteralDeclaration getGOTOEnumLiteralDeclaration_2() { return cGOTOEnumLiteralDeclaration_2; }
+		//WALK='walk through'
+		public EnumLiteralDeclaration getWALKEnumLiteralDeclaration_2() { return cWALKEnumLiteralDeclaration_2; }
 		
-		//'goto'
-		public Keyword getGOTOGotoKeyword_2_0() { return cGOTOGotoKeyword_2_0; }
+		//'walk through'
+		public Keyword getWALKWalkThroughKeyword_2_0() { return cWALKWalkThroughKeyword_2_0; }
 		
-		//USE='use'
-		public EnumLiteralDeclaration getUSEEnumLiteralDeclaration_3() { return cUSEEnumLiteralDeclaration_3; }
+		//ATTACK='attack'
+		public EnumLiteralDeclaration getATTACKEnumLiteralDeclaration_3() { return cATTACKEnumLiteralDeclaration_3; }
 		
-		//'use'
-		public Keyword getUSEUseKeyword_3_0() { return cUSEUseKeyword_3_0; }
-	}
-	public class PrepositionElements extends AbstractEnumRuleElementFinder {
-		private final EnumRule rule = (EnumRule) GrammarUtil.findRuleForName(getGrammar(), "uibk.dsl.assignment3.Game.Preposition");
-		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
-		private final EnumLiteralDeclaration cWITHEnumLiteralDeclaration_0 = (EnumLiteralDeclaration)cAlternatives.eContents().get(0);
-		private final Keyword cWITHWithKeyword_0_0 = (Keyword)cWITHEnumLiteralDeclaration_0.eContents().get(0);
-		private final EnumLiteralDeclaration cINTOEnumLiteralDeclaration_1 = (EnumLiteralDeclaration)cAlternatives.eContents().get(1);
-		private final Keyword cINTOIntoKeyword_1_0 = (Keyword)cINTOEnumLiteralDeclaration_1.eContents().get(0);
-		
-		//enum Preposition:
-		//	WITH='with' | INTO='into' // | ...
-		//;
-		public EnumRule getRule() { return rule; }
-		
-		//WITH='with' | INTO='into'
-		public Alternatives getAlternatives() { return cAlternatives; }
-		
-		//WITH='with'
-		public EnumLiteralDeclaration getWITHEnumLiteralDeclaration_0() { return cWITHEnumLiteralDeclaration_0; }
-		
-		//'with'
-		public Keyword getWITHWithKeyword_0_0() { return cWITHWithKeyword_0_0; }
-		
-		//INTO='into'
-		public EnumLiteralDeclaration getINTOEnumLiteralDeclaration_1() { return cINTOEnumLiteralDeclaration_1; }
-		
-		//'into'
-		public Keyword getINTOIntoKeyword_1_0() { return cINTOIntoKeyword_1_0; }
+		//'attack'
+		public Keyword getATTACKAttackKeyword_3_0() { return cATTACKAttackKeyword_3_0; }
 	}
 	
 	private final AdventureElements pAdventure;
 	private final IngredientElements pIngredient;
+	private final HeroElements pHero;
 	private final SceneElements pScene;
 	private final ObjectElements pObject;
 	private final StepElements pStep;
 	private final ActionElements eAction;
-	private final PrepositionElements ePreposition;
 	
 	private final Grammar grammar;
 	
@@ -523,11 +504,11 @@ public class GameGrammarAccess extends AbstractGrammarElementFinder {
 		this.gaTerminals = gaTerminals;
 		this.pAdventure = new AdventureElements();
 		this.pIngredient = new IngredientElements();
+		this.pHero = new HeroElements();
 		this.pScene = new SceneElements();
 		this.pObject = new ObjectElements();
 		this.pStep = new StepElements();
 		this.eAction = new ActionElements();
-		this.ePreposition = new PrepositionElements();
 	}
 	
 	protected Grammar internalFindGrammar(GrammarProvider grammarProvider) {
@@ -567,14 +548,6 @@ public class GameGrammarAccess extends AbstractGrammarElementFinder {
 	// * 4) a Scene's performStep prints the "valid" or "default" (i.e. invalid) message
 	// * 5) evaluate valid or invalid according to an internal step counter, which is incremented on a valid step
 	// *
-	// * Alternative 2
-	// * 1) Write a game engine.
-	// * 2) The game engine interprets the DSL instances (either config or code to fill in the gaps) and creates 
-	// *    a new game from it when started. (Example interpreter: 
-	// *    https://eclipse.org/Xtext/documentation/208_tortoise.html)
-	// * 
-	// *  
-	// *
 	// * NOTE: The following DSL should be understood to guide you through defining your own grammar. Don't let
 	// * yourself be bound to what you see below - be creative! Of course you can still make use of any concept
 	// * here that you find useful for your own adventure game definition.
@@ -591,13 +564,24 @@ public class GameGrammarAccess extends AbstractGrammarElementFinder {
 	
 	//// what the adventure is composed of
 	//Ingredient:
-	//	Scene | Object;
+	//	Scene | Object | Hero;
 	public IngredientElements getIngredientAccess() {
 		return pIngredient;
 	}
 	
 	public ParserRule getIngredientRule() {
 		return getIngredientAccess().getRule();
+	}
+	
+	//Hero:
+	//	'name' name=ID
+	//	'HP' healthPoints=STRING;
+	public HeroElements getHeroAccess() {
+		return pHero;
+	}
+	
+	public ParserRule getHeroRule() {
+		return getHeroAccess().getRule();
 	}
 	
 	//// a scene bundles objects and contains steps to escape to a new scene
@@ -613,9 +597,9 @@ public class GameGrammarAccess extends AbstractGrammarElementFinder {
 		return getSceneAccess().getRule();
 	}
 	
-	//// objects are registered with a scene, e.g. "key", "door", ...
+	//// objects are registered with a scene, e.g. "bomb", "mushroom", ...
 	//Object:
-	//	'object' name=(STRING | ID)
+	//	'object' name=(STRING | ID) ('extends' superType=[Object])? '{'
 	//	'description' description=STRING
 	//	'end';
 	public ObjectElements getObjectAccess() {
@@ -627,8 +611,7 @@ public class GameGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//Step:
-	//	action=Action targetObject=[Object] (preposition=Preposition otherObject=[Object])? 'if' ('valid' valid=STRING &
-	//	'default' default=STRING) // some (default) message for an action, e.g. "I can't do that"
+	//	action=Action targetObject=[Object] 'if' ('valid' valid=STRING) // some message if the action was valid
 	//	'then' scene=[Scene];
 	public StepElements getStepAccess() {
 		return pStep;
@@ -639,7 +622,7 @@ public class GameGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//enum Action:
-	//	LOOK='look at' | PICK='pick up' | GOTO='goto' | USE='use' // | ...
+	//	JUMP='jump over' | PICK='pick up' | WALK='walk through' | ATTACK='attack' // | ...
 	//;
 	public ActionElements getActionAccess() {
 		return eAction;
@@ -647,17 +630,6 @@ public class GameGrammarAccess extends AbstractGrammarElementFinder {
 	
 	public EnumRule getActionRule() {
 		return getActionAccess().getRule();
-	}
-	
-	//enum Preposition:
-	//	WITH='with' | INTO='into' // | ...
-	//;
-	public PrepositionElements getPrepositionAccess() {
-		return ePreposition;
-	}
-	
-	public EnumRule getPrepositionRule() {
-		return getPrepositionAccess().getRule();
 	}
 	
 	//terminal ID:

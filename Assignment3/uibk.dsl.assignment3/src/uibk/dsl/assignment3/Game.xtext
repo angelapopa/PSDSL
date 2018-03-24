@@ -12,14 +12,6 @@ generate game "http://www.dsl.uibk/assignment3/Game"
  * 4) a Scene's performStep prints the "valid" or "default" (i.e. invalid) message
  * 5) evaluate valid or invalid according to an internal step counter, which is incremented on a valid step
  *
- * Alternative 2
- * 1) Write a game engine.
- * 2) The game engine interprets the DSL instances (either config or code to fill in the gaps) and creates 
- *    a new game from it when started. (Example interpreter: 
- *    https://eclipse.org/Xtext/documentation/208_tortoise.html)
- * 
- *  
- *
  * NOTE: The following DSL should be understood to guide you through defining your own grammar. Don't let
  * yourself be bound to what you see below - be creative! Of course you can still make use of any concept
  * here that you find useful for your own adventure game definition.
@@ -34,30 +26,38 @@ Adventure:
 
 // what the adventure is composed of
 Ingredient:
-	Scene | Object
+	Scene | Object | Character  
 ;
 	
 // a scene bundles objects and contains steps to escape to a new scene
 Scene:
-	'scene' name = ID
+	'scene' name = ID '{'
 	('objects' '(' objects += [Object] (',' objects += [Object])* ')')?
 	'description' description = STRING
 	('actions' '(' actions += Step (',' actions += Step)* ')')?
-	'end'
+	'}'
 ;
 
-// objects are registered with a scene, e.g. "key", "door", ...
+Character:
+	'character' name = (STRING | ID)
+	'healthPoints' healthPoints = INT
+	('weapons' '(' objects += [Object] (',' objects += [Object])* ')')?
+	('actions' '(' actions += Step (',' actions += Step)* ')')?
+;
+
+// objects are registered with a scene, e.g. "bomb", "mushroom", ...
 Object:
-	'object' name = (STRING | ID)
+	'object' name = (STRING | ID) ('is' 'a' superType=[Object])? '{'
 	'description' description = STRING
-	'end'
+	'healthPoints' healthPoints = INT
+	('actions' '(' objects += [Object] (',' objects += [Object])* ')')?
+	'}'
 ;
 
 Step:
-	// a step to solve the adventure, e.g., "pick up key" or "use key with door"	
-	action = Action targetObject = [Object] (preposition = Preposition otherObject = [Object])? 'if'
-		(('valid' valid = STRING) & // some message if the action was valid
-		('default' default = STRING)) // some (default) message for an action, e.g. "I can't do that"
+	// a step to solve the adventure, e.g., "pick up bomb" or "jump over the hole"	
+	action = Action targetObject = [Object] 'if'
+		('valid' valid = STRING) // some message if the action was valid
 		'then' scene = [Scene] // if the encountered action is valid, open a new scene, e.g., when going through a door
 		// if you want to have multiple actions within a single scene you probably need further create internal state tracking within scenes
 ;
@@ -65,11 +65,5 @@ Step:
 // arbitrary actions to be used in the game
 // in case they are more complex (e.g., have more parameters) you might consider rewriting them to parser rules
 enum Action:
-	LOOK = 'look at' | PICK = 'pick up' | GOTO = 'goto' | USE = 'use' // | ...
+	JUMP = 'jump over' | PICK = 'pick up' | WALK = 'walk through' | ATTACK = 'attack' // | ...
 ;
-
-// prepositions for actions
-enum Preposition:
-	WITH = 'with' | INTO = 'into' // | ...
-;
-
