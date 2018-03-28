@@ -5,50 +5,16 @@ Level: assignment 3
 
 # Description
 
+We construct a simple, interactive game code-base, which simulates the Mario game with some features removed or added (thus we call the future generated game as "Mariolike"). 
+The story plot for first version is: Mario will have to rescue the Princess. On the way to the highest tower where stayed the Princess, he will get through some obstacles (DangerousObject) and collect some helpful stuffs (UsefulObject). There is a big monster guarding the tower and Mario have to defeat it to meet the Princess and win the game.
+
+# # Define Objects:
+
 Main character: Mario  
 Side character: the Princess  
 Object: DangerousObject | UsefulObject  
 DangerousObject: big monster | monster | hole  
 UsefulObject: bomb | mushroom  
-
-# # Define Objects:
-
-object hero {  
-name: Mario,  
-HP: 10,  
-weapon: 0 bomb  
-}  
-
-object princess {  
-	name: Princess Anna  
-}  
-
-object UsefulObject {  
-	action: pick up, jump over  
-}  
-
-object bomb extends UsefulObject {  
-	name: bomb,  
-	value: 1  
-}  
-
-object mushroom extends UsefulObject {...}  
-
-object DangerousObject {  
-	action: jump over, walk through  
-}  
-
-object monster extends DangerousObject {  
-	name: ...  
-	HP: 7  
-	action: attack, jump over, walk through  
-}  
-
-object big_monster extends DangerousObject {  
-	name: ...  
-	HP: 7  
-	action: attack, jump over, walk through	 
-}
 
 # # Define Steps:
 1. In the Start Scene: There is one object: Mario with initial state.
