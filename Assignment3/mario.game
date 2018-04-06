@@ -15,23 +15,33 @@ character Mario {
 	}
 	
 character Princess {
-	healthPoints 10
-	}
-	
-weapon bomb
 
-weapon sword
+	}
 
 object useful_object {
 	description "Useful Objects"
-	healthPoints 10
-	actions(pick up)
+	actions(pick up, jump over)
 }
+
+object bomb is a useful_object {
+	description "Bomb"
+	healthPoints 1
+}                 
 
 object mushroom is a useful_object {
 	description "Mushroom"
-	healthPoints 7
-}                 
+	healthPoints 3
+} 
+
+object dangerous_object {
+	description "Dangerous Objects"
+	actions(walk through, jump over)
+}
+
+object monster is a dangerous_object {
+	healthPoints 3
+	actions(attack)
+}                
 
 step {
 	pick up bomb if valid "A bomb is on the floor" then end_scene
