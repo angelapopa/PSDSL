@@ -60,17 +60,21 @@ public class Game {
 	 */
 	StartScreenHandler ssHandler;
 	PlayScreenHandler psHandler;
+	private boolean inGame;
 
 	/**
 	 * Default constructor: 
 	 */
 	public Game() {
+		init();
+	}
+	
+	private void init() {
 		ssHandler = new StartScreenHandler();
 		psHandler = new PlayScreenHandler();
 		textNormalFont = new Font("Times New Roman", Font.PLAIN, 30);
 		location = new String();
-		
-		createStartScene();
+		inGame = true;
 	}
 	
 	/**
@@ -233,6 +237,7 @@ public class Game {
 	
 	public void goMonster() {
 		hpValue.setText(String.valueOf(mario.getHealthPoints()));
+		//TODO: Display text telling user that he have pickup/not pickup bomb/mushroom
 		mainTextArea.setText("A monster is standing and threatening you. What do you do?");
 		_1stChoice.setText(Action.ATTACK.getActionName());
 		_2ndChoice.setText(Action.JUMP.getActionName());
@@ -286,7 +291,7 @@ public class Game {
 	public void createEndScene() {
 		multiChoicePanel.setVisible(false);
 		hpValue.setText(String.valueOf(mario.healthPoints));
-		if (mario.healthPoints == 0) {
+		if (!inGame || mario.getHealthPoints() == 0) {
 			// Die
 			mainTextArea.setText("Oh, you have died! You have lost the game.");
 		}
@@ -323,7 +328,7 @@ public class Game {
 			case "Hole":
 				switch(userChoice) {
 				case "c1": //WALK
-					mario.setHealthPoints(0);
+					inGame = false;
 					createEndScene();
 					break;
 				case "c2": //JUMP
@@ -345,7 +350,7 @@ public class Game {
 					goMushroomArea();
 					break;
 				case "c3": //WALK
-					mario.setHealthPoints(0);
+					inGame = false;
 					createEndScene();
 					break;
 				case "c4": break;
@@ -380,7 +385,7 @@ public class Game {
 					goBigMonster();
 					break;
 				case "c3": //WALK
-					mario.setHealthPoints(0);
+					inGame = false;
 					createEndScene();
 					break;
 				case "c4": break;
@@ -394,11 +399,11 @@ public class Game {
 					createEndScene();
 					break;
 				case "c2": //JUMP
-					mario.setHealthPoints(0);
+					inGame = false;
 					createEndScene();
 					break;
 				case "c3": //WALK
-					mario.setHealthPoints(0);
+					inGame = false;
 					createEndScene();
 					break;
 				case "c4": break;
@@ -413,7 +418,11 @@ public class Game {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		new Game();
+		Game game = new Game();
+		game.createStartScene();
+		while (game.inGame) {
+			
+		}
 	}
 }
 
