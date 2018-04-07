@@ -95,10 +95,15 @@ Game
   |_mario.game
 ```
 
-Upon starting the Xtext Project and after changing smth. in the editor, upon save a new file 'greeting.txt' ist generated automatically.
+Steps to generate code:
+* Generate Xtext Artifacts by right clicking on Game.Xtext
+* Run/Debug by right clicking on `uibk.dsl.assignment3` project
+* after the second Eclipse instance opened change smth. in the editor (`mario.game`) and save the file
+* see the generated changes in `src_gen/greeting.txt`
+
 
 ```
 People to greet: useful_object, bomb, mushroom, dangerous_object, monster
 ```
 
-This greeting.txt will be replaced with java classes. Currently it is just a little working example.
+This greeting.txt will be replaced in the future with java classes. Currently it is just a little working example.
