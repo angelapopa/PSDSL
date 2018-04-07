@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Delete 10 resources" deleteContents="true" description="Delete 10 resources" element1="/org.eclipse.xtext.example.domainmodel" element10="/org.xtext.asea3.componentsdsl.ui.tests" element2="/org.eclipse.xtext.example.domainmodel.ide" element3="/org.eclipse.xtext.example.domainmodel.tests" element4="/org.eclipse.xtext.example.domainmodel.ui" element5="/org.eclipse.xtext.example.domainmodel.ui.tests" element6="/org.xtext.asea3.componentsdsl" element7="/org.xtext.asea3.componentsdsl.ide" element8="/org.xtext.asea3.componentsdsl.tests" element9="/org.xtext.asea3.componentsdsl.ui" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="10" stamp="1491155478160"/>
+</session>

@@ -1,0 +1,37 @@
+grammar org.example.entities.Entities with org.eclipse.xtext.common.Terminals
+
+generate entities "http://www.example.org/entities/Entities"
+
+/*AST */
+/*a collection of entities, a list (+=) */
+/*star means 0 or n elements */
+/*plus would have meant at least on element */
+Model: entities += Entity*;
+
+/*shape of Entity elements */
+/* keywords of our grammar should be expressed with '' */
+/* ID rule inherited from Terminals */
+/* () mark optional arguments  */
+/* [] marks a restriction that only existing Entity names should be used */
+Entity:
+	'entity' name = ID ('extends' superType=[Entity])? '{'
+		attributes += Attribute*
+	'}'
+;
+
+/* shape of attribute elements */
+AttributeType:
+	elementType = ElementType (array?='[' (length=INT)? ']')?
+;
+
+ElementType:
+	BasicType | EntityType
+;
+
+BasicType:
+	typeName=('string'|'int'|'boolean')
+;
+
+EntityType:
+	entity = [Entity]
+;

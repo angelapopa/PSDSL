@@ -1,0 +1,21 @@
+Advanced Software Engineering Assignment 03/2 and 04
+Angela Popa, Zahra Jafari
+
+- the grammar definition is defined in:
+grammar_project/at.uibk.ase.ex3/src/at/uibk/ase/ex3/ComponentDsl.xtext
+- the validation rules:
+grammar_project/at.uibk.ase.ex3/src/at/uibk/ase/ex3/validation/ComponentDslValidator.xtend
+- the templates for generating the artifacts are defined in:
+grammar_project/at.uibk.ase.ex3/src/at/uibk/ase/ex3/generation/ComponentDslGenerator.xtend
+
+- a sample usage is implemented in:
+target_project/at.uibk.ase.ex3.sample/sample.dsl
+- generated artifacts are at:
+target_project/at.uibk.ase.ex3.sample/src-gen/entities
+target_project/at.uibk.ase.ex3.sample/src-gen/actions
+- generated unit tests:
+target_project/at.uibk.ase.ex3.sample/src-gen/tests/entities
+target_project/at.uibk.ase.ex3.sample/src-gen/tests/actions
+
+- the target is a Java project located at:
+target_project/at.uibk.ase.ex3.transformation

@@ -1,0 +1,13 @@
+package org.example.xtend.examples
+
+import java.util.ArrayList
+
+class C {
+	extension MyListExtensions e = new MyListExtensions
+	
+	def m() {
+		val list = new ArrayList<String>
+		list.aListMethod //equivalent to e.aListMethod(list)
+		list.anotherListMethod //equivalent to e.anotherListMethod(list)
+	}
+}
