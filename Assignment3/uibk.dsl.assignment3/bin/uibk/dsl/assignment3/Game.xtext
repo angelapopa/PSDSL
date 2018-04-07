@@ -26,7 +26,7 @@ Adventure:
 
 // what the adventure is composed of
 Ingredient:
-	Scene | Object | Character  
+	Scene | Object | Character
 ;
 	
 // a scene bundles objects and contains steps to escape to a new scene
@@ -39,10 +39,11 @@ Scene:
 ;
 
 Character:
-	'character' name = (STRING | ID)
+	'character' name = (STRING | ID) '{'
+	'description' description = STRING
 	'healthPoints' healthPoints = INT
-	('weapons' '(' objects += [Object] (',' objects += [Object])* ')')?
 	('actions' '(' actions += Step (',' actions += Step)* ')')?
+	'}'
 ;
 
 // objects are registered with a scene, e.g. "bomb", "mushroom", ...
@@ -50,16 +51,18 @@ Object:
 	'object' name = (STRING | ID) ('is' 'a' superType=[Object])? '{'
 	'description' description = STRING
 	'healthPoints' healthPoints = INT
-	('actions' '(' objects += [Object] (',' objects += [Object])* ')')?
+	('actions' '(' actions += Action (',' actions += Action)* ')')?
 	'}'
 ;
 
 Step:
+	'step' '{'
 	// a step to solve the adventure, e.g., "pick up bomb" or "jump over the hole"	
 	action = Action targetObject = [Object] 'if'
 		('valid' valid = STRING) // some message if the action was valid
 		'then' scene = [Scene] // if the encountered action is valid, open a new scene, e.g., when going through a door
 		// if you want to have multiple actions within a single scene you probably need further create internal state tracking within scenes
+	'}'
 ;
 
 // arbitrary actions to be used in the game

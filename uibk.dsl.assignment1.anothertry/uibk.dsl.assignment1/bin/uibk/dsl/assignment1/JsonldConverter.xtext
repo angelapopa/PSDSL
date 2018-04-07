@@ -1,8 +1,10 @@
-/*Nga Pham, Angela Popa*/
+/* This is group assignment of Nga Pham and Angela Popa
+ * Our code is also available at: https://github.com/angelapopa/PSDSL
+ */
 
-grammar uibk.dsl.assignment1.JsonldConverter with org.eclipse.xtext.common.Terminals
+grammar uibk.dsl.assignment1b.JsonldConverter with org.eclipse.xtext.common.Terminals
 
-generate jsonldConverter "http://www.dsl.uibk/assignment1/JsonldConverter"
+generate jsonldConverter "http://www.dsl.uibk/assignment1b/JsonldConverter"
 import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 
 
@@ -12,11 +14,11 @@ import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 Model:
 	(elements+=Type)*;
 
-// Entity (or class) types which our DSL supports.
+/* Entity (or class) types which our DSL supports. */
 Type:
 	DataType | Entity | Enum ;
 
-// Defines a data type, e.g. String, Int, Url, Date
+/* Defines a data type, e.g. String, Int, Url, Date */
 DataType:
 	'datatype' name=ID;
 		
@@ -26,14 +28,14 @@ DataType:
  */
 Entity:
 	'entity' name=ID ('extends' superType=[Entity])? '{'
-		(features+=Property & (',' features+=Property)*)?
+		features+=Property & (',' features+=Property)*
 		
 	'}';
 
 /* Defines property of an Entity.
  * Defines one-to-one relation with the keyword 'one'.
  * Defines one-to-many relation with the keyword 'list'.
- */
+ */*
 Property:
 	name=ID ':' (many?='list')? (one?='one')? type=[Type];
 
@@ -45,10 +47,11 @@ Enum:
 		(features+=EnumItem (',' features+=EnumItem)*)?
 	'}';
 
-// An item of an enumeration.
+/* An item of an enumeration. */
 EnumItem:
 	name=ID '=' type=STRING;
 
-// Regex expressions for URL and DATE types respectively.
+/* Regex expressions for URL and DATE types respectively. */
 terminal URL : "(((http|https|ftp)+:)?\\/\\/)?(([\\d\\w]|%[a-fA-f\\d]{2,2})+(:([\\d\\w]|%[a-fA-f\\d]{2,2})+)?@)?([\\d\\w][-\\d\\w]{0,253}[\\d\\w]\\.)+[\\w]{2,63}(:[\\d]+)?(\\/([-+_~.\\d\\w]|%[a-fA-f\\d]{2,2})*)*(\\?(&?([-+_~.\\d\\w]|%[a-fA-f\\d]{2,2})=?)*)?(#([-+_~.\\d\\w]|%[a-fA-f\\d]{2,2})*)?";
 terminal DATE : "([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))T([01]?\\d|2[0-3]):([0-5]\\d)?([0-5]\\d)";
+
