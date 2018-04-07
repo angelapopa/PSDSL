@@ -96,8 +96,8 @@ Game
 ```
 
 Steps to generate code:
-* Generate Xtext Artifacts by right clicking on Game.Xtext
-* Run/Debug by right clicking on `uibk.dsl.assignment3` project
+* Generate Xtext Artifacts by right clicking on `Game.xtext`
+* Run/Debug by right clicking on the `uibk.dsl.assignment3` project
 * after the second Eclipse instance opened change smth. in the editor (`mario.game`) and save the file
 * see the generated changes in `src_gen/greeting.txt`
 
