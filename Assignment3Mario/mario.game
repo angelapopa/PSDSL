@@ -1,0 +1,27 @@
+object useful_object {
+	description "Useful Objects"
+	healthPoints 1
+	actions(pick up, jump over)
+}
+
+object bomb is a useful_object {
+	description "Bomb"
+	healthPoints 1
+}                 
+
+object mushroom is a useful_object {
+	description "Mushroom"
+	healthPoints 3
+} 
+
+object dangerous_object {
+	description "Dangerous Objects"
+	healthPoints 15
+	actions(walk through, jump over)
+}
+
+object monster is a dangerous_object {
+	description "Monster"
+	healthPoints 3
+	actions(attack)
+}
