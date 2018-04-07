@@ -16,7 +16,7 @@ The generator code:
 package uibk.dsl.assignment3.generator
 
 import uibk.dsl.assignment3.game.Object
-//other imports
+[...]
 
 class GameGenerator extends AbstractGenerator {
 
@@ -34,6 +34,7 @@ class GameGenerator extends AbstractGenerator {
 Temporarily the xtext file has the start and end elements commented out, to ease the generator process.
 
 ```
+[...]
 // the actual game
 Adventure:
 	//('start' startScene = [Scene]) & // where to start
@@ -45,6 +46,7 @@ Adventure:
 Ingredient:
 	Scene | Object | Character
 ;
+[...]
 ```
 
 In the editor the temporarily mario.game file looks like this:
