@@ -74,7 +74,7 @@ public class Game {
 		init();
 		initPlayer();
 		initMap();
-		createStartScene();
+		renderStartScene();
 	}
 	
 	private void init() {
@@ -104,7 +104,7 @@ public class Game {
 	/**
 	 * START SCREEN
 	 */
-	private void createStartScene() {
+	private void renderStartScene() {
 		window = new JFrame();
 		window.setSize(800, 600);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -145,7 +145,7 @@ public class Game {
 	/**
 	 * PLAY SCENE
 	 */
-	public void createPlayScene() {
+	public void renderPlayScene() {
 		titleNamePanel.setVisible(false);
 		startButtonPanel.setVisible(false);
 		
@@ -243,7 +243,7 @@ public class Game {
 		String preDescription;
 		int current_hp = mario.getHealthPoints();
 		if (current_hp == 0) {	// Attack the monster and die
-			createEndScene();
+			renderEndScene();
 		} else {
 			if (Integer.parseInt(hpValue.getText()) == mario.getHealthPoints()) // Jump over the monster
 			{
@@ -260,7 +260,7 @@ public class Game {
 		}	
 	}
 	
-	public void createEndScene() {
+	public void renderEndScene() {
 		multiChoicePanel.setVisible(false);
 		hpValue.setText(String.valueOf(mario.healthPoints));
 		if (!inGame || mario.getHealthPoints() == 0) {
@@ -344,7 +344,7 @@ public class Game {
 					switch(userChoice) {
 					case "c1": //WALK
 						inGame = false;
-						createEndScene();
+						renderEndScene();
 						break;
 					case "c2": //JUMP
 						currentScn = it.next();
@@ -360,7 +360,7 @@ public class Game {
 					switch(userChoice) {
 					case "c1": //WALK
 						inGame = false;
-						createEndScene();
+						renderEndScene();
 						break;
 					case "c2": //JUMP
 						currentScn = it.next();
@@ -398,17 +398,17 @@ public class Game {
 					case "c1": //ATTACK
 						mario.attackBigMonster(new BigMonster());
 						currentScn = it.next();
-						createEndScene();
+						renderEndScene();
 						break;
 					case "c2": //JUMP
 						inGame = false;
 						currentScn = it.next();
-						createEndScene();
+						renderEndScene();
 						break;
 					case "c3": //WALK
 						inGame = false;
 						currentScn = it.next();
-						createEndScene();
+						renderEndScene();
 						break;
 					case "c4": break;
 					}
