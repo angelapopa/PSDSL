@@ -25,6 +25,6 @@ hs_err_pid*
 bin
 
 #xtext
-src-gen
-xtend-gen
-generated
+**/src-gen
+**/xtend-gen
+**/generated
