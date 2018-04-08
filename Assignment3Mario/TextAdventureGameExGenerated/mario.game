@@ -1,91 +1,12 @@
-game Mariolike
-	mainClass class Game {
-	constructor {
-		init
-		initMap
-		initPlayer
-		renderStartScene
-	}
-	
-	class ScreenHandler implements ActionListener {
-		
-	}
-	inGame boolean
-	currentScn Scene
-	maps is list of Scene
-	it is list iterator of Scene
-	mario Hero
-	
-	window JFrame
-	container Container
-	textNormalFont Font
-	
-	titleNamePanel JPanel
-	titleNameLabel JLabel
-	
-	startButtonPanel JPanel
-	startButton JButton
-	
-	playerPanel JPanel
-	hpLabel JLabel
-	hpValue JLabel
-	
-	mainTextPanel JPanel
-	mainTextArea JTextArea
-	
-	multiChoicePanel JPanel
-	_1stChoice JButton
-	_2ndChoice JButton
-	_3rdChoice JButton
-	_4thChoice JButton
-	
-	function init {
-	
-}
+game Mario
 
-function initMap {
-	
-}
-
-function initPlayer {
-	
-}
-
-function renderStartScene {
-	
-}
-
-function renderPlayScene {
-	
-}
-
-function renderEndScene {
-	
-}
-
-function update {
-	
-}
-
-function main {
-	
-}
-}
-
-datatype boolean
-datatype Scene
-
-class ActionListener {
-	
-}
-
-character Mario2 {
+character Mario {
 	healthPoints 10
 	actions(pick up, attack)
 }
 
 character Princess {
-	heathPoints 50
+	healthPoints 50
 }
 
 object useful_object {
@@ -96,7 +17,7 @@ object useful_object {
 object bomb is a useful_object {
 	description "Bomb"
 	healthPoints 3
-}                 
+}               
 
 object mushroom is a useful_object {
 	description "Mushroom"

@@ -1,7 +1,7 @@
 //generated
 package mario.objects;
 
-import java.lang.*;
+import mario.game.*;
 
 
 public class Monster extends DangerousObject{
