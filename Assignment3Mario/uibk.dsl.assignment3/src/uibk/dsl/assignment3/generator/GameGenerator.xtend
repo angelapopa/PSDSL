@@ -12,6 +12,8 @@ import uibk.dsl.assignment3.game.Object
 import java.util.List
 import java.util.Set
 import java.util.HashSet
+import org.eclipse.emf.common.util.EList
+import uibk.dsl.assignment3.game.Attribute
 
 /**
  * Generates code from your model files on save.
@@ -66,23 +68,78 @@ class GameGenerator extends AbstractGenerator {
 		//generated
 		package «generatedPackageNamePathDecl».«generatedObjectPackageName»;
 		
-		«IF isSuperClass» interface «getFormattedName(object.name)»{«ENDIF»
+		import java.lang.*;
 		
-		«IF !isSuperClass» public class «getFormattedName(object.name)» «IF object.superType !== null»implements «getFormattedName(object.superType.name)»«ENDIF»{
+		««« if object is a super class»»»
+		«IF isSuperClass»
+		interface «getFormattedName(object.name)»{
+		«ENDIF»
+		
+		««« if object is a class
+		«IF !isSuperClass»
+		public class «getFormattedName(object.name)» «IF object.superType !== null»implements «getFormattedName(object.superType.name)»«ENDIF»{
 			
-			//TODO: constructor with arguments
+			«FOR attribute : object.attributes»
+			private «getAttributeType(attribute.value)» «attribute.name» = «attribute.value»;
+			«ENDFOR»
+			
+			
+			//constructors
 			public «getFormattedName(object.name)»(){
+				super();
 			}
 			
-			//TODO: add some methods if needed
-			
-			//TODO: getters and setters
-					
+			«IF object.attributes.size > 0»
+			public «getFormattedName(object.name)»(«getFormattedParameterList(object.attributes)»){
+				«FOR attribute : object.attributes»
+					this.«attribute.name» = «attribute.name»;
+				«ENDFOR»
+			}
 			«ENDIF»
+			
+			//getters and setters
+			«FOR attribute : object.attributes»
+			public «getAttributeType(attribute.value)» get«attribute.name.toFirstUpper»(){
+				return «attribute.name»;
+			}
+			«ENDFOR» 
+			
+			//TODO add actions
+			
+			«ENDIF»  
+		««« end if object is a class
 			
 		}
 			
 		'''
+	}
+	
+	def String getAttributeType(String attrValue){
+		try {
+			Integer.parseInt(attrValue);
+			return "int";
+		} catch (NumberFormatException ex){
+			return "String";
+		}
+	}
+	
+	def String getFormattedParameter(Attribute attr){
+		return "".concat(attr.value.class.simpleName).concat(" ").concat(attr.name);
+	}
+	
+	def String getFormattedParameterList(EList<Attribute> attributes){
+		var String niceParams = "";
+		
+		if (attributes.size > 0){
+			niceParams = niceParams.concat(getFormattedParameter(attributes.get(0)));
+		}
+		
+		var k = 1;
+		while (k <= attributes.size - 1){
+			niceParams = niceParams.concat(", ").concat(getFormattedParameter(attributes.get(k)));
+			k = k+1;
+		}
+		return niceParams;
 	}
 	
 }

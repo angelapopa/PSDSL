@@ -26,16 +26,13 @@ class GameGenerator extends AbstractGenerator {
 
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 
-		var all = resource.allContents;
-		var allObjects = all.filter(Object);
-		var greeting = allObjects
-				.map[name]
-				.join(', ')
-		fsa.generateFile('greetings.txt', 'People to greet: ' + greeting);
+    val all = resource.allContents;
+		val allObjects = all.filter(Object).toList;
+		generateAllObjects(allObjects, fsa);
 	}
 ```
 
-Temporarily the xtext file has the start and end elements commented out, to ease the generator process.
+Temporarily the xtext file has the start and end elements commented out nad the description and healthPoints for Scene and Character as well, to ease the generator process.
 
 ```
 [...]
@@ -49,6 +46,23 @@ Adventure:
 // what the adventure is composed of
 Ingredient:
 	Scene | Object | Character
+;
+
+// a scene bundles objects and contains steps to escape to a new scene
+Scene:
+	'scene' name = ID '{'
+	('objects' '(' objects += [Object] (',' objects += [Object])* ')')?
+	//'description' description = STRING
+	('actions' '(' actions += Step (',' actions += Step)* ')')?
+	'}'
+;
+
+Character:
+	'character' name = (STRING | ID) '{'
+	//'description' description = STRING
+	//'healthPoints' healthPoints = INT
+	('actions' '(' actions += Step (',' actions += Step)* ')')?
+	'}'
 ;
 [...]
 ```
@@ -91,7 +105,7 @@ In the editor Eclipse project, there should a new folder `src-gen` be manually c
 Game
   |_src
   |_src_gen
-    |_greeting.txt   (generated automatically)
+    |_Bomb.java  (generated automatically)
   |_mario.game
 ```
 
@@ -99,11 +113,42 @@ Steps to generate code:
 * Generate Xtext Artifacts by right clicking on `Game.xtext`
 * Run/Debug by right clicking on the `uibk.dsl.assignment3` project
 * after the second Eclipse instance opened change smth. in the editor (`mario.game`) and save the file
-* see the generated changes in `src_gen/greeting.txt`
+* see the generated changes in `src_gen/Bomb.java`
 
 
 ```
-People to greet: useful_object, bomb, mushroom, dangerous_object, monster
-```
+//generated
+package uibk.dsl.assignment3.transformation.objects;
 
-This greeting.txt will be replaced in the future with java classes. Currently it is just a little working example.
+import java.lang.*;
+
+
+public class Bomb implements UsefulObject{
+
+	private String description = "Bomb";
+	private int healthPoints = 1;
+
+
+	//constructors
+	public Bomb(){
+		super();
+	}
+
+	public Bomb(String description, String healthPoints){
+		this.description = description;
+		this.healthPoints = healthPoints;
+	}
+
+	//getters and setters
+	public String getDescription(){
+		return description;
+	}
+	public int getHealthPoints(){
+		return healthPoints;
+	}
+
+	//TODO add actions
+
+
+}
+```
