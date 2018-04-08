@@ -1,4 +1,83 @@
-game Mario
+game Mariolike
+	mainClass class Game {
+	constructor {
+		init
+		initMap
+		initPlayer
+		renderStartScene
+	}
+	
+	class ScreenHandler implements ActionListener {
+		
+	}
+	inGame boolean
+	currentScn Scene
+	maps is list of Scene
+	it is list iterator of Scene
+	mario Hero
+	
+	window JFrame
+	container Container
+	textNormalFont Font
+	
+	titleNamePanel JPanel
+	titleNameLabel JLabel
+	
+	startButtonPanel JPanel
+	startButton JButton
+	
+	playerPanel JPanel
+	hpLabel JLabel
+	hpValue JLabel
+	
+	mainTextPanel JPanel
+	mainTextArea JTextArea
+	
+	multiChoicePanel JPanel
+	_1stChoice JButton
+	_2ndChoice JButton
+	_3rdChoice JButton
+	_4thChoice JButton
+	
+	function init {
+	
+}
+
+function initMap {
+	
+}
+
+function initPlayer {
+	
+}
+
+function renderStartScene {
+	
+}
+
+function renderPlayScene {
+	
+}
+
+function renderEndScene {
+	
+}
+
+function update {
+	
+}
+
+function main {
+	
+}
+}
+
+datatype boolean
+datatype Scene
+
+class ActionListener {
+	
+}
 
 character Mario {
 	healthPoints 10
