@@ -1,25 +1,6 @@
-start start_scene
-end end_scene
-
-scene start_scene {
-	description "Start Game"
-}
-
-scene end_scene {
-	description "End Game"
-}
-
-character Mario {  
-	healthPoints 10 
-	weapons(bomb: 0, sword: 1)
-	}
-	
-character Princess {
-
-	}
-
 object useful_object {
 	description "Useful Objects"
+	healthPoints 1
 	actions(pick up, jump over)
 }
 
@@ -35,15 +16,12 @@ object mushroom is a useful_object {
 
 object dangerous_object {
 	description "Dangerous Objects"
+	healthPoints 15
 	actions(walk through, jump over)
 }
 
 object monster is a dangerous_object {
+	description "Monster"
 	healthPoints 3
 	actions(attack)
-}                
-
-step {
-	pick up bomb if valid "A bomb is on the floor" then end_scene
 }
-                                        
