@@ -14,9 +14,9 @@ class ObjectGenerator {
 	val String generatedPackageNamePath;
 	val String generatedPackageNamePathDecl;
 	
-	new(String generatedPackageNamePath) {
-		this.generatedPackageNamePath = generatedPackageNamePath;
-    	this.generatedPackageNamePathDecl = generatedPackageNamePath.replace("/", ".");
+	new(String packageName) {
+		this.generatedPackageNamePath = packageName.replace(".", "/").toLowerCase;
+    	this.generatedPackageNamePathDecl = packageName.toLowerCase;
   	}
 		
 	def generateObjects(List<Object> objects, IFileSystemAccess2 fsa) {
@@ -36,8 +36,9 @@ class ObjectGenerator {
 		
 		//generate all objects
 		for (o : objects){
-			fsa.generateFile(generatedPackageNamePath + "/" + generatedObjectPackageName + "/" 
-				+ getFormattedName(o.name) + ".java", compile(o, superClassObjects.contains(o))
+			val String fileName = generatedPackageNamePath + "/" + generatedObjectPackageName + "/" 
+				+ getFormattedName(o.name) + ".java";
+			fsa.generateFile(fileName, compile(o, superClassObjects.contains(o))
 			);
 		}
 	

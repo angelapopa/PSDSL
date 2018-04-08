@@ -13,43 +13,21 @@ generate game "http://www.dsl.uibk/assignment3/Game"
  *
  */
 
-// common features
 Adventure:
-	(elements+=AbstractElement)*
-;
-
-AbstractElement:
-	PackageDeclaration | Import | Ingredient // the adventure's game ingredients
-;
-
-PackageDeclaration:
-	'package' name=QualifiedName '{'
-        (elements+=AbstractElement)*
-    '}'
+	'game' name=QualifiedName
+	//('start' startScene = [Scene]) & // where to start
+	//('end' endScene = [Scene]) & // when it's over
+	(ingredients += Ingredient)* 
 ;
 
 QualifiedName:
     ID ('.' ID)*;
 
-Import:
-	'import' importedNamespace=QualifiedNameWithWildcard
-;
-
-QualifiedNameWithWildcard:
-	QualifiedName '.*'?
-;
-// the actual game
-//Adventure:
-//	//('start' startScene = [Scene]) & // where to start
-//	//('end' endScene = [Scene]) & // when it's over
-//	(ingredients += Ingredient)* 
-//;
-
 // what the adventure is composed of
 Ingredient:
 	Scene | Object | Character
 ;
-	
+
 // a scene bundles objects and contains steps to escape to a new scene
 Scene:
 	'scene' name = ID '{'

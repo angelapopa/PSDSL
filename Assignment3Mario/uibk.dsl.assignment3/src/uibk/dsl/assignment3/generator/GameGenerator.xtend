@@ -8,6 +8,7 @@ import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
 import uibk.dsl.assignment3.game.Object
+import uibk.dsl.assignment3.game.Adventure
 
 /**
  * Generates code from your model files on save.
@@ -16,17 +17,14 @@ import uibk.dsl.assignment3.game.Object
  */
 class GameGenerator extends AbstractGenerator {
 	
-	//TODO read package and imports from editor
-	val generatedPackageNamePath = "uibk/dsl/assignment3/transformation";
-	
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 		
-		val all = resource.allContents;
-		val allObjects = all.filter(Object).toList;
-		new ObjectGenerator(generatedPackageNamePath).generateObjects(allObjects, fsa);
+		val all = resource.allContents;	
+		
+		val adventure = all.filter(Adventure).toList;
+		val allObjects = adventure.get(0).ingredients.filter(Object).toList;
+		
+		new ObjectGenerator(adventure.get(0).name).generateObjects(allObjects, fsa);
 
-	}
-	
-	
-	
+	}	
 }
