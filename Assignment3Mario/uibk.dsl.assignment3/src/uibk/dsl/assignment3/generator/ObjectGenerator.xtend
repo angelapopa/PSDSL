@@ -7,6 +7,7 @@ import uibk.dsl.assignment3.game.Attribute
 import org.eclipse.emf.common.util.EList
 import java.util.HashSet
 import java.util.Set
+import uibk.dsl.assignment3.game.Action
 
 class ObjectGenerator {
 	val generatedObjectPackageName = "objects";
@@ -59,12 +60,31 @@ class ObjectGenerator {
 		
 		««« if object is a super class»»»
 		«IF isSuperClass»
-		interface «getFormattedName(object.name)»{
+		import java.util.ArrayList;
+		import java.util.List;
+		
+		public class «getFormattedName(object.name)» {
+			
+			List<«Action.simpleName»> actions;
+			
+			//constructor
+			public «getFormattedName(object.name)»() {
+				this.actions = new ArrayList<«Action.simpleName»>();
+				«FOR action : object.actions»
+				this.actions.add(«Action.simpleName».«action.getName»);
+				«ENDFOR»
+			}
+			
+			//getters and setters
+			public List<«Action.simpleName»> get«Action.simpleName»s() {
+				return actions;
+			}
+		}
 		«ENDIF»
 		
 		««« if object is a class
 		«IF !isSuperClass»
-		public class «getFormattedName(object.name)» «IF object.superType !== null»implements «getFormattedName(object.superType.name)»«ENDIF»{
+		public class «getFormattedName(object.name)» «IF object.superType !== null»extends «getFormattedName(object.superType.name)»«ENDIF»{
 			
 			«FOR attribute : object.attributes»
 			private «getAttributeType(attribute.value)» «attribute.name» = «attribute.value»;
@@ -81,6 +101,17 @@ class ObjectGenerator {
 				«FOR attribute : object.attributes»
 					this.«attribute.name» = «attribute.name»;
 				«ENDFOR»
+				«FOR action : object.actions»
+					add«action.class.simpleName»(«Action.simpleName».«action.getName»);
+				«ENDFOR»
+			}
+			«ENDIF»
+			
+			
+			//methods
+			«IF object.actions.size > 0»
+			public void add«Action.simpleName»(«Action.simpleName» action){
+				this.actions.add(action);
 			}
 			«ENDIF»
 			
@@ -89,15 +120,11 @@ class ObjectGenerator {
 			public «getAttributeType(attribute.value)» get«attribute.name.toFirstUpper»(){
 				return «attribute.name»;
 			}
-			«ENDFOR» 
-			
-			//TODO add actions
-			
-			«ENDIF»  
-		««« end if object is a class
-			
+			«ENDFOR»
 		}
-			
+		«ENDIF»
+		««« end if object is a class
+
 		'''
 	}
 	
