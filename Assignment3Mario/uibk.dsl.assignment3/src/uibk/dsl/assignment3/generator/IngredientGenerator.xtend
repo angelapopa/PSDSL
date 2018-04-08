@@ -21,11 +21,23 @@ class IngredientGenerator {
   		return this.generatedPackageNamePathDecl;
   	}
   	
+  	//useful_object turns into UsefulObject
   	def String getFormattedName(String name){
 		if (name.contains("_")){
 			return name.split("_").map[toFirstUpper].join();
 		}
 		return name.toFirstUpper;
+	}
+	
+	//pick up turns into pickup
+  	def String getPlainName(String name){
+		if (name.contains("_")){
+			return name.split("_").map[toLowerCase].join();
+		}
+		if (name.contains(" ")){
+			return name.split(" ").map[toLowerCase].join();
+		}
+		return name.toLowerCase;
 	}
 	
 	def String getAttributeType(String attrValue){

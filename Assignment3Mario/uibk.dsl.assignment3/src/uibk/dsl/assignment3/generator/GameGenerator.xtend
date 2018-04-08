@@ -27,7 +27,7 @@ class GameGenerator extends AbstractGenerator {
 		val allCharacters = adventure.get(0).ingredients.filter(Character).toList;
 		
 		new ObjectGenerator(adventure.get(0).name).generateObjects(allObjects, fsa);
-		new CharacterGenerator(adventure.get(0).name).generateCharacters(allCharacters, fsa);
+		new CharacterGenerator(adventure.get(0).name).generateCharacters(allCharacters, allObjects, fsa);
 
 	}	
 }

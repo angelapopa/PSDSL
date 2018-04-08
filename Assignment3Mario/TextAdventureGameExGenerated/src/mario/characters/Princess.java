@@ -1,30 +1,77 @@
 //generated
 package mario.characters;
 
+import mario.objects.*;
+
 public class Princess {
 	
-	private int heathPoints = 50;
+	private String name = "Princess";
+	private int healthPoints = 50;
 	
 	
 	//constructors
 	public Princess(){
 	}
 	
-	public Princess(int heathPoints){
-		this.heathPoints = heathPoints;
+	public Princess(int healthPoints){
+		this.healthPoints = healthPoints;
 	}
 	
+							
+	//methods			
+	public void pickupBomb(Bomb bomb){
+		this.healthPoints += bomb.getHealthPoints();
+	}
 	
-	//TODO: methods
+	public void jumpoverBomb(Bomb bomb){
+		//no action is required
+	}
 	
+	public void pickupMushroom(Mushroom mushroom){
+		this.healthPoints += mushroom.getHealthPoints();
+	}
+	
+	public void jumpoverMushroom(Mushroom mushroom){
+		//no action is required
+	}
+	
+	public void walkthroughBigMonster(BigMonster big_monster){
+		//no action is required
+	}
+	
+	public void jumpoverBigMonster(BigMonster big_monster){
+		//no action is required
+	}
+	
+	public void attackBigMonster(BigMonster big_monster){
+		this.healthPoints -= big_monster.getHealthPoints();
+		if (this.healthPoints < 0) {
+			setHealthPoints(0);
+		}
+	}
+	
+	public void walkthroughMonster(Monster monster){
+		//no action is required
+	}
+	
+	public void jumpoverMonster(Monster monster){
+		//no action is required
+	}
+	
+	public void attackMonster(Monster monster){
+		this.healthPoints -= monster.getHealthPoints();
+		if (this.healthPoints < 0) {
+			setHealthPoints(0);
+		}
+	}
 	
 	//getters and setters
-	public int getHeathPoints(){
-		return heathPoints;
+	public int getHealthPoints(){
+		return healthPoints;
 	}
 	
-	public void setHeathPoints(int heathPoints){
-		this.heathPoints = heathPoints;
+	public void setHealthPoints(int healthPoints){
+		this.healthPoints = healthPoints;
 	}
 }
 

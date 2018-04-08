@@ -1,7 +1,7 @@
 game Mario
 
-character Mario {
-	heathPoints 10
+character Mario2 {
+	healthPoints 10
 	actions(pick up, attack)
 }
 
@@ -32,5 +32,11 @@ object dangerous_object {
 object monster is a dangerous_object {
 	description "Monster"
 	healthPoints 3
+	actions(attack)
+}
+
+object big_monster is a dangerous_object {
+	description "Big Monster"
+	healthPoints 13
 	actions(attack)
 }
