@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-import javax.rmi.CORBA.Tie;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -90,12 +89,12 @@ public class Game {
 		// Start scene
 		Scene startScn = new Scene("MARIOLIKE", "", mario);
 		maps.add(startScn);
-		maps.add(new Scene("BOMB AREA", "There is a bomb in the floor. What do you do?", mario).setUsefulObject(new Bomb()));
-		maps.add(new Scene("HOLE", "There is a hole in the floor. What do you do?", mario).setDangerousObject(new Hole()));
-		maps.add(new Scene("MONSTER AREA", "A monster is standing and threatening you. What do you do?", mario).setDangerousObject(new Monster()));
-		maps.add(new Scene("MUSHROOM AREA", "There are a mushroom in the floor. What do you do?", mario).setUsefulObject(new Mushroom()));
-		maps.add(new Scene("MONSTER AREA", "A monster is standing and threatening you. What do you do?", mario).setDangerousObject(new Monster()));
-		maps.add(new Scene("BIG MONSTER", "A BIG MONSTER is standing and preventing you to meet princess. What do you do?", mario).setDangerousObject(new BigMonster()));
+		maps.add(new Scene("BOMB AREA", "There is a bomb on the floor. \nWhat do you do?", mario).setUsefulObject(new Bomb()));
+		maps.add(new Scene("HOLE", "There is a hole in the floor. \nWhat do you do?", mario).setDangerousObject(new Hole()));
+		maps.add(new Scene("MONSTER AREA", "A monster is standing in front of you \nand threatening you. \nWhat do you do?", mario).setDangerousObject(new Monster()));
+		maps.add(new Scene("MUSHROOM AREA", "There is a mushroom on the floor. \nWhat do you do?", mario).setUsefulObject(new Mushroom()));
+		maps.add(new Scene("MONSTER AREA", "A monster is standing in front of you \nand threatening you. \nWhat do you do?", mario).setDangerousObject(new Monster()));
+		maps.add(new Scene("BIG MONSTER", "A BIG MONSTER is standing in front of you and \npreventing you to meet the princess. \nWhat do you do?", mario).setDangerousObject(new BigMonster()));
 		maps.add(new Scene("THE END", "", mario));
 		
 		it = maps.listIterator();
@@ -248,12 +247,12 @@ public class Game {
 		} else {
 			if (Integer.parseInt(hpValue.getText()) == mario.getHealthPoints()) // Jump over the monster
 			{
-				preDescription = "You didnot attack the monster. Your HP will be reserved.\n";
+				preDescription = "You did not attack the monster. \nYour HP will be reserved.\n";
 			} else {	// Attack the monster and win
-				preDescription = "You attacked the monster. Your HP decreases to 3.\n";
+				preDescription = "You attacked the monster. \nnYour HP decreases to 3.\n";
 				hpValue.setText(String.valueOf(mario.getHealthPoints()));
 			}
-			mainTextArea.setText(preDescription + " There are a mushroom in the floor. What do you do?");
+			mainTextArea.setText(preDescription + " There are a mushroom on the floor. \nWhat do you do?");
 			_1stChoice.setText(Action.PICK.getActionName());
 			_2ndChoice.setText(Action.JUMP.getActionName());
 			_3rdChoice.setText("");
@@ -266,11 +265,11 @@ public class Game {
 		hpValue.setText(String.valueOf(mario.healthPoints));
 		if (!inGame || mario.getHealthPoints() == 0) {
 			// Die
-			mainTextArea.setText("Oh, you have died! You have lost the game.");
+			mainTextArea.setText("Oh, you have died! \nYou have lost the game.");
 		}
 		else {
 			// Win
-			mainTextArea.setText("Congratulations! You have defeated the big monster and save princess Anna. You are true hero!");
+			mainTextArea.setText("Congratulations! \n You have defeated the big monster and saved princess Anna. \nYou are true hero!");
 		}
 	
 	}

@@ -6,7 +6,6 @@ import java.util.List;
 public class Scene {
 	String name;
 	String description;
-	List<Step> steps;
 	Hero hero;
 	UsefulObject usefulObject;
 	DangerousObject dangerousObject;
@@ -16,7 +15,6 @@ public class Scene {
 		this.name = name;
 		this.description = description;
 		this.hero = hero;
-		this.steps = new ArrayList<Step>();
 	}
 	
 	public String getName() {
