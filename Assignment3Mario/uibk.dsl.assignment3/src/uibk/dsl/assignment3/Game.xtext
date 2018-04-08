@@ -37,18 +37,17 @@ Scene:
 	'}'
 ;
 
-Character:
-	'character' name = (STRING | ID) '{'
-	//'description' description = STRING
-	//'healthPoints' healthPoints = INT
-	('actions' '(' actions += Step (',' actions += Step)* ')')?
-	'}'
-;
-
 AttributeType: STRING | INT;
 
 Attribute:
 	name=ID value=AttributeType
+;
+
+Character:
+	'character' name = (STRING | ID) '{'
+	attributes += Attribute*
+	('actions' '(' actions += Action (',' actions += Action)* ')')?
+	'}'
 ;
 
 // objects are registered with a scene, e.g. "bomb", "mushroom", ...
@@ -59,8 +58,9 @@ Object:
 	'}'
 ;
 
+//TODO: currently not used
 Step:
-	'step' '{'
+	'step' name = (STRING | ID) '{'
 	// a step to solve the adventure, e.g., "pick up bomb" or "jump over the hole"	
 	action = Action targetObject = [Object] 'if'
 		('valid' valid = STRING) // some message if the action was valid

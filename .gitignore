@@ -23,3 +23,8 @@ hs_err_pid*
 
 #eclipse
 bin
+
+#xtext
+**/src-gen
+**/xtend-gen
+**/generated
