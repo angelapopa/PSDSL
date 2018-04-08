@@ -2,26 +2,46 @@ grammar uibk.dsl.assignment3.Game with org.eclipse.xtext.common.Terminals
 
 generate game "http://www.dsl.uibk/assignment3/Game"
 
-/* HOWTO implement a code generator for text-based adventure, our solution is:
- * 1) for each Scene generate a Java-class printing its description and all its objects on construction
- * 2) for each Object generate a Java-class printing its description
- * 3) create an AbstractScene class which forces a Scene to implement a method for performing a step,
- * 		e.g., "Scene performStep(Action, Object, Preposition, Object)" - taking a step and returning a Scene 
- * 		(a new one or "this", in case we stayed at the same scene)
- * 4) a Scene's performStep prints the "valid" or "default" (i.e. invalid) message
- * 5) evaluate valid or invalid according to an internal step counter, which is incremented on a valid step
- *
- */
+DomainModel:
+	Adventure | DataType
+;
 
 Adventure:
 	'game' name=QualifiedName
 	//('start' startScene = [Scene]) & // where to start
 	//('end' endScene = [Scene]) & // when it's over
 	(ingredients += Ingredient)* 
+	'mainClass' mainclass = Class
+	('mainFucntion' mainfunction = [Function])?
 ;
 
 QualifiedName:
     ID ('.' ID)*;
+    
+DataType:
+	'datatype' name=ID
+;
+
+Class:
+	'class' name=ID ('implements' superType=[Class])? '{'
+	('constructor' '{'
+		(firstcall += [Function])*
+	 '}')?
+	 (properties += Property)*
+	 (nestedClass += Class)*
+	 (functions += Function)*
+	 '}'
+;
+
+Function:
+	'function' name=ID '{'
+		
+	'}'
+;
+
+Property:
+	name=ID ('is' 'list' 'of')? ('is' 'list' 'iterator' 'of')? type=DataType | Ingredient
+;
 
 // what the adventure is composed of
 Ingredient:
@@ -60,7 +80,7 @@ Object:
 
 //TODO: currently not used
 Step:
-	'step' name = (STRING | ID) '{'
+	'step' '{'
 	// a step to solve the adventure, e.g., "pick up bomb" or "jump over the hole"	
 	action = Action targetObject = [Object] 'if'
 		('valid' valid = STRING) // some message if the action was valid
