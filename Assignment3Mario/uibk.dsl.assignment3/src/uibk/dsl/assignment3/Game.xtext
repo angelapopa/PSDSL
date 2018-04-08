@@ -2,27 +2,48 @@ grammar uibk.dsl.assignment3.Game with org.eclipse.xtext.common.Terminals
 
 generate game "http://www.dsl.uibk/assignment3/Game"
 
-/* HOWTO implement a code generator for text-based adventure, a suggestion ...
- * Alternative 1
+/* HOWTO implement a code generator for text-based adventure, our solution is:
  * 1) for each Scene generate a Java-class printing its description and all its objects on construction
- * 2) for each Object generate a Java-class overriding the "toString"-method with the objects description
+ * 2) for each Object generate a Java-class printing its description
  * 3) create an AbstractScene class which forces a Scene to implement a method for performing a step,
  * 		e.g., "Scene performStep(Action, Object, Preposition, Object)" - taking a step and returning a Scene 
  * 		(a new one or "this", in case we stayed at the same scene)
  * 4) a Scene's performStep prints the "valid" or "default" (i.e. invalid) message
  * 5) evaluate valid or invalid according to an internal step counter, which is incremented on a valid step
  *
- * NOTE: The following DSL should be understood to guide you through defining your own grammar. Don't let
- * yourself be bound to what you see below - be creative! Of course you can still make use of any concept
- * here that you find useful for your own adventure game definition.
  */
 
-// the actual game
+// common features
 Adventure:
-	//('start' startScene = [Scene]) & // where to start
-	//('end' endScene = [Scene]) & // when it's over
-	(ingredients += Ingredient*) // the adventure's game ingredients
+	(elements+=AbstractElement)*
 ;
+
+AbstractElement:
+	PackageDeclaration | Import | Ingredient // the adventure's game ingredients
+;
+
+PackageDeclaration:
+	'package' name=QualifiedName '{'
+        (elements+=AbstractElement)*
+    '}'
+;
+
+QualifiedName:
+    ID ('.' ID)*;
+
+Import:
+	'import' importedNamespace=QualifiedNameWithWildcard
+;
+
+QualifiedNameWithWildcard:
+	QualifiedName '.*'?
+;
+// the actual game
+//Adventure:
+//	//('start' startScene = [Scene]) & // where to start
+//	//('end' endScene = [Scene]) & // when it's over
+//	(ingredients += Ingredient)* 
+//;
 
 // what the adventure is composed of
 Ingredient:
