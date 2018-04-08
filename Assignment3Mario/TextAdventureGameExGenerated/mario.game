@@ -1,5 +1,14 @@
 game Mario
 
+character Mario {
+	heathPoints 10
+	actions(pick up, attack)
+}
+
+character Princess {
+	heathPoints 50
+}
+
 object useful_object {
 	description "Useful Objects"
 	actions(pick up, jump over)

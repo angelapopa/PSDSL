@@ -9,6 +9,7 @@ import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
 import uibk.dsl.assignment3.game.Object
 import uibk.dsl.assignment3.game.Adventure
+import uibk.dsl.assignment3.game.Character
 
 /**
  * Generates code from your model files on save.
@@ -23,8 +24,10 @@ class GameGenerator extends AbstractGenerator {
 		
 		val adventure = all.filter(Adventure).toList;
 		val allObjects = adventure.get(0).ingredients.filter(Object).toList;
+		val allCharacters = adventure.get(0).ingredients.filter(Character).toList;
 		
 		new ObjectGenerator(adventure.get(0).name).generateObjects(allObjects, fsa);
+		new CharacterGenerator(adventure.get(0).name).generateCharacters(allCharacters, fsa);
 
 	}	
 }
