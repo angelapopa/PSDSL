@@ -9,6 +9,9 @@ import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
 import uibk.dsl.assignment3.game.Object
+import java.util.List
+import java.util.Set
+import java.util.HashSet
 
 /**
  * Generates code from your model files on save.
@@ -16,14 +19,70 @@ import uibk.dsl.assignment3.game.Object
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#code-generation
  */
 class GameGenerator extends AbstractGenerator {
-
+	
+	//TODO read package and imports from editor
+	val generatedPackageNamePath = "uibk/dsl/assignment3/transformation";
+	val generatedPackageNamePathDecl = "uibk.dsl.assignment3.transformation";
+	val generatedObjectPackageName = "objects";
+	
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 		
-		var all = resource.allContents;
-		var allObjects = all.filter(Object);
-		var greeting = allObjects
-				.map[name]
-				.join(', ')
-		fsa.generateFile('greetings.txt', 'People to greet: ' + greeting);
+		val all = resource.allContents;
+		val allObjects = all.filter(Object).toList;
+		generateAllObjects(allObjects, fsa);
+
 	}
+	
+	def generateAllObjects(List<Object> objects, IFileSystemAccess2 fsa){
+		
+		val Set<Object> superClassObjects = new HashSet();
+		
+		//calculate all super type objects, they will be generated as interfaces
+		for (o : objects){
+			if (o.superType !== null){
+				superClassObjects.add(o.superType);
+			}
+		}
+		
+		//generate all objects
+		for (o : objects){
+			fsa.generateFile(generatedPackageNamePath + "/" + generatedObjectPackageName + "/" 
+				+ getFormattedName(o.name) + ".java", compile(o, superClassObjects.contains(o))
+			);
+		}
+	
+	}
+	
+	def String getFormattedName(String name){
+		if (name.contains("_")){
+			return name.split("_").map[toFirstUpper].join();
+		}
+		return name.toFirstUpper;
+	}
+	
+	// « »
+	def CharSequence compile(Object object, Boolean isSuperClass){
+		'''
+		//generated
+		package «generatedPackageNamePathDecl».«generatedObjectPackageName»;
+		
+		«IF isSuperClass» interface «getFormattedName(object.name)»{«ENDIF»
+		
+		«IF !isSuperClass» public class «getFormattedName(object.name)» «IF object.superType !== null»implements «getFormattedName(object.superType.name)»«ENDIF»{
+			
+			//TODO: constructor with arguments
+			public «getFormattedName(object.name)»(){
+			}
+			
+			//TODO: add some methods if needed
+			
+			//TODO: getters and setters
+					
+			«ENDIF»
+			
+		}
+			
+		'''
+	}
+	
 }
