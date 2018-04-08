@@ -45,6 +45,8 @@ class ObjectGenerator extends IngredientGenerator{
 		//generated
 		package «generatedPackageNamePathDecl».«generatedObjectPackageName»;
 		
+		import «generatedPackageNamePathDecl».game.*;
+		
 		««« if object is a super class»»»
 		«IF isSuperClass»
 		import java.util.ArrayList;

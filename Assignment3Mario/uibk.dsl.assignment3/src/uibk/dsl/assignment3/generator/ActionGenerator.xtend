@@ -41,7 +41,7 @@ class ActionGenerator extends IngredientGenerator{
 			}
 			
 			//getter
-			public String get«Action.simpleName.toLowerCase»Name(){
+			public String get«Action.simpleName»Name(){
 				return «Action.simpleName.toLowerCase»Name;
 			}
 		}

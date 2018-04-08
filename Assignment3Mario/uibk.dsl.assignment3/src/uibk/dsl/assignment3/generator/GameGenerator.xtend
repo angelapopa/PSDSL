@@ -7,9 +7,10 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
-import uibk.dsl.assignment3.game.Object
 import uibk.dsl.assignment3.game.Adventure
 import uibk.dsl.assignment3.game.Character
+import uibk.dsl.assignment3.game.Object
+import uibk.dsl.assignment3.game.Scene
 
 /**
  * Generates code from your model files on save.
@@ -22,12 +23,20 @@ class GameGenerator extends AbstractGenerator {
 		
 		val all = resource.allContents;	
 		
-		val adventure = all.filter(Adventure).toList;
-		val allObjects = adventure.get(0).ingredients.filter(Object).toList;
-		val allCharacters = adventure.get(0).ingredients.filter(Character).toList;
+		val adventure = all.filter(Adventure).toList.get(0);
+		val allObjects = adventure.ingredients.filter(Object).toList;
+		val allCharacters = adventure.ingredients.filter(Character).toList;
+		val allScenes = adventure.ingredients.filter(Scene).toList;
 		
-		new ObjectGenerator(adventure.get(0).name).generateObjects(allObjects, fsa);
-		new CharacterGenerator(adventure.get(0).name).generateCharacters(allCharacters, allObjects, fsa);
+		new ObjectGenerator(adventure.name).generateObjects(allObjects, fsa);
+		new CharacterGenerator(adventure.name).generateCharacters(allCharacters, allObjects, fsa);
+		new ActionGenerator(adventure.name).generateAction(allCharacters, allObjects, fsa);
+		
+		
+		//TODO
+		//generate Scene
+		//TODO
+		//new GameGenerator().generateGame(fsa);
+	}
 
-	}	
 }
