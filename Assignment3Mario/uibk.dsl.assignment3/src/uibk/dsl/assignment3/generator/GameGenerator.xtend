@@ -124,7 +124,7 @@ class GameGenerator extends AbstractGenerator {
 	}
 	
 	def String getFormattedParameter(Attribute attr){
-		return "".concat(attr.value.class.simpleName).concat(" ").concat(attr.name);
+		return "".concat(getAttributeType(attr.value)).concat(" ").concat(attr.name);
 	}
 	
 	def String getFormattedParameterList(EList<Attribute> attributes){
