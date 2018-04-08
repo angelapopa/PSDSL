@@ -1,0 +1,86 @@
+grammar org.xtext.asea3.mydsl.MyDsl with org.eclipse.xtext.common.Terminals
+
+generate myDsl "http://www.xtext.org/asea3/mydsl/MyDsl"
+
+Domainmodel :
+    (elements+=Type)*;
+  
+Type:
+    DataType | Entity ;
+  
+DataType:
+    'datatype' name=ID;
+ 
+Entity:
+    'entity' name=ID '{'
+        (features+=Feature)*
+    '}';
+
+Create:
+	'create' name=ID 'version' name=ID ':' type=[Entity];
+ 
+Feature:
+    (many?='many')? name=ID ':' type=[Type];
+
+    Model:
+    entities+=Entity*
+;
+ 
+Entity:
+    "entity" name=ID "{"
+        features+=Feature*
+    "}"
+;
+ 
+Feature:
+    Attribute | Reference
+;
+ 
+Attribute:
+    "attr" name=ID ":" type=DataType
+;
+ 
+enum DataType:
+    string | int
+;
+ 
+Reference:
+    "ref" name=ID ":" type=[Entity]
+;
+and a model like
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+entity A {
+    attr a1 : int
+    attr a2 : string
+    ref b : B
+    ref c : C
+}
+ 
+entity B {
+    attr b1 : string
+    attr b2 : string
+    ref a : A
+    ref c : C
+}
+ 
+entity C {
+    attr c1 : string
+    attr c2 : int

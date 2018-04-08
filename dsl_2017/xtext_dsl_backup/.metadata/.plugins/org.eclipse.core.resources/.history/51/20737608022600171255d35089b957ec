@@ -1,0 +1,15 @@
+package org.example.xtend.examples;
+
+import static extension java.util.Collections.*
+import java.util.List
+
+class ExtensionMethods {
+	def myListMethod(List<?> list) {
+		// some implementation
+	}
+	
+	def m(){
+		val list = new ArrayList<String>
+		list.myListMethod
+	}
+}

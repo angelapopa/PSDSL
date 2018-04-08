@@ -1,0 +1,26 @@
+package org.example.xtend.examples
+
+import java.util.ArrayList
+
+class C {
+	extension MyListExtensions e = new MyListExtensions
+	
+	def m() {
+		val list = new ArrayList<String>
+		list.aListMethod //equivalent to e.aListMethod(list)
+		list.anotherListMethod //equivalent to e.anotherListMethod(list)
+	}
+	
+	def orLikeThis(){
+		val extension MyListExtensions e = new MyListExtensions
+		val list = new ArrayList<String>
+		list.aListMethod
+		list.anotherListMethod
+	}
+	
+	def orEvenLikehis(extension MyListExtensions e){
+		var list = new ArrayList<String>
+		list.aListMethod
+		list.anotherListMethod
+	}
+}

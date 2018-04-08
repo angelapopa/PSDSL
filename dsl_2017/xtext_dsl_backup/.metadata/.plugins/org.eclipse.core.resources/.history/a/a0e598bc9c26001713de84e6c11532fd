@@ -1,0 +1,63 @@
+grammar at.uibk.ase.ex3.ComponentDsl with org.eclipse.xtext.common.Terminals
+
+generate componentDsl "http://www.uibk.at/ase/ex3/ComponentDsl"
+
+Model: 
+	entities += Entity+
+	actions += Action+
+;
+
+terminal VERSION : INT'.'INT'.'INT('.'INT)?;
+EntityBaseType :
+   'group' {Group}
+ | 'member' {Member};
+	
+Entity:
+	'entity' name = ID 'extends' parent=EntityBaseType '{'
+		attributes += Attribute*
+	'}'
+;
+
+Attribute:
+	type=AttributeType name=ID
+;
+
+AttributeType:
+	elementType=ElementType (array ?='[' (length=INT)? ']')?
+;
+
+ElementType:
+	BasicType | EntityType
+;
+
+BasicType:
+	typeName=('String'|'Int'|'Boolean'|'Version')
+;
+
+EntityType:
+	entity = [Entity]
+;
+
+Action:
+	Create|Add|AddResponsibility|AddDependency
+;
+
+Create:
+	'create' EntityType '('name=STRING','version=VERSION')'
+;
+
+Add:
+	'add' source=EntityType'('sourceName=STRING','sourceVersion=VERSION')' 'to' dest=EntityType'('destinationName=STRING','destinationVersion=VERSION')'
+;
+
+AddResponsibility:
+	'add' 'responsibility' '('name=STRING')' 'to' dest=EntityType'('sourceName=STRING','sourceVersion=VERSION')'
+;
+
+AddDependency:
+	'add' 'dependency' source=EntityType'('sourceName=STRING','sourceVersion=VERSION')' 'to' dest=EntityType'('destinationName=STRING','destinationVersion=VERSION')'
+;
+
+//cycle
+//project orders inside a component
+//size of component

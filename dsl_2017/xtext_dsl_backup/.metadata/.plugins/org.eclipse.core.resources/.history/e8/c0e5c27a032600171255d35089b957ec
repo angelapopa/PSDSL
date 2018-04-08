@@ -1,0 +1,11 @@
+package org.example.xtend.examples
+
+class C {
+	extension MyListExtensions e = new MyListExtensions
+	
+	def m() {
+		val list = new ArrayList<String>
+		list.aListMethod //equivalent to e.aListMethod(list)
+		list.anotherListMethod //equivalent to e.anotherListMethod(list)
+	}
+}

@@ -1,0 +1,56 @@
+grammar at.uibk.ase.ex3.ComponentDsl with org.eclipse.xtext.common.Terminals
+
+generate componentDsl "http://www.uibk.at/ase/ex3/ComponentDsl"
+
+Model: 
+	entities += Entity+
+	actions += Action+
+;
+
+terminal VERSION : '.'INT'.'INT'.'(INT'.');
+	
+Entity:
+	'entity' name = ID '{'
+		attributes += Attribute*
+	'}'
+;
+
+Attribute:
+	type=AttributeType name=ID ';'
+;
+
+AttributeType:
+	elementType=ElementType (array ?='[' (length=INT)? ']')?
+;
+
+ElementType:
+	BasicType | EntityType
+;
+
+BasicType:
+	typeName=('string'|'int'|'boolean')
+;
+
+EntityType:
+	entity = [Entity]
+;
+
+Action:
+	Create|Add|AddResponsibility|AddDependency
+;
+
+Create:
+	'create' EntityType '('name=STRING','version=STRING')'';'
+;
+
+Add:
+	'add' source=EntityType'('sourceName=STRING','sourceVersion=STRING')' 'to' dest=EntityType'('destinationName=STRING','destinationVersion=STRING')'';'
+;
+
+AddResponsibility:
+	'add' 'responsibility' '('name=STRING')' 'to' dest=EntityType'('sourceName=STRING','sourceVersion=STRING')'
+;
+
+AddDependency:
+	'add' 'dependency' source=EntityType'('sourceName=STRING','sourceVersion=STRING')' 'to' dest=EntityType'('destinationName=STRING','destinationVersion=STRING')'';'
+;
