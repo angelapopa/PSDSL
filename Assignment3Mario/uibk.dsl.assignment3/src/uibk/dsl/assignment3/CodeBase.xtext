@@ -21,6 +21,7 @@ DomainModel:
 	'mainClass' mainClass = Class
 ;
 
+// What the main properties are composed of
 Type:
 	DataType | GraphicType | GameIngredient
 ;
@@ -40,6 +41,7 @@ GameIngredient:
 	'gameIngredient' name=ID
 ;
 
+// Define class with properties, functions, nested classes and constructor inside
 Class:
 	'class' name=ID ('implements' superType=[GraphicType])? '{'
 	(properties += Property)*
@@ -57,6 +59,7 @@ Function:
 	'}'
 ;
 
+// Properties could be list or list iterator
 Property:
 	name=ID ('is' 'list' 'of')? ('is' 'list' 'iterator' 'of')? type=[Type]
 ;
