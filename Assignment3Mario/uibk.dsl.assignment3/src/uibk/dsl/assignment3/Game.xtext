@@ -2,6 +2,22 @@ grammar uibk.dsl.assignment3.Game with org.eclipse.xtext.common.Terminals
 
 generate game "http://www.dsl.uibk/assignment3/Game"
 
+/**
+ * This is groupwork of Nga Pham and Angela Popa
+ * More detailed information can be found in this repository: https://github.com/angelapopa/PSDSL/tree/master/Assignment3Mario
+ * ---------------------------------------------
+ * This xtext file defines main ingredients of Mariolike: Character, Object, Scene and Step
+ * A character is a male/female person performing a certain task in game. Normally the main character that player will assume the role of it
+ * is a hero. Another character could be princess, witches...
+ * An object can be everything in a Scene that affect the success/failure of main character. Normally they are useful objects (helping he/
+ * she to win) or dangerous objects (obstacles to get through).
+ * A scene contains a set of data structures and graphic components that represent the state of the game. Things in a scene will change as 
+ * the player plays the game. Normally this game consists of a start scene, an end scene, and some scenes lie between them.
+ * A scene can have some steps in which described the main character perform some actions and go to another scene.
+ * ---------------------------------------------
+ * The definition of this xtext file can be found in mario.game
+ */
+
 Adventure:
 	'game' name=QualifiedName
 	//('start' startScene = [Scene]) & // where to start
