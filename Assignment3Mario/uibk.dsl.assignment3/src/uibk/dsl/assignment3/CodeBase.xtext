@@ -1,0 +1,50 @@
+grammar org.xtext.example.codebase.Game with org.eclipse.xtext.common.Terminals
+
+generate game "http://www.xtext.org/example/codebase/Game"
+
+DomainModel:
+	'game' name=QualifiedName
+	(elements +=Type)*
+	'mainClass' mainClass = Class
+;
+
+Type:
+	DataType | GraphicType | GameIngredient
+;
+
+QualifiedName:
+    ID ('.' ID)*;
+
+DataType:
+	'datatype' name=ID
+;
+
+GraphicType:
+	'graphicType' name=ID
+;
+
+GameIngredient:
+	'gameIngredient' name=ID
+;
+
+Class:
+	'class' name=ID ('implements' superType=[GraphicType])? '{'
+	(properties += Property)*
+	(functions += Function)*
+	(nestedClass += Class)*
+	('constructor' '{'
+		(firstcall += [Function])*
+	 '}')?
+	 '}'
+;
+
+Function:
+	'function' name=ID '{'
+		
+	'}'
+;
+
+Property:
+	name=ID ('is' 'list' 'of')? ('is' 'list' 'iterator' 'of')? type=[Type]
+;
+

@@ -1,0 +1,89 @@
+game Mariolike
+
+datatype boolean
+
+gameIngredient Mario
+gameIngredient Scene
+
+graphicType JFrame
+graphicType Container
+graphicType Font
+graphicType JPanel
+graphicType JLabel
+graphicType JButton
+graphicType JTextArea
+graphicType ActionListener
+
+mainClass class Game {
+	
+	inGame boolean
+	currentScn Scene
+	maps is list of Scene
+	it is list iterator of Scene
+	mario Mario
+	
+	window JFrame
+	container Container
+	textNormalFont Font
+	
+	titleNamePanel JPanel
+	titleNameLabel JLabel
+	
+	startButtonPanel JPanel
+	startButton JButton
+	
+	playerPanel JPanel
+	hpLabel JLabel
+	hpValue JLabel
+	
+	mainTextPanel JPanel
+	mainTextArea JTextArea
+	
+	multiChoicePanel JPanel
+	_1stChoice JButton
+	_2ndChoice JButton
+	_3rdChoice JButton
+	_4thChoice JButton
+	function init {
+	
+	}
+
+	function initMap {
+	
+	}
+
+	function initPlayer {
+	
+	}
+
+	function renderStartScene {
+	
+	}
+
+	function renderPlayScene {
+	
+	}
+
+	function renderEndScene {
+	
+	}
+
+	function update {
+		
+	}
+
+	function main {
+	
+	}
+	
+	class ScreenHandler implements ActionListener {
+		
+	}
+	
+	constructor {
+		init
+		initMap
+		initPlayer
+		renderStartScene
+	}
+}
