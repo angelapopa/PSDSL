@@ -315,7 +315,7 @@ public class Game {
 		public void actionPerformed(ActionEvent event) {
 			
 			if (currentScn == maps.get(0)) {	// START SCENE
-				createPlayScene();
+				renderPlayScene();
 				it.next();
 				currentScn = it.next();
 				update(currentScn);
