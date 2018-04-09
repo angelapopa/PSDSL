@@ -7,7 +7,7 @@ import mario.game.*;
 public class Monster extends DangerousObject{
 	
 	private String description = "Monster";
-	private int healthPoints = 3;
+	private int healthPoints = 4;
 	
 	
 	//constructors

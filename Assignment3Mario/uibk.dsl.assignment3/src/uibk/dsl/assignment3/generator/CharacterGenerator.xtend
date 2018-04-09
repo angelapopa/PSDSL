@@ -67,11 +67,11 @@ class CharacterGenerator extends IngredientGenerator{
 			«IF objectsToHandle.size > 0»
 			«FOR object : objectsToHandle»
 			«FOR action : getActions(object)»
-			public void «getPlainName(action.literal)»«getFormattedName(object.name)»(«getFormattedName(object.name)» «object.name»){
+			public void «getPlainName(action.literal)»«getFormattedName(object.name)»(«getFormattedName(object.name)» «getFormattedName(object.name).toFirstLower»){
 				«IF action.getName() == Action.PICK.getName()»
-				this.healthPoints += «object.name».getHealthPoints();
+				this.healthPoints += «getFormattedName(object.name).toFirstLower».getHealthPoints();
 				«ELSEIF action.getName() == Action.ATTACK.getName()»
-				this.healthPoints -= «object.name».getHealthPoints();
+				this.healthPoints -= «getFormattedName(object.name).toFirstLower».getHealthPoints();
 				if (this.healthPoints < 0) {
 					setHealthPoints(0);
 				}
