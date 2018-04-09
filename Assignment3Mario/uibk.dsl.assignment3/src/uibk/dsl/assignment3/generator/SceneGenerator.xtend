@@ -17,10 +17,10 @@ class SceneGenerator extends IngredientGenerator{
 		super(packageName)
 	}
 	
-	def generateAction(List<Scene> scenes, List<Object> objects, IFileSystemAccess2 fsa) {
+	def generateScenes(List<Scene> scenes, List<Object> objects, IFileSystemAccess2 fsa) {
 		val Set<Object> superClassObjects = new HashSet();
 		
-		//calculate all super type objects, they will be generated as interfaces
+		//calculate all super type objects, to be able to get their class type
 		for (o : objects){
 			if (o.superType !== null){
 				superClassObjects.add(o.superType);
@@ -30,7 +30,7 @@ class SceneGenerator extends IngredientGenerator{
 		//generate super class Scene
 		val String fileNameSuperClass = generatedPackageNamePath + "/" + generatedObjectPackageName + "/" 
 			+ getFormattedName(Scene.simpleName) + ".java";
-		fsa.generateFile(fileNameSuperClass, compileSuperClass(scenes, superClassObjects));
+		fsa.generateFile(fileNameSuperClass, compileSuperClass(scenes));
 		
 		//generate all scenes
 		for (s : scenes){
@@ -40,22 +40,17 @@ class SceneGenerator extends IngredientGenerator{
 		}
 	}
 	
-	def compileSuperClass(List<Scene> scenes, Set<Object> superClassObjects) {
-		val Map<String, String> attributes = getAttributes(scenes);
-		val Map<String, String> characters = getCharacters(scenes);
-		val Map<String, String> objects = getObjects(scenes, superClassObjects);
-		
+	def compileSuperClass(List<Scene> scenes) {		
 		'''
 		//generated
 		package «generatedPackageNamePathDecl».«generatedObjectPackageName»;
 		
-		import «generatedPackageNamePathDecl».objects.*;
-		import «generatedPackageNamePathDecl».characters.*;
+		import «generatedPackageNamePathDecl».steps.*;
 		import java.util.List;
 		
 		public class «Scene.simpleName» {
 			
-			List<«Step.simpleName»> steps;
+			private List<«Step.simpleName»> steps;
 			
 			//constructor
 			public «getFormattedName(Scene.simpleName)»(){
@@ -78,10 +73,11 @@ class SceneGenerator extends IngredientGenerator{
 		//generated
 		package «generatedPackageNamePathDecl».«generatedObjectPackageName»;
 		
+		import «generatedPackageNamePathDecl».steps.*;
 		import «generatedPackageNamePathDecl».objects.*;
 		import «generatedPackageNamePathDecl».characters.*;
-		import java.util.List;
 		
+		import java.util.List;
 		import java.util.ArrayList;
 
 		public class «getFormattedName(scene.name)» extends «Scene.simpleName»{

@@ -7,7 +7,7 @@ import mario.game.*;
 public class Bomb extends UsefulObject{
 	
 	private String description = "Bomb";
-	private int healthPoints = 4;
+	private int healthPoints = 3;
 	
 	
 	//constructors

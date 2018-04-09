@@ -47,7 +47,7 @@ object big_monster is a dangerous_object {
 
 scene start_scene {
 	name "MARIOLIKE"
-	description ""
+	description "This is a game similar to the classical Mario game."
 	characters(Mario)
 	objects(useful_object, dangerous_object)
 	steps(go_bomb_area)
@@ -147,19 +147,19 @@ step attack_monster {
 	else invalid "Invalid input. You have to attack, walk through or jump over the monster"
 } 
 
-step walk_through_bigmonster {
+step walk_through_big_monster {
 	if walk through big_monster
 	then go end_scene and Mario.die
 	else invalid "Invalid input. You have to attack, walk through or jump over the monster"
 } 
 
-step jump_over_bigmonster {
+step jump_over_big_monster {
 	if jump over big_monster
 	then go end_scene and Mario.die 
 	else invalid "Invalid input. You have to attack, walk through or jump over the BIG BOSS"
 } 
 
-step attack_bigmonster {
+step attack_big_monster {
 	if attack big_monster
 	then go end_scene and Mario.healthPoints - 7
 	else invalid "Invalid input. You have to attack, walk through or jump over the BIG BOSS"

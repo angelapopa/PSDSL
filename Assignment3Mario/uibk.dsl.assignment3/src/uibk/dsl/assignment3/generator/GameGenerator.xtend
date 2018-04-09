@@ -11,6 +11,7 @@ import uibk.dsl.assignment3.game.Adventure
 import uibk.dsl.assignment3.game.Character
 import uibk.dsl.assignment3.game.Object
 import uibk.dsl.assignment3.game.Scene
+import uibk.dsl.assignment3.game.Step
 
 /**
  * Generates code from your model files on save.
@@ -27,12 +28,19 @@ class GameGenerator extends AbstractGenerator {
 		val allObjects = adventure.ingredients.filter(Object).toList;
 		val allCharacters = adventure.ingredients.filter(Character).toList;
 		val allScenes = adventure.ingredients.filter(Scene).toList;
+		val allSteps = adventure.ingredients.filter(Step).toList;
 		
 		new ObjectGenerator(adventure.name).generateObjects(allObjects, fsa);
 		new CharacterGenerator(adventure.name).generateCharacters(allCharacters, allObjects, fsa);
 		new ActionGenerator(adventure.name).generateAction(allCharacters, allObjects, fsa);
 		
-		new SceneGenerator(adventure.name).generateAction(allScenes, allObjects, fsa);
+		new SceneGenerator(adventure.name).generateScenes(allScenes, allObjects, fsa);
+		new StepGenerator(adventure.name).generateSteps(allSteps, allObjects, fsa);
+		
+		//TODO
+		//new ConditionGenerator().generateConditions(fsa);
+		//TODO
+		//new AdventureGenerator().generateAdventures(fsa);
 		//TODO
 		//new GameGenerator().generateGame(fsa);
 	}

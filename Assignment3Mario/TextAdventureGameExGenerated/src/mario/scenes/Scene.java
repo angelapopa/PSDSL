@@ -1,13 +1,12 @@
 //generated
 package mario.scenes;
 
-import mario.objects.*;
-import mario.characters.*;
+import mario.steps.*;
 import java.util.List;
 
 public class Scene {
 	
-	List<Step> steps;
+	private List<Step> steps;
 	
 	//constructor
 	public Scene(){

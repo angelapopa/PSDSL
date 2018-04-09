@@ -1,10 +1,11 @@
 //generated
 package mario.scenes;
 
+import mario.steps.*;
 import mario.objects.*;
 import mario.characters.*;
-import java.util.List;
 
+import java.util.List;
 import java.util.ArrayList;
 
 public class HoleArea extends Scene{
