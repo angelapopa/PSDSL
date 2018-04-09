@@ -1,0 +1,90 @@
+grammar uibk.dsl.assignment3.Game with org.eclipse.xtext.common.Terminals
+
+generate game "http://www.dsl.uibk/assignment3/Game"
+
+/**
+ * This is groupwork of Nga Pham and Angela Popa
+ * More detailed information can be found in this repository: https://github.com/angelapopa/PSDSL/tree/master/Assignment3Mario
+ * ---------------------------------------------
+ * This xtext file defines main ingredients of Mariolike: Character, Object, Scene and Step
+ * A character is a male/female person performing a certain task in game. Normally the main character that player will assume the role of it
+ * is a hero. Another character could be princess, witches...
+ * An object can be everything in a Scene that affect the success/failure of main character. Normally they are useful objects (helping he/
+ * she to win) or dangerous objects (obstacles to get through).
+ * A scene contains a set of data structures and graphic components that represent the state of the game. Things in a scene will change as 
+ * the player plays the game. Normally this game consists of a start scene, an end scene, and some scenes lie between them.
+ * A scene can have some steps in which described the main character perform some actions and go to another scene.
+ * ---------------------------------------------
+ * The definition of this xtext file can be found in mario.game
+ */
+
+Adventure:
+	'game' name=QualifiedName
+	//('start' startScene = [Scene]) & // where to start
+	//('end' endScene = [Scene]) & // when it's over
+	(ingredients += Ingredient)* 
+;
+
+QualifiedName:
+    ID ('.' ID)*;
+
+// what the adventure is composed of
+Ingredient:
+	Scene | Character | Object | Step
+;
+
+// a scene bundles objects and contains steps to escape to a new scene
+Scene:
+	'scene' name = ID '{'
+	attributes += Attribute*
+	('characters' '(' characters += [Character]')')?
+	('objects' '(' objects += [Object] (',' objects += [Object])* ')')?
+	('steps' '(' step += [Step] (',' step += [Step])* ')')?
+	'}'
+;
+
+AttributeType: STRING | INT;
+
+Attribute:
+	name=ID value=AttributeType
+;
+
+Character:
+	'character' name = (STRING | ID) '{'
+	attributes += Attribute*
+	('actions' '(' actions += Action (',' actions += Action)* ')')?
+	'}'
+;
+
+// objects are registered with a scene, e.g. "bomb", "mushroom", ...
+Object:
+	'object' name = (STRING | ID) ('is' 'a' superType=[Object])? '{'
+	attributes += Attribute*
+	('actions' '(' actions += Action (',' actions += Action)* ')')?
+	'}'
+;
+
+Step:
+	'step' name=ID '{'
+	('go' scene=[Scene])? 
+	(condition=Condition)?
+	'}'
+;
+enum Operator:
+	PLUS = '+' 
+	| MINUS = '-'
+	| MUL = "*"
+	| DIV = "/"
+;
+Condition:
+	'if' action = Action targetObject = [Object] // a step to solve the adventure, e.g., "pick up bomb" or "jump over the hole"	
+	'then' 'go' scene = [Scene] ('and' character=[Character] '.' att=(STRING|ID) (op=Operator nr=INT)?)? 
+	// if the encountered action is valid, open a new scene and maybe perform some calculation
+	('else' 'invalid' invalidMes = STRING)? // some message if the action was invalid
+;
+
+// arbitrary actions to be used in the game
+// in case they are more complex (e.g., have more parameters) you might consider rewriting them to parser rules
+enum Action:
+	JUMP = 'jump over' | PICK = 'pick up' | WALK = 'walk through' | ATTACK = 'attack' // | ...
+;
