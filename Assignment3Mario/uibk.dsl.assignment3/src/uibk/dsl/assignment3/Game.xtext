@@ -39,7 +39,7 @@ Scene:
 	attributes += Attribute*
 	('characters' '(' characters += [Character]')')?
 	('objects' '(' objects += [Object] (',' objects += [Object])* ')')?
-	('steps' '(' step += [Step] (',' step += [Step])* ')')?
+	('steps' '(' steps += [Step] (',' steps += [Step])* ')')?
 	'}'
 ;
 
