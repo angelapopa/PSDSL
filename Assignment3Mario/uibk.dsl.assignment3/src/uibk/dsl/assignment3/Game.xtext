@@ -64,6 +64,7 @@ Object:
 	'}'
 ;
 
+// steps are also registered with a scene, to solve the adventure
 Step:
 	'step' name=ID '{'
 	('go' scene=[Scene])? 
@@ -76,15 +77,16 @@ enum Operator:
 	| MUL = "*"
 	| DIV = "/"
 ;
+
+// To evaluate user's input
 Condition:
-	'if' action = Action targetObject = [Object] // a step to solve the adventure, e.g., "pick up bomb" or "jump over the hole"	
+	'if' action = Action targetObject = [Object] // describe the action, e.g., "pick up bomb" or "jump over the hole"	
 	'then' 'go' scene = [Scene] ('and' character=[Character] '.' att=(STRING|ID) (op=Operator nr=INT)?)? 
 	// if the encountered action is valid, open a new scene and maybe perform some calculation
 	('else' 'invalid' invalidMes = STRING)? // some message if the action was invalid
 ;
 
 // arbitrary actions to be used in the game
-// in case they are more complex (e.g., have more parameters) you might consider rewriting them to parser rules
 enum Action:
 	JUMP = 'jump over' | PICK = 'pick up' | WALK = 'walk through' | ATTACK = 'attack' // | ...
 ;
