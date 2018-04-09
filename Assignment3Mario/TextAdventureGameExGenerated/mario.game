@@ -29,6 +29,10 @@ object dangerous_object {
 	actions(walk through, jump over)
 }
 
+object hole {
+	description ""
+}
+
 object monster is a dangerous_object {
 	description "Monster"
 	healthPoints 3
@@ -40,3 +44,121 @@ object big_monster is a dangerous_object {
 	healthPoints 13
 	actions(attack)
 }
+
+scene start_scene {
+	name "MARIOLIKE"
+	description ""
+	steps(go_bomb_area)
+}
+
+scene bomb_area {
+	name "BOMB AREA"
+	description "There is a bomb on the floor. \nWhat do you do?"
+	steps(pick_up_bomb, jump_over_bomb)
+}
+
+scene hole_area {
+	name "HOLE AREA"
+	description "There is a hole in the floor. \nWhat do you do?"
+	steps(walk_through_hole, jump_over_hole)	
+}
+
+scene monster_area {
+	name "MONSTER AREA"
+	description "A monster is standing in front of you \nand threatening you. \nWhat do you do?"
+	steps(attack_monster, walk_through_monster, jump_over_monster)	
+}
+
+scene mushroom_area {
+	name "MUSHROOM AREA"
+	description "There is a mushroom on the floor. \nWhat do you do?"
+	steps(pick_up_mushroom, jump_over_mushroom)	
+}
+
+scene big_monster {
+	name "BIG MONSTER AREA"
+	description "A BIG MONSTER is standing in front of you and \npreventing you to meet the princess. \nWhat do you do?"
+	steps(attack_bigmonster, walk_through_bigmonster, jump_over_bigmonster)	
+}
+
+scene end_scene {
+	name "THE END"
+	description_if_die "Oh, you have died! \nYou have lost the game."
+	description_if_win "Congratulations! \n You have defeated the big monster and saved princess. \nYou are true hero!"	
+}
+
+step go_bomb_area {
+	go bomb_area
+}
+
+step jump_over_bomb {
+	if jump over bomb 
+	then go hole_area
+	else invalid "Invalid input. You have to pick up or jump over the bomb"
+}
+
+step pick_up_bomb {
+	if pick up bomb 
+	then go hole_area and Mario.healthPoints + 1
+	else invalid "Invalid input. You have to pick up or jump over the bomb"
+} 
+
+step jump_over_mushroom {
+	if jump over mushroom 
+	then go big_monster
+	else invalid "Invalid input. You have to pick up or jump over the mushroom"
+}
+
+step pick_up_mushroom {
+	if pick up mushroom
+	then go big_monster and Mario.healthPoints + 3
+	else invalid "Invalid input. You have to pick up or jump over the mushroom"
+}
+
+step walk_through_hole {
+	if walk through hole
+	then go end_scene and Mario.die
+	else invalid "Invalid input. You have to walk through or jump over the hole"
+} 
+
+step jump_over_hole {
+	if jump over hole
+	then go big_monster
+	else invalid "Invalid input. You have to pick up or jump over the hole"
+} 
+
+step walk_through_monster {
+	if walk through monster
+	then go end_scene and Mario.die
+	else invalid "Invalid input. You have to attack, walk through or jump over the monster"
+} 
+
+step jump_over_monster {
+	if jump over monster
+	then go mushroom_area 
+	else invalid "Invalid input. You have to attack, walk through or jump over the monster"
+} 
+
+step attack_monster {
+	if attack monster
+	then go mushroom_area and Mario.healthPoints - 3
+	else invalid "Invalid input. You have to attack, walk through or jump over the monster"
+} 
+
+step walk_through_bigmonster {
+	if walk through big_monster
+	then go end_scene and Mario.die
+	else invalid "Invalid input. You have to attack, walk through or jump over the monster"
+} 
+
+step jump_over_bigmonster {
+	if jump over big_monster
+	then go end_scene and Mario.die 
+	else invalid "Invalid input. You have to attack, walk through or jump over the BIG BOSS"
+} 
+
+step attack_bigmonster {
+	if attack big_monster
+	then go end_scene and Mario.healthPoints - 7
+	else invalid "Invalid input. You have to attack, walk through or jump over the BIG BOSS"
+} 

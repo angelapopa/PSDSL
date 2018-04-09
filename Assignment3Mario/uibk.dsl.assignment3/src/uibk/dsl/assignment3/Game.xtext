@@ -11,11 +11,10 @@ Adventure:
 
 QualifiedName:
     ID ('.' ID)*;
-    
 
 // what the adventure is composed of
 Ingredient:
-	Scene | Object | Character
+	Scene | Object | Character | Step
 ;
 
 // a scene bundles objects and contains steps to escape to a new scene
@@ -23,7 +22,8 @@ Scene:
 	'scene' name = ID '{'
 	('objects' '(' objects += [Object] (',' objects += [Object])* ')')?
 	//'description' description = STRING
-	('steps' '(' step += Step (',' step += Step)* ')')?
+	attributes += Attribute*
+	('steps' '(' step += [Step] (',' step += [Step])* ')')?
 	'}'
 ;
 
@@ -48,15 +48,23 @@ Object:
 	'}'
 ;
 
-//TODO: currently not used
 Step:
-	'step' '{'
-	// a step to solve the adventure, e.g., "pick up bomb" or "jump over the hole"	
-	action = Action targetObject = [Object] 'if'
-		('valid' valid = STRING) // some message if the action was valid
-		'then' scene = [Scene] // if the encountered action is valid, open a new scene, e.g., when going through a door
-		// if you want to have multiple actions within a single scene you probably need further create internal state tracking within scenes
+	'step' name=ID '{'
+	('go' scene=[Scene])? 
+	(condition=Condition)?
 	'}'
+;
+enum Operator:
+	PLUS = '+' 
+	| MINUS = '-'
+	| MUL = "*"
+	| DIV = "/"
+;
+Condition:
+	'if' action = Action targetObject = [Object] // a step to solve the adventure, e.g., "pick up bomb" or "jump over the hole"	
+	'then' 'go' scene = [Scene] ('and' character=[Character] '.' att=(STRING|ID) (op=Operator nr=INT)?)? 
+	// if the encountered action is valid, open a new scene and maybe perform some calculation
+	('else' 'invalid' invalidMes = STRING)? // some message if the action was invalid
 ;
 
 // arbitrary actions to be used in the game
