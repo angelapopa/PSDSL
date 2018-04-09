@@ -1,0 +1,66 @@
+grammar org.xtext.example.codebase.Game with org.eclipse.xtext.common.Terminals
+
+generate game "http://www.xtext.org/example/codebase/Game"
+
+/**
+ * This is groupwork of Nga Pham and Angela Popa.
+ * More detailed information can be found in this repository: https://github.com/angelapopa/PSDSL/tree/master/Assignment3Mario
+ * ---------------------------------------------
+ * This xtext file defines main class of Mariolike, which consist of a main function, some properties, and some function 
+ * to execute the workflow. The properties should be game ingredients that we defined in Game.xtext file, graphic components
+ * or data type like String, boolean...
+ * ---------------------------------------------
+ * The definition of this xtext file can be found in main.game.
+ * We also generated code for some ingredients, which can be found in TextAdventureGameExGenerated.rar.
+ * The code generator is on Mariolike_CodeGenerator.rar.
+ */
+
+DomainModel:
+	'game' name=QualifiedName
+	(elements +=Type)*
+	'mainClass' mainClass = Class
+;
+
+// What the main properties are composed of
+Type:
+	DataType | GraphicType | GameIngredient
+;
+
+QualifiedName:
+    ID ('.' ID)*;
+
+DataType:
+	'datatype' name=ID
+;
+
+GraphicType:
+	'graphicType' name=ID
+;
+
+GameIngredient:
+	'gameIngredient' name=ID
+;
+
+// Define class with properties, functions, nested classes and constructor inside
+Class:
+	'class' name=ID ('implements' superType=[GraphicType])? '{'
+	(properties += Property)*
+	(functions += Function)*
+	(nestedClass += Class)*
+	('constructor' '{'
+		(firstcall += [Function])*
+	 '}')?
+	 '}'
+;
+
+Function:
+	'function' name=ID '{'
+		
+	'}'
+;
+
+// Properties could be list or list iterator
+Property:
+	name=ID ('is' 'list' 'of')? ('is' 'list' 'iterator' 'of')? type=[Type]
+;
+
