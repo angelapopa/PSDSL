@@ -2,46 +2,16 @@ grammar uibk.dsl.assignment3.Game with org.eclipse.xtext.common.Terminals
 
 generate game "http://www.dsl.uibk/assignment3/Game"
 
-DomainModel:
-	Adventure | DataType
-;
-
 Adventure:
 	'game' name=QualifiedName
 	//('start' startScene = [Scene]) & // where to start
 	//('end' endScene = [Scene]) & // when it's over
 	(ingredients += Ingredient)* 
-	'mainClass' mainclass = Class
-	('mainFucntion' mainfunction = [Function])?
 ;
 
 QualifiedName:
     ID ('.' ID)*;
     
-DataType:
-	'datatype' name=ID
-;
-
-Class:
-	'class' name=ID ('implements' superType=[Class])? '{'
-	('constructor' '{'
-		(firstcall += [Function])*
-	 '}')?
-	 (properties += Property)*
-	 (nestedClass += Class)*
-	 (functions += Function)*
-	 '}'
-;
-
-Function:
-	'function' name=ID '{'
-		
-	'}'
-;
-
-Property:
-	name=ID ('is' 'list' 'of')? ('is' 'list' 'iterator' 'of')? type=DataType | Ingredient
-;
 
 // what the adventure is composed of
 Ingredient:
@@ -53,7 +23,7 @@ Scene:
 	'scene' name = ID '{'
 	('objects' '(' objects += [Object] (',' objects += [Object])* ')')?
 	//'description' description = STRING
-	('actions' '(' actions += Step (',' actions += Step)* ')')?
+	('steps' '(' step += Step (',' step += Step)* ')')?
 	'}'
 ;
 
