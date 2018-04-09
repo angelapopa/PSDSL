@@ -1,5 +1,36 @@
 game Mariolike
-	mainClass class Game {
+mainClass class Game {
+	function init {
+	
+	}
+
+	function initMap {
+	
+	}
+
+	function initPlayer {
+	
+	}
+
+	function renderStartScene {
+	
+	}
+
+	function renderPlayScene {
+	
+	}
+
+	function renderEndScene {
+	
+	}
+
+	function update {
+	
+	}
+
+	function main {
+	
+	}
 	constructor {
 		init
 		initMap
@@ -7,14 +38,11 @@ game Mariolike
 		renderStartScene
 	}
 	
-	class ScreenHandler implements ActionListener {
-		
-	}
 	inGame boolean
 	currentScn Scene
 	maps is list of Scene
 	it is list iterator of Scene
-	mario Hero
+	mario Mario
 	
 	window JFrame
 	container Container
@@ -39,37 +67,9 @@ game Mariolike
 	_3rdChoice JButton
 	_4thChoice JButton
 	
-	function init {
-	
-}
-
-function initMap {
-	
-}
-
-function initPlayer {
-	
-}
-
-function renderStartScene {
-	
-}
-
-function renderPlayScene {
-	
-}
-
-function renderEndScene {
-	
-}
-
-function update {
-	
-}
-
-function main {
-	
-}
+	class ScreenHandler implements ActionListener {
+		
+	}
 }
 
 datatype boolean
