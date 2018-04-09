@@ -48,6 +48,8 @@ object big_monster is a dangerous_object {
 scene start_scene {
 	name "MARIOLIKE"
 	description ""
+	characters(Mario)
+	objects(useful_object, dangerous_object)
 	steps(go_bomb_area)
 }
 

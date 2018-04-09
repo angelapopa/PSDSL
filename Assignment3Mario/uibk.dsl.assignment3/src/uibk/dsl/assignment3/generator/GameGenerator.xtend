@@ -32,9 +32,7 @@ class GameGenerator extends AbstractGenerator {
 		new CharacterGenerator(adventure.name).generateCharacters(allCharacters, allObjects, fsa);
 		new ActionGenerator(adventure.name).generateAction(allCharacters, allObjects, fsa);
 		
-		
-		//TODO
-		//generate Scene
+		new SceneGenerator(adventure.name).generateAction(allScenes, allObjects, fsa);
 		//TODO
 		//new GameGenerator().generateGame(fsa);
 	}

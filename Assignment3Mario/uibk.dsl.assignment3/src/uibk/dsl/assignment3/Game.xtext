@@ -14,15 +14,15 @@ QualifiedName:
 
 // what the adventure is composed of
 Ingredient:
-	Scene | Object | Character | Step
+	Scene | Character | Object | Step
 ;
 
 // a scene bundles objects and contains steps to escape to a new scene
 Scene:
 	'scene' name = ID '{'
-	('objects' '(' objects += [Object] (',' objects += [Object])* ')')?
-	//'description' description = STRING
 	attributes += Attribute*
+	('characters' '(' characters += [Character]')')?
+	('objects' '(' objects += [Object] (',' objects += [Object])* ')')?
 	('steps' '(' step += [Step] (',' step += [Step])* ')')?
 	'}'
 ;
