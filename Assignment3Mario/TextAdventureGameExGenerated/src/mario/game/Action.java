@@ -3,7 +3,7 @@ package mario.game;
 
 public enum Action {
 	
-	PICK("Pick up"),WALK("Walk through"),ATTACK("Attack"),JUMP("Jump over");
+	JUMP("Jump over"),ATTACK("Attack"),PICK("Pick up"),WALK("Walk through");
 	
 	private String actionName;
 	
@@ -13,7 +13,7 @@ public enum Action {
 	}
 	
 	//getter
-	public String getactionName(){
+	public String getActionName(){
 		return actionName;
 	}
 }

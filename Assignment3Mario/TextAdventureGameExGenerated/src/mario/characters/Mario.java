@@ -19,22 +19,7 @@ public class Mario {
 	
 							
 	//methods			
-	public void walkthroughMonster(Monster monster){
-		//no action is required
-	}
-	
-	public void attackMonster(Monster monster){
-		this.healthPoints -= monster.getHealthPoints();
-		if (this.healthPoints < 0) {
-			setHealthPoints(0);
-		}
-	}
-	
-	public void jumpoverMonster(Monster monster){
-		//no action is required
-	}
-	
-	public void walkthroughBigMonster(BigMonster big_monster){
+	public void jumpoverBigMonster(BigMonster big_monster){
 		//no action is required
 	}
 	
@@ -45,7 +30,11 @@ public class Mario {
 		}
 	}
 	
-	public void jumpoverBigMonster(BigMonster big_monster){
+	public void walkthroughBigMonster(BigMonster big_monster){
+		//no action is required
+	}
+	
+	public void jumpoverBomb(Bomb bomb){
 		//no action is required
 	}
 	
@@ -53,16 +42,27 @@ public class Mario {
 		this.healthPoints += bomb.getHealthPoints();
 	}
 	
-	public void jumpoverBomb(Bomb bomb){
+	public void jumpoverMonster(Monster monster){
+		//no action is required
+	}
+	
+	public void attackMonster(Monster monster){
+		this.healthPoints -= monster.getHealthPoints();
+		if (this.healthPoints < 0) {
+			setHealthPoints(0);
+		}
+	}
+	
+	public void walkthroughMonster(Monster monster){
+		//no action is required
+	}
+	
+	public void jumpoverMushroom(Mushroom mushroom){
 		//no action is required
 	}
 	
 	public void pickupMushroom(Mushroom mushroom){
 		this.healthPoints += mushroom.getHealthPoints();
-	}
-	
-	public void jumpoverMushroom(Mushroom mushroom){
-		//no action is required
 	}
 	
 	//getters and setters

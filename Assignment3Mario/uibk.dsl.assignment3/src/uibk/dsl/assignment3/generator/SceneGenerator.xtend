@@ -1,13 +1,14 @@
 package uibk.dsl.assignment3.generator
 
 import java.util.HashMap
+import java.util.HashSet
 import java.util.List
 import java.util.Map
+import java.util.Set
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import uibk.dsl.assignment3.game.Object
 import uibk.dsl.assignment3.game.Scene
-import java.util.Set
-import java.util.HashSet
+import uibk.dsl.assignment3.game.Step
 
 class SceneGenerator extends IngredientGenerator{
 	val generatedObjectPackageName = "scenes";
@@ -35,7 +36,7 @@ class SceneGenerator extends IngredientGenerator{
 		for (s : scenes){
 			val String fileName = generatedPackageNamePath + "/" + generatedObjectPackageName + "/" 
 				+ getFormattedName(s.name) + ".java";
-			fsa.generateFile(fileName, compile(s));
+			fsa.generateFile(fileName, compile(s, superClassObjects));
 		}
 	}
 	
@@ -43,7 +44,6 @@ class SceneGenerator extends IngredientGenerator{
 		val Map<String, String> attributes = getAttributes(scenes);
 		val Map<String, String> characters = getCharacters(scenes);
 		val Map<String, String> objects = getObjects(scenes, superClassObjects);
-		//todo add steps
 		
 		'''
 		//generated
@@ -51,56 +51,85 @@ class SceneGenerator extends IngredientGenerator{
 		
 		import «generatedPackageNamePathDecl».objects.*;
 		import «generatedPackageNamePathDecl».characters.*;
+		import java.util.List;
 		
 		public class «Scene.simpleName» {
-		
-			«FOR attrKey : attributes.keySet»
-			private «getAttributeType(attributes.get(attrKey))» «attrKey»;
-			«ENDFOR»
 			
-			«FOR key : characters.keySet»
-			private «characters.get(key)» «key»;
-			«ENDFOR»
-			«FOR objKey : objects.keySet»
-			private «objects.get(objKey)» «objKey»;
-			«ENDFOR»
+			List<«Step.simpleName»> steps;
 			
 			//constructor
-			public «getFormattedName(Scene.simpleName)»(«getFormattedParamaterListScene(attributes, characters)»){
-				«FOR attrKey : attributes.keySet»
-					this.«attrKey» = «attrKey»;
-				«ENDFOR»
-				«FOR key : characters.keySet»
-					this.«key.toFirstLower» = «key.toFirstLower»;
-				«ENDFOR»
+			public «getFormattedName(Scene.simpleName)»(){
+			}
+			
+			//methods
+			public void add«Step.simpleName»(«Step.simpleName» step){
+				this.steps.add(step);
 			}
 			
 			//getters and setters
-			«FOR attrKey : attributes.keySet»
-			public «getAttributeType(attributes.get(attrKey))» get«attrKey.toFirstUpper»(){
-				return «attrKey»;
+			public List<«Step.simpleName»> get«Step.simpleName»s() {
+				return steps;
 			}
-			«ENDFOR»
-			«FOR objKey : objects.keySet»
-			public «objects.get(objKey)» get«objKey.toFirstUpper»(){
-				return «objKey»;
-			}
-			public void set«objKey.toFirstUpper»(«objects.get(objKey)» «objKey»){
-				this.«objKey» = «objKey»
-			}
-			«ENDFOR»
 		'''
 	}
 	
-	def String getFormattedParamaterListScene(Map<String, String> attributes, Map<String, String> characters){
-		val Map<String, String> params = new HashMap<String, String>();
-		for (attrKey : attributes.keySet){
-			params.put(attrKey, getAttributeType(attributes.get(attrKey)));
+	def compile(Scene scene, Set<Object> superClassObjects) {
+		'''
+		//generated
+		package «generatedPackageNamePathDecl».«generatedObjectPackageName»;
+		
+		import «generatedPackageNamePathDecl».objects.*;
+		import «generatedPackageNamePathDecl».characters.*;
+		import java.util.List;
+		
+		import java.util.ArrayList;
+
+		public class «getFormattedName(scene.name)» extends «Scene.simpleName»{
+			
+			«FOR attr : scene.attributes»
+			private «getAttributeType(attr.value)» «getFormattedName(attr.name).toFirstLower» = «attr.value»;
+			«ENDFOR»
+			«FOR character : scene.characters»
+			private «character.class.simpleName.replace("Impl", "")» «getFormattedName(character.name).toFirstLower»;
+			«ENDFOR»
+			«FOR obj : scene.objects»
+			private «getClassName(obj, superClassObjects)» «getFormattedName(obj.name).toFirstLower»;
+			«ENDFOR»
+			
+			//constructor
+			public «getFormattedName(scene.name)»(){
+				super();
+				
+				«FOR step : scene.steps»
+					add«Step.simpleName»(new «getFormattedName(step.getName)»«Step.simpleName»());
+				«ENDFOR»
+			}
+			
+			//getter and setters
+			«FOR attr : scene.attributes»
+			public «getAttributeType(attr.value)» get«getFormattedName(attr.name)»(){
+				return «getFormattedName(attr.name).toFirstLower»;
+			}
+			«ENDFOR»
+			
+			«FOR obj : scene.objects»
+			public «getClassName(obj, superClassObjects)» get«getFormattedName(obj.name).toFirstUpper»(){
+				return «getFormattedName(obj.name).toFirstLower»;
+			}
+			
+			public void set«getFormattedName(obj.name).toFirstUpper»(«getClassName(obj, superClassObjects)» «getFormattedName(obj.name).toFirstLower»){
+				this.«getFormattedName(obj.name).toFirstLower» = «getFormattedName(obj.name).toFirstLower»;
+			}
+			«ENDFOR»
 		}
-		for (characterKey : characters.keySet){
-			params.put(characterKey.toFirstLower, getAttributeType(characters.get(characterKey)));
+		'''
+	}
+	
+	def String getClassName(Object object, Set<Object> superClassObjects){
+		if (superClassObjects.contains(object)){
+			return getFormattedName(object.name)
 		}
-		return getFormattedParameterList(params);
+		return object.class.simpleName.replace("Impl", "");
 	}
 	
 	def Map<String, String> getCharacters(List<Scene> scenes) {
@@ -133,20 +162,6 @@ class SceneGenerator extends IngredientGenerator{
 			}
 		}
 		return attributes;
-	}
-	
-	def compile(Scene scene) {
-		'''
-		//generated
-		package «generatedPackageNamePathDecl».«generatedObjectPackageName»;
-		
-		import «generatedPackageNamePathDecl».objects.*;
-		import «generatedPackageNamePathDecl».characters.*;
-		
-		import java.util.ArrayList;
-
-		
-		'''
 	}
 	
 }

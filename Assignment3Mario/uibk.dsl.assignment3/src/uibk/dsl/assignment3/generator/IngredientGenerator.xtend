@@ -24,7 +24,6 @@ class IngredientGenerator {
   	
   	/*
   	 * useful_object turns into UsefulObject
-  	 * 
   	 */
   	def String getFormattedName(String name){
 		if (name.contains("_")){
@@ -83,7 +82,7 @@ class IngredientGenerator {
 		return niceParams;
 	}
 	
-		/*
+	/*
 	 * returns 'int healthPoints, String description'
 	 */
 	def String getFormattedParameterList(Map<String, String> attributes){
