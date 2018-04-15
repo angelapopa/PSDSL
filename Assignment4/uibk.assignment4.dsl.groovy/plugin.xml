@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+	<extension point="org.eclipse.emf.ecore.generated_package">
+		<package 
+			uri = "http://www.assignment4.uibk/dsl/Groovy"
+			class = "uibk.assignment4.dsl.groovy.GroovyPackage"
+			genModel = "model/generated/Groovy.genmodel" />
+	</extension>
+</plugin>

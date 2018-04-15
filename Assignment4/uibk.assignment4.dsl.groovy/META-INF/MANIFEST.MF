@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: uibk.assignment4.dsl.groovy
+Bundle-Vendor: My Company
+Bundle-Version: 1.0.0.qualifier
+Bundle-SymbolicName: uibk.assignment4.dsl.groovy; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.xtext,
+ org.eclipse.xtext.xbase,
+ org.eclipse.equinox.common;bundle-version="3.5.0",
+ org.eclipse.emf.ecore,
+ org.eclipse.xtext.xbase.lib,
+ org.antlr.runtime,
+ org.eclipse.xtext.util,
+ org.eclipse.xtend.lib,
+ org.eclipse.emf.common
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: uibk.assignment4.dsl,
+ uibk.assignment4.dsl.groovy.util,
+ uibk.assignment4.dsl.scoping,
+ uibk.assignment4.dsl.parser.antlr,
+ uibk.assignment4.dsl.generator,
+ uibk.assignment4.dsl.groovy,
+ uibk.assignment4.dsl.groovy.impl,
+ uibk.assignment4.dsl.parser.antlr.internal,
+ uibk.assignment4.dsl.services,
+ uibk.assignment4.dsl.serializer,
+ uibk.assignment4.dsl.validation
+Import-Package: org.apache.log4j
