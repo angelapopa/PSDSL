@@ -5,35 +5,46 @@ package uibk.dsl.assignment4
 class EC2Instance {
 	String name;
 	String model;
+	String memory;
+	int nrOfvCPU;
+	int CPU_credit;
 
 	public EC2Instance() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	def ram(int nrOfRamUnits){
-		
+	EC2Instance model(String size) {
+		model = name + "." + size
+		return this
 	}
 	
-	def vCPU(int nrOfvCPU) {
-		
+	EC2Instance ram(float nrOfRamUnits) {
+		memory = nrOfRamUnits + "GiB"
+		return this
 	}
 	
-	def CPUCredits(int nrOfCPUCreditPerHour) {
-		
+	EC2Instance vCPU(int nr) {
+		nrOfvCPU = nr
+		return this
 	}
 	
-	def Storage(String StorageName) {
-		
+	EC2Instance CPUCredits(int nrOfCPUCreditPerHour) {
+		CPU_credit = nrOfCPUCreditPerHour
+		return this
+	}
+	
+	void run() {
+		println("Model\tvCPU\tCPU Credits/hour\tMem (GiB)")
+		println(model + '\t' + nrOfvCPU + '\t' + CPU_credit + '\t' + memory)
 	}
 
-	static main(args) {
-		def instance1 = new EC2Instance(name: "t2", model: "t2.nano")
+	static main(String args ) {
+		def instance_list = (1..3).collect{new EC2Instance(name: "t2")}		
 		
-		def instance2 = new EC2Instance(model: "t2.large")
-					.ram(1024).vCPU(1).CPUCredits(36).Storage("EBS-Only");
+		def instance2 = new EC2Instance(name: "m5").model("large").ram(8).vCPU(2);
 		
-		instance1.run()
-		instance2.run()
+		instance_list.each{instance -> instance.run()}
+		instance2.run();
 	}
 
 }
