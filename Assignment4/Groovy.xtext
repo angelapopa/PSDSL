@@ -27,12 +27,12 @@ GroovyElementDefinition:
 	DEFINITION_LITERAL name=ID  value=(InstanceDefinition | FunctionDefinition)
 ;
 
-//.run() or ram(1204)
+//.ram(1204)
 FunctionCall:
 	METHOD_CHAINING_DOT name = ID '(' param = INT ')'
 ;
 
-//def instance = new EC2Instance().ram(1024).cpu(2)
+// = new EC2Instance().ram(1024).cpu(2)
 InstanceDefinition:
 	'=' 'new' 'EC2Instance()' METHOD_CHAINING_DOT functionCalls += [FunctionCall] (METHOD_CHAINING_DOT functionCalls += [FunctionCall])*
 ;
