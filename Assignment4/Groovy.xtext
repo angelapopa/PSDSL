@@ -11,33 +11,45 @@ terminal DEFINITION_LITERAL:
 	'def'
 ;
 
+terminal METHOD_CHAINING_DOT:
+	'.'
+;
+
+terminal COMMENT_STRING:
+	'//this is just a stub'
+;
+
+DataType:
+	'int'
+;
+
 GroovyElementDefinition:
-	InstanceDefinition | FunctionDefinition
+	DEFINITION_LITERAL name=ID  value=(InstanceDefinition | FunctionDefinition)
 ;
 
-//ram(1204)
+//.run() or ram(1204)
 FunctionCall:
-	name = ID '(' param = INT ')'
+	METHOD_CHAINING_DOT name = ID '(' param = INT ')'
 ;
 
-//def instance = new EC2Instance().ram(1024)
+//def instance = new EC2Instance().ram(1024).cpu(2)
 InstanceDefinition:
-	DEFINITION_LITERAL name=ID '=' 'new' 'EC2Instance()' ('.' functionCalls += [FunctionCall])*
+	'=' 'new' 'EC2Instance()' METHOD_CHAINING_DOT functionCalls += [FunctionCall] (METHOD_CHAINING_DOT functionCalls += [FunctionCall])*
 ;
 
 //int ramUnits
 ArgumentDeclaration:
-	'int' name=STRING
+	type=DataType name=ID
 ;
 
 //def ram(int ramUnits)
 FunctionDefinition:
-	DEFINITION_LITERAL name=ID '(' argDecls += [ArgumentDeclaration] (',' argDecls += [ArgumentDeclaration])* ')' '{'                                 
-		('//this_is_just_a_stub')+
+	'(' argDecls += [ArgumentDeclaration] (',' argDecls += [ArgumentDeclaration])* ')' '{'                                 
+		COMMENT_STRING
     '}'
 ;
 
 //instance.run()
 InstanceRun:
-	instance = [InstanceDefinition] '.run()'
+	instance = [InstanceDefinition] METHOD_CHAINING_DOT 'run()'
 ;
