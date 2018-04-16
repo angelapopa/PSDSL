@@ -1,4 +1,5 @@
-/*EC2 instance types reference: https://aws.amazon.com/ec2/instance-types/*/
+/* This is groupwork of Nga Pham and Angela Popa */
+/* EC2 instance types reference: https://aws.amazon.com/ec2/instance-types/*/
 
 package uibk.dsl.assignment4
 
