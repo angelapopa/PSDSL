@@ -1,0 +1,55 @@
+grammar uibk.assignment4.dsl.Groovy with org.eclipse.xtext.common.Terminals
+
+generate groovy "http://www.assignment4.uibk/dsl/Groovy"
+
+AmazonInstanceCreation:
+	groovyElementDefinition += GroovyElementDefinition*
+	instances += InstanceRun* 
+;
+
+terminal DEFINITION_LITERAL:
+	'def'
+;
+
+terminal METHOD_CHAINING_DOT:
+	'.'
+;
+
+terminal COMMENT_STRING:
+	'//this is just a stub'
+;
+
+DataType:
+	'int'
+;
+
+GroovyElementDefinition:
+	DEFINITION_LITERAL name=ID  value=(InstanceDefinition | FunctionDefinition)
+;
+
+//.ram(1204)
+FunctionCall:
+	METHOD_CHAINING_DOT name = ID '(' param = INT ')'
+;
+
+// = new EC2Instance().ram(1024).cpu(2)
+InstanceDefinition:
+	'=' 'new' 'EC2Instance()' METHOD_CHAINING_DOT functionCalls += [FunctionCall] (METHOD_CHAINING_DOT functionCalls += [FunctionCall])*
+;
+
+//int ramUnits
+ArgumentDeclaration:
+	type=DataType name=ID
+;
+
+//def ram(int ramUnits)
+FunctionDefinition:
+	'(' argDecls += [ArgumentDeclaration] (',' argDecls += [ArgumentDeclaration])* ')' '{'                                 
+		COMMENT_STRING
+    '}'
+;
+
+//instance.run()
+InstanceRun:
+	instance = [InstanceDefinition] METHOD_CHAINING_DOT 'run()'
+;
