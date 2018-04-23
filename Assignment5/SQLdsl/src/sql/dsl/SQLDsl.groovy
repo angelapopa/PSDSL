@@ -9,7 +9,8 @@ class SQLStatement3{
 	static String FROM = 'FROM'
 	static String WHERE = 'WHERE'
 	
-	static operations = ['is greater than' : '>', 'is smaller than': '<', 'is greater equal than' : '>=', 'is smaller equal than': '<=','equals': '=']
+	static operations = ['is greater than' : '>', 'is smaller than': '<', 'is greater equal than' : '>=', 
+		'is smaller equal than': '<=','equals': '=', 'is unequal': '<>']
 	static logical_op = ['and', 'or']
 }
 
@@ -100,6 +101,8 @@ def select(name) {
 }
 
 select 'all records' from "MyTable" where "x is greater than 1"
+select 'all records' from "MyTable" where "x is greater equal than 1"
+select 'all records' from "MyTable" where "x is unequal 1"
 select 'all records' from "MyTable" where "y equals true"
 
 select 'name' from 'newTable' where 'name equals John'
