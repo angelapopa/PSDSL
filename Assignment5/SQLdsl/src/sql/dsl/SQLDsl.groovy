@@ -1,3 +1,4 @@
+/* This is groupwork of Nga Pham, Anglea Popa */
 package sql.dsl
 import java.nio.channels.SelectableChannel;
 
@@ -22,8 +23,8 @@ class SelectStatement3 extends SQLStatement3 {
 
 	def printStatement() {
 		replaceName(field)
-		def newExpression = replace(expression)
-		println "$SELECT $field $FROM $table $WHERE $newExpression"
+		replace(expression)
+		println "$SELECT $field $FROM $table $WHERE $expression"
 	}
 	
 	def replaceName(String name) {
@@ -38,7 +39,7 @@ class SelectStatement3 extends SQLStatement3 {
 				
 				if (operation == '=') {  // handle int and strings differently
 					String[] parts = userExpression.split(operation)
-					userExpression = parts[0].concat(operation).concat(" ").concat(convertToString(parts[1]))
+					expression = parts[0].concat(operation).concat(" ").concat(convertToString(parts[1]))
 				}
 			}
 		}
@@ -46,10 +47,10 @@ class SelectStatement3 extends SQLStatement3 {
 		logical_op.each { op ->
 			if (userExpression.contains(op)) {
 				String[] sub_expr = userExpression.split(op)
-				userExpression = userExpression.replace(op, op.toUpperCase())
+				expression = userExpression.replace(op, op.toUpperCase())
 			}
 		}
-		return userExpression;
+//		return userExpression;
 	}
 	
 	// Add single quotation mark to literal string
