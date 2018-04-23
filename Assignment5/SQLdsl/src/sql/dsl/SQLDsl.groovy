@@ -9,18 +9,18 @@ class SQLStatement3{
 	static String SELECT = 'SELECT'
 	static String FROM = 'FROM'
 	static String WHERE = 'WHERE'
-	
-	static operations = ['is greater than' : '>', 'is smaller than': '<', 'is greater equal than' : '>=', 
+
+	static operations = ['is greater than' : '>', 'is smaller than': '<', 'is greater equal than' : '>=',
 		'is smaller equal than': '<=','equals': '=', 'is unequal': '<>']
 	static logical_op = ['and', 'or']
 }
 
 class SelectStatement3 extends SQLStatement3 {
-	
+
 	def field
-	
+
 	def table
-	
+
 	def expression
 
 	def printStatement() {
@@ -28,11 +28,11 @@ class SelectStatement3 extends SQLStatement3 {
 		def expr = replace(expression)
 		println "$SELECT $field $FROM $table $WHERE $expr"
 	}
-	
+
 	def replaceName(String name) {
 		name == 'all records' ? field = SQLStatement3.ALL : name
 	}
-	
+
 	def replace(String userExpression) {
 		// Replace user-defined operation with corresponding symbol
 		operations.each { key, operation ->
@@ -53,11 +53,11 @@ class SelectStatement3 extends SQLStatement3 {
 		}
 		return userExpression;
 	}
-	
+
 	def handleParts(String userExpression, String[] parts){
 		for (int i=1; i < parts.size(); i++){
 			def stringToConvert
-			if (parts[i].trim().indexOf(' ') > 0){				
+			if (parts[i].trim().indexOf(' ') > 0){
 				stringToConvert = parts[i].trim().substring(0, parts[i].trim().indexOf(' '));
 			} else {
 				stringToConvert = parts[i].trim()
@@ -67,7 +67,7 @@ class SelectStatement3 extends SQLStatement3 {
 		}
 		return userExpression
 	}
-	
+
 	// Add single quotation mark to literal string
 	def convertToString(String stringToConvert){
 		if (isInteger(stringToConvert) || isBoolean(stringToConvert)){
@@ -75,7 +75,7 @@ class SelectStatement3 extends SQLStatement3 {
 		}
 		return "'".concat(stringToConvert.trim()).concat("'")
 	}
-	
+
 	def isBoolean(String s){
 		return Boolean.parseBoolean(s.trim())
 	}
@@ -91,14 +91,13 @@ class SelectStatement3 extends SQLStatement3 {
 }
 
 def select(name) {
-	
-	[from : {
-		table ->
-		[ where: { condition ->
-			new SelectStatement3(field: name, table: table, expression: condition).printStatement();
+
+	[from : { table ->
+			[ where: { condition ->
+					new SelectStatement3(field: name, table: table, expression: condition).printStatement();
+				}]
 		}]
-	}]
-	
+
 }
 
 select 'all records' from "MyTable" where "x is greater than 1"
