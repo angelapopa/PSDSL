@@ -21,29 +21,38 @@ class SelectStatement3 extends SQLStatement3 {
 	def expression
 
 	def printStatement() {
+		replaceName(field)
 		def newExpression = replace(expression)
 		println "$SELECT $field $FROM $table $WHERE $newExpression"
 	}
 	
+	def replaceName(String name) {
+		name == 'all records' ? field = SQLStatement3.ALL : name
+	}
+	
 	def replace(String userExpression) {
+		// Replace user-defined operation with corresponding symbol
 		operations.each { key, operation ->
 			if (userExpression.contains(key)){
 				userExpression = userExpression.replace(key, operation)
+				
 				if (operation == '=') {  // handle int and strings differently
 					String[] parts = userExpression.split(operation)
 					userExpression = parts[0].concat(operation).concat(" ").concat(convertToString(parts[1]))
 				}
 			}
 		}
+		// Uppercase logical operations
 		logical_op.each { op ->
 			if (userExpression.contains(op)) {
-				String[] sub_expr = expression.split(op)
+				String[] sub_expr = userExpression.split(op)
 				userExpression = userExpression.replace(op, op.toUpperCase())
 			}
 		}
 		return userExpression;
 	}
 	
+	// Add single quotation mark to literal string
 	def convertToString(String stringToConvert){
 		try{
 			return Integer.parseInt(stringToConvert.trim()).toString()
@@ -54,7 +63,7 @@ class SelectStatement3 extends SQLStatement3 {
 }
 
 def select(name) {
-	name == 'all records' ? name = SQLStatement3.ALL : name
+	
 	[from : {
 		table ->
 		[ where: { condition ->
@@ -68,5 +77,5 @@ select 'all records' from "MyTable" where "name is greater than 1"
 select 'name' from 'newTable' where 'name equals John'
 //select 'name' from 'newTable' where 'name = John' and 'firstname = Smith'
 
-select 'name' from 'newTable' where 'name = John and firstname = Smith or x > 3'
+select 'name' from 'newTable' where 'name equals John and firstname = Smith or x is smaller than 3'
 select 'name' from 'newTable' where 'name = John or firstname = Smith'
