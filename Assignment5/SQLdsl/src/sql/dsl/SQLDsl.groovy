@@ -1,4 +1,5 @@
 /* This is groupwork of Nga Pham, Angela Popa */
+/* More detail information is in this repository: https://github.com/angelapopa/PSDSL */
 package sql.dsl
 import java.nio.channels.SelectableChannel;
 
