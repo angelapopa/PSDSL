@@ -23,8 +23,8 @@ class SelectStatement3 extends SQLStatement3 {
 
 	def printStatement() {
 		replaceName(field)
-		expression = replace(expression)
-		println "$SELECT $field $FROM $table $WHERE $expression"
+		def expr = replace(expression)
+		println "$SELECT $field $FROM $table $WHERE $expr"
 	}
 	
 	def replaceName(String name) {
@@ -36,10 +36,9 @@ class SelectStatement3 extends SQLStatement3 {
 		operations.each { key, operation ->
 			if (userExpression.contains(key)){
 				userExpression = userExpression.replace(key, operation)
-				
-				if (operation == '=') {  // strings need to be wrapped around ''
+				if (operation == '=') {  // handle int and strings differently
 					String[] parts = userExpression.split(operation)
-					userExpression = parts[0].concat(operation).concat(" ").concat(convertToString(parts[1]))
+					userExpression = handleParts(userExpression, parts)
 				}
 			}
 		}
@@ -53,6 +52,20 @@ class SelectStatement3 extends SQLStatement3 {
 		return userExpression;
 	}
 	
+	def handleParts(String userExpression, String[] parts){
+		for (int i=1; i < parts.size(); i++){
+			def stringToConvert
+			if (parts[i].trim().indexOf(' ') > 0){				
+				stringToConvert = parts[i].trim().substring(0, parts[i].trim().indexOf(' '));
+			} else {
+				stringToConvert = parts[i].trim()
+			}
+			def str = convertToString(stringToConvert);
+			userExpression = userExpression.replace(stringToConvert, str)
+		}
+		return userExpression
+	}
+	
 	// Add single quotation mark to literal string
 	def convertToString(String stringToConvert){
 		if (isInteger(stringToConvert) || isBoolean(stringToConvert)){
@@ -62,14 +75,9 @@ class SelectStatement3 extends SQLStatement3 {
 	}
 	
 	def isBoolean(String s){
-		try{
-			Boolean.parseBoolean(s.trim())
-		}catch (NumberFormatException ex){
-			return false
-		}
-		return true
+		return Boolean.parseBoolean(s.trim())
 	}
-	
+
 	def isInteger(String s){
 		try{
 			Integer.parseInt(s.trim())
@@ -96,5 +104,5 @@ select 'all records' from "MyTable" where "y equals true"
 
 select 'name' from 'newTable' where 'name equals John'
 
-select 'name' from 'newTable' where 'name equals John and firstname = Smith or x is smaller than 3'
-select 'name' from 'newTable' where 'name = John or firstname = Smith'
+select 'name' from 'newTable' where 'name equals John and firstname equals Smith or x is smaller than 3'
+select 'name' from 'newTable' where 'name equals John or firstname equals Smith'
