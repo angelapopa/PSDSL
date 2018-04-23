@@ -9,6 +9,7 @@ class SQLStatement3{
 	static String WHERE = 'WHERE'
 	
 	static operations = ['is greater than' : '>', 'is smaller than': '<', 'equals': '=']
+	static logical_op = ['and', 'or']
 }
 
 class SelectStatement3 extends SQLStatement3 {
@@ -32,6 +33,12 @@ class SelectStatement3 extends SQLStatement3 {
 					String[] parts = userExpression.split(operation)
 					userExpression = parts[0].concat(operation).concat(" ").concat(convertToString(parts[1]))
 				}
+			}
+		}
+		logical_op.each { op ->
+			if (userExpression.contains(op)) {
+				String[] sub_expr = expression.split(op)
+				userExpression = userExpression.replace(op, op.toUpperCase())
 			}
 		}
 		return userExpression;
@@ -61,5 +68,5 @@ select 'all records' from "MyTable" where "name is greater than 1"
 select 'name' from 'newTable' where 'name equals John'
 //select 'name' from 'newTable' where 'name = John' and 'firstname = Smith'
 
-select 'name' from 'newTable' where 'name = John and firstname = Smith'
+select 'name' from 'newTable' where 'name = John and firstname = Smith or x > 3'
 select 'name' from 'newTable' where 'name = John or firstname = Smith'
