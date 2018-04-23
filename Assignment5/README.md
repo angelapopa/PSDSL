@@ -73,7 +73,7 @@ SELECT name FROM newTable WHERE name = 'John' OR firstname = 'Smith'
 
 * maybe
 `from 'MyTable' get 'name equals John'`
-or `from 'MyTable' get all 'name equals John`
+or `from 'MyTable' get all 'name equals John'`
 
 2. Separate the print functionality from the grammar definition
 
