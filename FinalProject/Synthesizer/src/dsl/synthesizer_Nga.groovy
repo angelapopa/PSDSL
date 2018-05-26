@@ -1,7 +1,7 @@
 // Modify the Object instance to a nicer editor
 
 //DSL definition
-def class RotaryKnob{
+class RotaryKnob{
 	def name
 	int x
 	int y
@@ -33,14 +33,6 @@ def class RotaryKnob{
 	}
 }
 
-def controls() {
-	[ RotaryKnob : { 
-		name -> 
-		[x : x -> {
-		new RotaryKnob(name: name, x: x)}]
-	}  ]
-}
-
 def RotaryKnob rotaryKnob = new RotaryKnob();
 
 /*DSL usage*/
@@ -51,8 +43,6 @@ rotaryKnob.with {
 	height 90
 	name "myKnob"
 }
-
-controls RotaryKnob "myKnob2" x = 0, 2, ..
 
 println (rotaryKnob.name + ": " + rotaryKnob.x + " " + rotaryKnob.y + " " + rotaryKnob.width + " " + rotaryKnob.height)
 

@@ -28,7 +28,7 @@ import com.jsyn.unitgen.UnitOscillator;
 
 	// Create shell with the new binding.
 	def shell = new GroovyShell(binding)
-	def script = new File('Output.dsl')
+	def script = new File('Editor.dsl')
  
 // And execute
 shell.evaluate script
