@@ -1,7 +1,7 @@
 
 
 	
-package dsl;
+package dsl.deprecated;
 
 	
 import java.awt.GridLayout;
@@ -21,9 +21,7 @@ import com.jsyn.unitgen.UnitOscillator;
 
 
 	public class TestOsciGenerated extends JApplet {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Synthesizer synth;
 	private UnitOscillator osc;
@@ -46,7 +44,7 @@ import com.jsyn.unitgen.UnitOscillator;
 	synth.add(lag = new LinearRamp());
 	// output mixer
 	lag.output.connect(osc.amplitude);
-	lag.input.setup(0.0, 0.5, 1.0);
+	lag.input.setup(0.0, 0.5, 1.0); //TODO inject values from editor
 	lag.time.set(0.2);
 
 		
@@ -82,7 +80,7 @@ import com.jsyn.unitgen.UnitOscillator;
 	}
 
 	public static void main(String args[]) {
-		TestOsci applet = new TestOsci();
+		TestOsciGenerated applet = new TestOsciGenerated();
 		JAppletFrame frame = new JAppletFrame("SawFaders", applet);
 		frame.setSize(440, 200);
 		frame.setVisible(true);

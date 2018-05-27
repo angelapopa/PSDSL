@@ -10,7 +10,9 @@ ${dslDef}
 
 ${dsl}
 
-print controls.get(0).getX()
+println controls.get(0).getX()
+println sounds.get(0).getMinimum()
+println components.get(0).getActualValue()
 """
 
 new GroovyShell().evaluate(script)

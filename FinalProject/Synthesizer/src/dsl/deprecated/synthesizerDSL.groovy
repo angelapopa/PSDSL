@@ -1,3 +1,4 @@
+package dsl.deprecated
 //feedback teacher:
 //good idea, this approach of generating a java class is the intended way
 //yes, java code can be executed from within a groovy script (TODO: find the way :) )
@@ -194,7 +195,7 @@ println "$mySawTooth.minimum, $mySawTooth.defaultValue, $mySawTooth.maximum"
 
 def class Controls{}
 def Sound(){}
-def class Slider extends Controls
+def class Slider2 extends Controls
 {
 	int value
 }
