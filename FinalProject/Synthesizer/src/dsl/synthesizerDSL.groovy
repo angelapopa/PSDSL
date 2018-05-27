@@ -1,27 +1,82 @@
+//feedback teacher:
+//good idea, this approach of generating a java class is the intended way
+//yes, java code can be executed from within a groovy script (TODO: find the way :) )
+//TODO: refactor the grammar/dsl usage, using closures or overwrite the setters
 
-//http://docs.groovy-lang.org/docs/latest/html/documentation/core-domain-specific-languages.html#_buildersupport
-//https://www.tutorialspoint.com/groovy/groovy_builders.htm
-//Swing Builder
 
+def knobTemplate = """
+
+	RotaryTextController knob = new RotaryTextController(amplitudeModel, 5);
+	JPanel knobPanel = new JPanel();
+	knobPanel.add(knob);
+	add(knobPanel);
+"""
 
 //DSL definition
-def class RotaryKnob{
+
+def rotaryKnob2(RotaryValues values) {
+	return values
+}
+
+def controls = []
+def sound(){}
+
+def class RotaryValues
+{
 	int x
 	int y
 	int width
 	int heigth
 }
-def RotaryKnob rotaryKnob = new RotaryKnob();
 
-
+///different file
 /*DSL usage*/
+controls
+	.add(rotaryKnob2(
+		new RotaryValues(
+			x: 10,
+			y: 2,
+			width: 20,
+			heigth: 20
+		)
+	))
+	
+controls	
+	.add(rotaryKnob2(
+		new RotaryValues(
+			x: 10,
+			y: 2,
+			width: 20,
+			heigth: 20
+		)
+	))
+
+println controls.get(0).getX()
+/*
 rotaryKnob.with {
+	
 	setX(0)
 	setY(2)
 	setWidth(20)
-	setHeigth(90)
+	setHeigth(20)
+}
+*/
+	
+class SawTooth {
+	float minimum
+	float maximum
+	float defaultValue
 }
 
+def mySawTooth = new SawTooth();
+mySawTooth.with {
+	setMinimum(50.0)
+	setMaximum(10000.0)
+	setDefaultValue(300.0)
+}
+
+
+/**/
 def className = "TestOsciGenerated"
 
 def packagedef = """
@@ -50,7 +105,7 @@ def linearRamp = """
 	synth.add(lag = new LinearRamp());
 	// output mixer
 	lag.output.connect(osc.amplitude);
-	lag.input.setup(${param1}, ${param2}, 1.0); //TODO inject values from editor
+	lag.input.setup(0.0, 0.5, 1.0); //TODO inject values from editor
 	lag.time.set(0.2);
 """
 
@@ -59,13 +114,7 @@ def amplitude = """
 		.createExponentialModel(lag.input);
 """
 
-def knob = """
 
-	RotaryTextController knob = new RotaryTextController(amplitudeModel, 5);
-	JPanel knobPanel = new JPanel();
-	knobPanel.add(knob);
-	add(knobPanel);
-"""
 
 def script = """
 
@@ -73,9 +122,7 @@ def script = """
 	${imports}
 
 	public class ${className} extends JApplet {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Synthesizer synth;
 	private UnitOscillator osc;
@@ -99,9 +146,9 @@ def script = """
 		
 		${amplitude}
 		
-		${knob}
+		${knobTemplate}
 		
-		osc.frequency.setup(50.0, 300.0, 10000.0);
+		osc.frequency.setup($mySawTooth.minimum, $mySawTooth.defaultValue, $mySawTooth.maximum);
 		add(PortControllerFactory.createExponentialPortSlider(osc.frequency));
 		validate();
 	}
@@ -118,7 +165,7 @@ def script = """
 	}
 
 	public static void main(String args[]) {
-		TestOsci applet = new TestOsci();
+		$className applet = new $className();
 		JAppletFrame frame = new JAppletFrame("SawFaders", applet);
 		frame.setSize(440, 200);
 		frame.setVisible(true);
@@ -128,8 +175,7 @@ def script = """
 """
 
 println script
-
-def inputFile = new File("/home/angi/Documents/PS_DSL/groovyworkspace3/Synthetiser/src/dsl/"+className+".java")
+def inputFile = new File("/home/angi/git/dsl/PSDSL2/PSDSL/FinalProject/Synthesizer/src/dsl/"+className+".java")
 inputFile.write(script)
 
 //def sout = new StringBuffer(), serr = new StringBuffer()
@@ -143,7 +189,28 @@ inputFile.write(script)
 
 //def output = "groovyc /home/angi/Documents/PS_DSL/groovyworkspace3/Synthetiser/src/dsl/TestOsciGenerated".execute().text
 
-println "$rotaryKnob.x, $rotaryKnob.y, $rotaryKnob.width, $rotaryKnob.heigth"
+println "$mySawTooth.minimum, $mySawTooth.defaultValue, $mySawTooth.maximum"
+//println "$rotaryKnob.x, $rotaryKnob.y, $rotaryKnob.width, $rotaryKnob.heigth"
+
+def class Controls{}
+def Sound(){}
+def class Slider extends Controls
+{
+	int value
+}
+
+def class SawToothOscillator// extends Sound
+{
+	float minimum;
+	float maximum;
+	float defaultValue;
+}
+
+//def RotaryKnob rotaryKnob = new RotaryKnob();
+//def Slider slider = new Slider();
+//def mySawTooth = new SawToothOscillator();
+
+
 /*
  DSL usage nice to have
  
@@ -162,12 +229,11 @@ def controls = new Controls {
 	...
 }
 Sound {
-	sawToothOscillator "mySawTooth" (
-	min 50.0
-	maximum 10.000
-	default 300.0
+	mySawTooth "mySawTooth" (
+	min : 50,
+	maximum : 10.000,
+	default : 300.0
 	)
-	...
 }
 
 Connections {
@@ -183,4 +249,3 @@ def add(controls, sound){
 
 synthetizer add controls, sound build
 */
-
