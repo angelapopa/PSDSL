@@ -1,11 +1,16 @@
-def file1 = "/dsl/synthesizerDSL.groovy"
-def dslDef = new File(file1).text
-def dsl = new File('synthetizer.dsl').text
+def filePath = new File(".").absolutePath
+filePath.replace('.', '')
+
+def dslDef = new File(filePath+ '/src/dsl/synthesizer.groovy').text
+def dsl = new File(filePath + '/src/dsl/synthesizerEditor.dsl').text
+//def templateLogic = new File(filePath + '/src/dsl/Template_Nga.groovy').text
+
 def script = """
 ${dslDef}
 
 ${dsl}
 
-println "$rotaryKnob.x, $rotaryKnob.y, $rotaryKnob.width, $rotaryKnob.heigth"
+print controls.get(0).getX()
 """
+
 new GroovyShell().evaluate(script)

@@ -14,40 +14,40 @@ def knobTemplate = """
 
 //DSL definition
 
-def rotaryKnob2(RotaryValues values) {
+def rotaryKnob2(RotaryValues2 values) {
 	return values
 }
 
 def controls = []
 def sound(){}
 
-def class RotaryValues
+def class RotaryValues2
 {
 	int x
 	int y
 	int width
-	int heigth
+	int height
 }
 
 ///different file
 /*DSL usage*/
 controls
 	.add(rotaryKnob2(
-		new RotaryValues(
+		new RotaryValues2(
 			x: 10,
 			y: 2,
 			width: 20,
-			heigth: 20
+			height: 20
 		)
 	))
 	
 controls	
 	.add(rotaryKnob2(
-		new RotaryValues(
+		new RotaryValues2(
 			x: 10,
 			y: 2,
 			width: 20,
-			heigth: 20
+			height: 20
 		)
 	))
 

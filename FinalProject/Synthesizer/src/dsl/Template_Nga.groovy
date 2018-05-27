@@ -29,8 +29,7 @@ def class RotaryValues
 	int x
 	int y
 	int width
-	int heigth
-	static int count
+	int height
 	def createRotationController(int count) {
 		return "RotaryTextController knob$count  = new RotaryTextController($x)\n"
 	}
@@ -44,7 +43,7 @@ String script = '''
 <% functions.each{it -> it.print()%>
 <%} %>
 <% int count = 0
-control_list.each{it -> print it.createRotationController_Part1(count++)  %>
+control_list.each{it -> print it.createRotationController(count++)  %>
 <%} %>
 
 		'''
@@ -60,7 +59,7 @@ controls
 		x: 10,
 		y: 2,
 		width: 20,
-		heigth: 20
+		height: 20
 		)
 		))
 
@@ -70,7 +69,7 @@ controls
 		x: 10,
 		y: 2,
 		width: 20,
-		heigth: 20
+		height: 20
 		)
 		))
 
