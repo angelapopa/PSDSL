@@ -29,8 +29,10 @@ class Function {
 }
 
 //change of plans, calling jsynt directly
+
+def linearRamp = new LinearRamp(controls.get(0).getX(), ))
 //main
-TestOsci applet = new TestOsci(controls.get(0));
+TestOsci applet = new TestOsci(linearRamp);
 JAppletFrame frame = new JAppletFrame("SawFaders", applet);
 frame.setSize(440, 200);//Frame
 frame.setVisible(true);
