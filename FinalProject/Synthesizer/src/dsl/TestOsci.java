@@ -41,9 +41,9 @@ public class TestOsci extends JApplet {
 		// TODO Auto-generated constructor stub
 	}
 	*/
-	/*public TestOsci(List<Controls> controls) {
-		controls = this.controls;
-	}*/
+	public TestOsci(LinearRamp lag) {
+		lag = this.lag;
+	}
 
 	public void init() {
 		synth = JSyn.createSynthesizer();

@@ -1,3 +1,4 @@
+package dsl.deprecated
 // Modify the Object instance to a nicer editor
 
 //DSL definition

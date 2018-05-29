@@ -28,7 +28,7 @@ import com.jsyn.unitgen.UnitOscillator;
 	private LinearRamp lag;
 	private LineOut lineOut;
 
-	public void init(List<Controls> controls, List<Sound> sounds) {
+	public void init(/*List<Controls> controls, List<Sound> sounds*/) {
 		synth = JSyn.createSynthesizer();
 		
 		// tone generator
@@ -44,7 +44,7 @@ import com.jsyn.unitgen.UnitOscillator;
 	synth.add(lag = new LinearRamp());
 	// output mixer
 	lag.output.connect(osc.amplitude);
-	lag.input.setup(controls.get(0).getX(), 0.5, 1.0); //TODO inject values from editor
+	lag.input.setup(/*controls.get(0).getX()*/0, 0.5, 1.0); //TODO inject values from editor
 	lag.time.set(0.2);
 
 		

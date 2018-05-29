@@ -2,6 +2,8 @@
  * http://docs.groovy-lang.org/next/html/documentation/template-engines.html
  */
 
+import com.jsyn.swing.JAppletFrame;
+
 import groovy.json.JsonSlurper
 import groovy.text.SimpleTemplateEngine
 import dsl.TestOsci
@@ -25,6 +27,14 @@ class Function {
 		print "$visibility $type $name() {\n}\n"
 	}
 }
+
+//change of plans, calling jsynt directly
+//main
+TestOsci applet = new TestOsci(controls.get(0));
+JAppletFrame frame = new JAppletFrame("SawFaders", applet);
+frame.setSize(440, 200);//Frame
+frame.setVisible(true);
+frame.test();
 
 // Template sample
 String script = '''

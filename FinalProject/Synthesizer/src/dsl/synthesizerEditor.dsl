@@ -37,8 +37,8 @@ sounds
 			defaultValue : 300.0
 		)
 	)
-
-components
+/*
+linearRampInputs
 	.add(
 		new LinearRampInput(
 			minimum: 0.0,
@@ -47,17 +47,34 @@ components
 		)
 	)
 	
-components
+linearRampTimes
 	.add(
 		new LinearRampTime(
 			duration: 0.2
 		)
 	)
 	
-components
+lineOuts
 	.add(
 		new LineOut(
-			startValue: 0
+			startValue: 0,
 			endValue:0
 		)
-	)	
+	)
+	
+gridLayouts
+	.add(
+		new GridLayout(
+			rows: 0,
+			columns: 1
+		)
+	)
+	
+frames
+	.add(
+		new Frame(
+			width: 440,
+			height: 200
+		)
+	)			
+*/

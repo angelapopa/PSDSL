@@ -7,6 +7,13 @@ def rotaryKnob(RotaryValues values) {
 def controls = []
 def sounds = []
 def components = []
+/*
+def layouts = []
+def linearRampInputs = []
+def linearRampTimes = []
+def lineOuts = []
+def gridLayouts = []
+def frames = []*/
 
 def class RotaryValues
 {
@@ -23,6 +30,7 @@ def class Frequency
 	float defaultValue
 }
 
+/*
 def class LinearRampInput
 {
 	float minimum
@@ -40,3 +48,14 @@ def class LineOut
 	int startValue
 	int endValue
 }
+
+def class Frame{
+	int width
+	int height
+}
+
+def class GridLayout{
+	int rows
+	int columns
+}
+*/
