@@ -12,10 +12,20 @@ controls
 controls	
 	.add(rotaryKnob(
 		new RotaryValues(
-			x: 10,
-			y: 2,
-			width: 20,
-			height: 20
+			x: 15,
+			y: 5,
+			width: 30,
+			height: 30
+		)
+	))
+	
+controls	
+	.add(rotaryKnob(
+		new RotaryValues(
+			x: 18,
+			y: 7,
+			width: 25,
+			height: 25
 		)
 	))
 
