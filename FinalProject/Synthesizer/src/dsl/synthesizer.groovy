@@ -14,10 +14,6 @@ def class RotaryValues
 	int y
 	int width
 	int height
-	
-	def createRotationController(int count) {
-		return "RotaryTextController knob$count  = new RotaryTextController($x)\n"
-	}
 }
 
 def class Frequency
@@ -27,9 +23,20 @@ def class Frequency
 	float defaultValue
 }
 
-def class LinearRamp
+def class LinearRampInput
 {
 	float minimum
 	float maximum
 	float actualValue
+}
+
+def class LinearRampTime
+{
+	float duration
+}
+
+def class LineOut
+{
+	int startValue
+	int endValue
 }

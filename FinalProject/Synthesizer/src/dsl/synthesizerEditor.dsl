@@ -40,9 +40,24 @@ sounds
 
 components
 	.add(
-		new LinearRamp(
+		new LinearRampInput(
 			minimum: 0.0,
 			maximum: 1.0,
 			actualValue: 0.5
 		)
 	)
+	
+components
+	.add(
+		new LinearRampTime(
+			duration: 0.2
+		)
+	)
+	
+components
+	.add(
+		new LineOut(
+			startValue: 0
+			endValue:0
+		)
+	)	

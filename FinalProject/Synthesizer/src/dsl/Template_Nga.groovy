@@ -4,12 +4,17 @@
 
 import groovy.json.JsonSlurper
 import groovy.text.SimpleTemplateEngine
+import dsl.TestOsci
 
 
 def filePath = new File(".").absolutePath.replace('.', '')
 def sluper = new JsonSlurper()
 def controls = sluper.parse(new FileReader(filePath + '/src/json/controls.json'))
 def sounds = sluper.parse(new FileReader(filePath + '/src/json/sounds.json'))
+
+
+//call
+new TestOsci().init(controls, sounds);
 
 class Function {
 	def visibility
@@ -24,8 +29,8 @@ class Function {
 // Template sample
 String script = '''
 <%
- def createRotationController(obj, count) {
-		return "RotaryTextController knob$count  = new RotaryTextController($obj.x)"
+ def createRotationController(control_element, count) {
+		return "RotaryTextController knob$count  = new RotaryTextController($control_element.x)"
   }
 %>
 <% functions.each{it -> it.print()%>

@@ -1,8 +1,11 @@
 package dsl;
 
 import java.awt.GridLayout;
+import java.util.List;
+
 import javax.swing.JApplet;
 import javax.swing.JPanel;
+
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
 import com.jsyn.swing.ExponentialRangeModel;
@@ -31,6 +34,16 @@ public class TestOsci extends JApplet {
 	private UnitOscillator osc;
 	private LinearRamp lag;
 	private LineOut lineOut;
+	/*
+	private List<Controls> controls;
+	
+	public TestOsci() {
+		// TODO Auto-generated constructor stub
+	}
+	*/
+	/*public TestOsci(List<Controls> controls) {
+		controls = this.controls;
+	}*/
 
 	public void init() {
 		synth = JSyn.createSynthesizer();
@@ -41,27 +54,27 @@ public class TestOsci extends JApplet {
 		
 		synth.add(lineOut = new LineOut());
 		// connect oscillator to output
-		osc.output.connect(0, lineOut.input, 0);
+		osc.output.connect(0, lineOut.input, 0); // LineOut		
 		
 		// minimum, current and maximum values for the port				
 		synth.add(lag = new LinearRamp());
 		// output mixer
 		lag.output.connect(osc.amplitude);
-		lag.input.setup(0.0, 0.5, 1.0);
-		lag.time.set(0.2);
+		lag.input.setup(0.0, 0.5, 1.0); //LinearRampInput
+		lag.time.set(0.2); //LinearRampTime
 		// arrange faders in a stack
 		
-		setLayout(new GridLayout(0, 1));
+		setLayout(new GridLayout(0, 1));//GridLayout
 		
 		ExponentialRangeModel amplitudeModel = PortModelFactory
 				.createExponentialModel(lag.input);
 		
-		RotaryTextController knob = new RotaryTextController(amplitudeModel, 5);
+		RotaryTextController knob = new RotaryTextController(amplitudeModel, 5);//RotaryKnob?
 		JPanel knobPanel = new JPanel();
 		knobPanel.add(knob);
 		add(knobPanel);
 		
-		osc.frequency.setup(50.0, 300.0, 10000.0);
+		osc.frequency.setup(50.0, 300.0, 10000.0);//Frequency
 		add(PortControllerFactory.createExponentialPortSlider(osc.frequency));
 		validate();
 	}
@@ -80,7 +93,7 @@ public class TestOsci extends JApplet {
 	public static void main(String args[]) {
 		TestOsci applet = new TestOsci();
 		JAppletFrame frame = new JAppletFrame("SawFaders", applet);
-		frame.setSize(440, 200);
+		frame.setSize(440, 200);//Frame
 		frame.setVisible(true);
 		frame.test();
 	}
