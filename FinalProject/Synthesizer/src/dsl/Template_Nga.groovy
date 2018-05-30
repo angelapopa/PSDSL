@@ -2,7 +2,7 @@
  * http://docs.groovy-lang.org/next/html/documentation/template-engines.html
  */
 
-import com.jsyn.swing.JAppletFrame;
+//import com.jsyn.swing.JAppletFrame;
 
 import groovy.json.JsonSlurper
 import groovy.text.SimpleTemplateEngine
@@ -15,8 +15,8 @@ def controls = sluper.parse(new FileReader(filePath + '/src/json/controls.json')
 def sounds = sluper.parse(new FileReader(filePath + '/src/json/sounds.json'))
 
 
-//call
-new TestOsci().init(controls, sounds);
+//call - for plan changed only
+//new TestOsci().init(controls, sounds);
 
 class Function {
 	def visibility
@@ -27,7 +27,7 @@ class Function {
 		print "$visibility $type $name() {\n}\n"
 	}
 }
-
+/*
 //change of plans, calling jsynt directly
 
 def linearRamp = new LinearRamp(controls.get(0).getX(), ))
@@ -37,8 +37,8 @@ JAppletFrame frame = new JAppletFrame("SawFaders", applet);
 frame.setSize(440, 200);//Frame
 frame.setVisible(true);
 frame.test();
-
-// Template sample
+*/
+// Template script
 String script = '''
 <%
  def createRotationController(control_element, count) {

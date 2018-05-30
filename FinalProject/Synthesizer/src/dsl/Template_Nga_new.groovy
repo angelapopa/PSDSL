@@ -12,21 +12,19 @@ import groovy.text.SimpleTemplateEngine
 
 // Component definition
 class Function {
-	def visibility
 	def type
 	def name
 
 	String print() {
-		print "$visibility $type $name() {\n}\n"
+		print "public $type $name() {\n}\n"
 	}
 }
 
 class Property {
-	def visibility
 	def type
 	def name
 	def decl() {
-		return "$visibility $type $name;"
+		return "private $type $name;"
 	}
 }
 
@@ -128,7 +126,6 @@ controls
 ramps
 	.add(new LinearRamp(
 		name: 'ramp',
-		visibility: 'private',
 		type: 'LinearRamp',
 		input: new LinearRampInput(
 			minimum: 0.0, 

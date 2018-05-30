@@ -37,23 +37,21 @@ sounds
 			defaultValue : 300.0
 		)
 	)
-/*
-linearRampInputs
-	.add(
-		new LinearRampInput(
-			minimum: 0.0,
-			maximum: 1.0,
-			actualValue: 0.5
-		)
-	)
-	
-linearRampTimes
-	.add(
-		new LinearRampTime(
+
+linearRamps
+	.add(new LinearRamp(
+		name: 'ramp',
+		type: 'LinearRamp',
+		input: new LinearRampInput(
+			minimum: 0.0, 
+			actualValue: 0.5, 
+			maximum: 1.0
+		),
+		time: new LinearRampTime(
 			duration: 0.2
-		)
-	)
-	
+			)
+		))
+/*	
 lineOuts
 	.add(
 		new LineOut(
