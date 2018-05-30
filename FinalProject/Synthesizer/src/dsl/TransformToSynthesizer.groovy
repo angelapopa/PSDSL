@@ -19,8 +19,7 @@ ${dslDef}
 ${dsl}
 
 println controls.get(0).getX()
-println sounds.get(0).getMinimum()
-println components.get(0).getActualValue()
+// ERROR here; delete file will handle exception
 
 new File('${controlsOutput}').write(new groovy.json.JsonBuilder(controls).toPrettyString())
 new File('${soundsOutput}').write(new groovy.json.JsonBuilder(sounds).toPrettyString())
