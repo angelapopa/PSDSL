@@ -60,8 +60,8 @@ public class TestOsci extends JApplet {
 		synth.add(lag = new LinearRamp());
 		// output mixer
 		lag.output.connect(osc.amplitude);
-		lag.input.setup(0.0, 0.5, 1.0); //LinearRampInput
-		lag.time.set(0.2); //LinearRampTime
+		lag.input.setup(lag.getx()), 0.5, 1.0); //LinearRampInput
+		lag.time.set(lag.getDuration()); //LinearRampTime
 		// arrange faders in a stack
 		
 		setLayout(new GridLayout(0, 1));//GridLayout
