@@ -1,4 +1,5 @@
 /*DSL usage*/
+/*
 controls
 	.add(rotaryKnob(
 		new RotaryValues(
@@ -28,16 +29,18 @@ controls
 			height: 25
 		)
 	))
-
-sounds
-	.add(
-		new Frequency(
-			minimum : 50.0,
-			maximum : 10.000,
-			defaultValue : 300.0
-		)
-	)
-
+*/
+oscillators
+	.add(new Oscillator(
+			name: 'myOsc',
+			type: 'SineOscillator',
+			frequency: new Frequency(
+				minimum : 50.0,
+				maximum : 10.000,
+				defaultValue : 300.0
+			)
+	))
+/*
 linearRamps
 	.add(new LinearRamp(
 		name: 'ramp',
@@ -51,15 +54,14 @@ linearRamps
 			duration: 0.2
 			)
 		))
-/*	
+*/
 lineOuts
 	.add(
 		new LineOut(
-			startValue: 0,
-			endValue:0
+			
 		)
 	)
-	
+/*	
 gridLayouts
 	.add(
 		new GridLayout(
