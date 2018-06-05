@@ -1,0 +1,12 @@
+[
+    {
+        "from": "myFirstKnob",
+        "linear": "ramp",
+        "to": "myFirstOsc"
+    },
+    {
+        "from": "mySecondKnob",
+        "linear": "ramp",
+        "to": "mySecondOsc"
+    }
+]

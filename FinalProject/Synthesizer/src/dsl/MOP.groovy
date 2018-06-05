@@ -27,6 +27,7 @@ import groovy.test.*
 // Database
 def filePath = new File(".").absoluteFile.getParent()
 def sluper = new JsonSlurper()
+def connections = sluper.parse(new FileReader(filePath + '/src/json/connections.json'))
 def lineOuts = sluper.parse(new FileReader(filePath + '/src/json/lineOuts.json'))
 def oscillators = sluper.parse(new FileReader(filePath + '/src/json/oscillators.json'))
 def linearRamps = sluper.parse(new FileReader(filePath + '/src/json/linearRamps.json'))

@@ -7,6 +7,7 @@ def controlsOutput = filePath + 'src/json/controls.json'
 def oscillatorsOutput = filePath + 'src/json/oscillators.json'
 def lineOutsOutput = filePath + 'src/json/lineOuts.json'
 def linearRampsOutput = filePath + 'src/json/linearRamps.json'
+def connectionsOutput = filePath + 'src/json/connections.json'
 
 def script = """
 ${dslDef}
@@ -17,6 +18,7 @@ new File('${controlsOutput}').write(new groovy.json.JsonBuilder(controls).toPret
 new File('${oscillatorsOutput}').write(new groovy.json.JsonBuilder(oscillators).toPrettyString())
 new File('${lineOutsOutput}').write(new groovy.json.JsonBuilder(lineOuts).toPrettyString())
 new File('${linearRampsOutput}').write(new groovy.json.JsonBuilder(linearRamps).toPrettyString())
+new File('${connectionsOutput}').write(new groovy.json.JsonBuilder(connections).toPrettyString())
 """
 
 new GroovyShell().evaluate(script)
@@ -26,3 +28,4 @@ println controlsOutput
 println oscillatorsOutput
 println lineOutsOutput
 println linearRampsOutput
+println connectionsOutput
