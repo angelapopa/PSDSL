@@ -31,22 +31,45 @@ def connections = sluper.parse(new FileReader(filePath + '/src/json/connections.
 def lineOuts = sluper.parse(new FileReader(filePath + '/src/json/lineOuts.json'))
 def oscillators = sluper.parse(new FileReader(filePath + '/src/json/oscillators.json'))
 def linearRamps = sluper.parse(new FileReader(filePath + '/src/json/linearRamps.json'))
+def controls = sluper.parse(new FileReader(filePath + '/src/json/controls.json'))
 
-UnitOscillator myOsc
+def osc_list = []		//internal list of all jsyn oscillators
+def knob_list = []		//internal list of all jsyn knobs
+def linear_list = []	//internal list of all jsyn linear Ramps
+def slider_list = [] 	//internal list of all jsyn sliders
+
 LineOut myLineOut
 Synthesizer s
 LinearRamp lag
 DoubleBoundedRangeSlider synthSlider
 RotaryTextController knob
 
+// Using user-defined name for unit identification
+UnitOscillator.metaClass.name = 'myOsci'	// This is default name
+LinearRamp.metaClass.name = 'myLag'			// This is default name
+
+//special list method to find elements by name
+List.metaClass.findUnit << {searchTerm ->
+	def result
+	each {
+		for (int i=0; i < it.size(); i++){
+			if (searchTerm == it[i].name){
+				result = it[i]
+			}
+		}
+	}
+	result
+}
+
 // Meta programming
-Synthesizer.metaClass.addUnits << {listOsci, listLineOut, listLinearRamps ->
+Synthesizer.metaClass.addUnits << {listOsci, listLineOut, listLinearRamps, listControls ->
 	assert listOsci != null
+	println listOsci
 	listOsci.each {
 		if (it.type == 'SineOscillator') {
-			myOsc = new SineOscillator()
+			def myOsc = new SineOscillator(name: it.name)
 			myOsc.frequency.setup(it.frequency.minimum, it.frequency.defaultValue, it.frequency.maximum)
-			add(myOsc)
+			osc_list.add(myOsc)
 			println "Added new $it.type "//$name"
 			println "with frequency: $it.frequency.minimum, $it.frequency.defaultValue, $it.frequency.maximum"
 			
@@ -63,9 +86,8 @@ Synthesizer.metaClass.addUnits << {listOsci, listLineOut, listLinearRamps ->
 
 			if (listLinearRamps != null) {
 				listLinearRamps.each {
-					lag = new LinearRamp()
-					add(lag)
-					lag.output.connect(myOsc.amplitude)
+					lag = new LinearRamp(name: it.name)
+					linear_list.add(lag)
 					def lag_input = it.input
 					if (lag_input != null) {
 						lag.input.setup(lag_input.minimum, lag_input.actualValue, lag_input.maximum)
@@ -83,9 +105,36 @@ Synthesizer.metaClass.addUnits << {listOsci, listLineOut, listLinearRamps ->
 
 		}
 	}
-	def amplitudeModel = PortModelFactory.createExponentialModel(lag.input)
-	knob = new RotaryTextController(amplitudeModel, 5)
-	synthSlider = PortControllerFactory.createExponentialPortSlider(myOsc.frequency)
+	
+	/**
+	 * connecting the 'from' side of the connection (the knob)
+	 * to the 'to' side of the connection (the oscillator) 
+	 */
+	connections.each { conn ->
+		def to = osc_list.findUnit(conn.to)
+		def linearR = linear_list.findUnit(conn.linear)
+		
+		def amplitudeModel = PortModelFactory.createExponentialModel(linearR.input)
+		
+		if (UnitOscillator.isCase(to)){
+			linearR.output.connect(to.amplitude)
+			
+			//TODO only the second slider affects the sound, maybe more lineouts are needed? or other kind or config?
+			slider_list.add(PortControllerFactory.createExponentialPortSlider(to.frequency))
+			
+			def from = controls.findUnit(conn.from)
+			println 'connecting ' + from.name + ' to ' + to.name
+			//TODO use the properties of the 'from' knob
+			knob = new RotaryTextController(amplitudeModel, 5)
+			knob_list.add(knob)
+		} else {
+			//TODO what if the user mixes up 'from' and 'to'?
+		}
+	}
+	
+	//adding units to synthesizer
+	osc_list.each { it -> add(it)}
+	linear_list.each { it -> add(it)}
 }
 
 /*
@@ -106,8 +155,8 @@ def startSynthesisEngine() {
 	myLineOut.start()
 }
 
-def buildAndConnectUnits(def listOsci, def listLineOut, def listLinearRamps) {
-	s.addUnits(listOsci, listLineOut, listLinearRamps)
+def buildAndConnectUnits(def listOsci, def listLineOut, def listLinearRamps, def listControls) {
+	s.addUnits(listOsci, listLineOut, listLinearRamps, listControls)
 }
 
 
@@ -118,7 +167,7 @@ def buildAndConnectUnits(def listOsci, def listLineOut, def listLinearRamps) {
 s = new JSyn().createSynthesizer()
 s.start()
 
-s.addUnits(oscillators, lineOuts, linearRamps)
+s.addUnits(oscillators, lineOuts, linearRamps, controls)
 // sound
 myLineOut.start()
 
@@ -132,6 +181,12 @@ def frame = builder.frame(
 
 		) {
 			gridLayout(cols: 1, rows: 2)
-			panel(knob)
-			slider(synthSlider)
+			
+			//adding knobs and sliders to the UI
+			for (k in knob_list){
+				panel(k)
+			}
+			for (sl in slider_list){
+				slider(sl)
+			}
 		}
