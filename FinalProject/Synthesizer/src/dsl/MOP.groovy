@@ -12,6 +12,7 @@ import com.jsyn.unitgen.LineOut;
 import com.jsyn.unitgen.LinearRamp;
 import com.jsyn.unitgen.SineOscillator
 import com.jsyn.unitgen.UnitOscillator
+import com.jsyn.swing.DoubleBoundedRangeSlider;
 import com.jsyn.swing.ExponentialRangeModel;
 import com.jsyn.swing.PortControllerFactory;
 import com.jsyn.swing.PortModelFactory;
@@ -34,6 +35,8 @@ UnitOscillator myOsc
 LineOut myLineOut
 Synthesizer s
 LinearRamp lag
+DoubleBoundedRangeSlider synthSlider
+RotaryTextController knob
 
 // Meta programming
 Synthesizer.metaClass.addUnits << {listOsci, listLineOut, listLinearRamps ->
@@ -79,6 +82,9 @@ Synthesizer.metaClass.addUnits << {listOsci, listLineOut, listLinearRamps ->
 
 		}
 	}
+	def amplitudeModel = PortModelFactory.createExponentialModel(lag.input)
+	knob = new RotaryTextController(amplitudeModel, 5)
+	synthSlider = PortControllerFactory.createExponentialPortSlider(myOsc.frequency)
 }
 
 /*
@@ -96,6 +102,7 @@ Synthesizer.metaClass.addUnits << {listOsci, listLineOut, listLinearRamps ->
 def startSynthesisEngine() {
 	s = new JSyn().createSynthesizer()
 	s.start()
+	myLineOut.start()
 }
 
 def buildAndConnectUnits(def listOsci, def listLineOut, def listLinearRamps) {
@@ -111,6 +118,8 @@ s = new JSyn().createSynthesizer()
 s.start()
 
 s.addUnits(oscillators, lineOuts, linearRamps)
+// sound
+myLineOut.start()
 
 // Start UIs
 def builder = new groovy.swing.SwingBuilder()
@@ -122,7 +131,6 @@ def frame = builder.frame(
 
 		) {
 			gridLayout(cols: 1, rows: 2)
-			def amplitudeModel = PortModelFactory.createExponentialModel(lag.input)
-			panel(new RotaryTextController(amplitudeModel, 5))
-			slider(PortControllerFactory.createExponentialPortSlider(myOsc.frequency))
+			panel(knob)
+			slider(synthSlider)
 		}
