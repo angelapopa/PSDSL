@@ -7,9 +7,9 @@ def controlsOutput = filePath + 'src/json/controls.json'
 def soundsOutput = filePath + 'src/json/oscillators.json'
 def componentsOutput = filePath + 'src/json/components.json'
 def lineOutsOutput = filePath + 'src/json/lineOuts.json'
+def linearRampsOutput = filePath + 'src/json/linearRamps.json'
 /*
 def layoutsOutput = filePath + 'src/json/layouts.json'
-def linearRampsOutput = filePath + 'src/json/linearRamps.json'
 def gridLayoutsOutput = filePath + 'src/json/gridLayouts.json'
 def framesOutput = filePath + 'src/json/frames.json'
 */
@@ -22,9 +22,9 @@ new File('${controlsOutput}').write(new groovy.json.JsonBuilder(controls).toPret
 new File('${soundsOutput}').write(new groovy.json.JsonBuilder(oscillators).toPrettyString())
 new File('${componentsOutput}').write(new groovy.json.JsonBuilder(components).toPrettyString())
 new File('${lineOutsOutput}').write(new groovy.json.JsonBuilder(lineOuts).toPrettyString())
+new File('${linearRampsOutput}').write(new groovy.json.JsonBuilder(linearRamps).toPrettyString())
 """
 /*
-new File('${linearRampsOutput}').write(new groovy.json.JsonBuilder(linearRamps).toPrettyString())
 new File('${layoutsOutput}').write(new groovy.json.JsonBuilder(layouts).toPrettyString())
 new File('${gridLayoutsOutput}').write(new groovy.json.JsonBuilder(gridLayouts).toPrettyString())
 new File('${framesOutput}').write(new groovy.json.JsonBuilder(frames).toPrettyString())

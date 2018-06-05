@@ -40,7 +40,7 @@ oscillators
 				defaultValue : 300.0
 			)
 	))
-/*
+
 linearRamps
 	.add(new LinearRamp(
 		name: 'ramp',
@@ -54,7 +54,7 @@ linearRamps
 			duration: 0.2
 			)
 		))
-*/
+
 lineOuts
 	.add(
 		new LineOut(

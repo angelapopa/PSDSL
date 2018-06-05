@@ -1,6 +1,5 @@
 [
     {
-        "visibility": null,
         "input": {
             "actualValue": 0.5,
             "minimum": 0.0,
@@ -10,7 +9,6 @@
         "time": {
             "duration": 0.2
         },
-        "rampName": null,
         "name": "ramp"
     }
 ]
