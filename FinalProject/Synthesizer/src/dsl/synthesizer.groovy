@@ -9,6 +9,7 @@ def controls = []
 def oscillators = []
 def components = []
 def lineOuts = []
+def linearRamps = []
 
 class UnitGenerator {
 	def type
