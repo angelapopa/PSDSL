@@ -1,5 +1,6 @@
-//DSL definition
+package dsl
 
+//DSL definition
 def rotaryKnob(RotaryValues values) {
 	return values
 }
@@ -7,15 +8,9 @@ def rotaryKnob(RotaryValues values) {
 def controls = []
 def sounds = []
 def components = []
-
-def layouts = []
-def linearRamps = []
 def lineOuts = []
-def gridLayouts = []
-def frames = []
 
-class Property {
-	def visibility
+class UnitGenerator {
 	def type
 	def name
 }
@@ -35,6 +30,10 @@ def class Frequency
 	float defaultValue
 }
 
+def class Oscillator extends UnitGenerator {
+	Frequency frequency
+}
+
 class LinearRampInput {
 	def minimum
 	def maximum
@@ -45,8 +44,7 @@ class LinearRampTime {
 	def duration
 }
 
-def class LinearRamp extends Property {
-	String rampName
+def class LinearRamp extends UnitGenerator {
 	LinearRampInput input
 	LinearRampTime time
 }
@@ -55,14 +53,4 @@ def class LineOut
 {
 	int startValue
 	int endValue
-}
-
-def class Frame{
-	int width
-	int height
-}
-
-def class GridLayout{
-	int rows
-	int columns
 }

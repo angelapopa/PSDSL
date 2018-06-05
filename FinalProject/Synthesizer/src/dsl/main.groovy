@@ -5,4 +5,4 @@
 def filePath = new File(".").absolutePath.replace('.', '')
 
 new GroovyShell().evaluate(new File(filePath + '/src/dsl/TransformToSynthesizer.groovy'))
-new GroovyShell().evaluate(new File(filePath + '/src/dsl/Template_Nga.groovy'))
+new GroovyShell().evaluate(new File(filePath + '/src/dsl/MOP.groovy'))

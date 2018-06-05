@@ -1,3 +1,4 @@
+package dsl.deprecated
 /*
  * http://docs.groovy-lang.org/next/html/documentation/template-engines.html
  */
