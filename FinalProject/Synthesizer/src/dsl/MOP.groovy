@@ -26,7 +26,7 @@ import groovy.ui.ConsoleApplet
 def filePath = new File(".").absoluteFile.getParent()
 def sluper = new JsonSlurper()
 def lineOuts = sluper.parse(new FileReader(filePath + '/src/json/lineOuts.json'))
-def sounds = sluper.parse(new FileReader(filePath + '/src/json/sounds.json'))
+def oscillators = sluper.parse(new FileReader(filePath + '/src/json/oscillators.json'))
 
 UnitOscillator myOsc
 LineOut myLineOut
@@ -89,7 +89,7 @@ s.start()
 lag = new LinearRamp()
 lag.input.setup(0, 0.5, 1.0)
 s.add(lag)
-s.addUnits(sounds, lineOuts)
+s.addUnits(oscillators, lineOuts)
 
 // Start UIs
 def builder = new groovy.swing.SwingBuilder()

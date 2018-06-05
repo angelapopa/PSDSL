@@ -4,7 +4,7 @@ def dslDef = new File(filePath+ '/src/dsl/synthesizer.groovy').text
 def dsl = new File(filePath + '/src/dsl/synthesizerEditor.dsl').text
 
 def controlsOutput = filePath + 'src/json/controls.json'
-def soundsOutput = filePath + 'src/json/sounds.json'
+def soundsOutput = filePath + 'src/json/oscillators.json'
 def componentsOutput = filePath + 'src/json/components.json'
 def lineOutsOutput = filePath + 'src/json/lineOuts.json'
 /*
@@ -19,7 +19,7 @@ ${dslDef}
 ${dsl}
 
 new File('${controlsOutput}').write(new groovy.json.JsonBuilder(controls).toPrettyString())
-new File('${soundsOutput}').write(new groovy.json.JsonBuilder(sounds).toPrettyString())
+new File('${soundsOutput}').write(new groovy.json.JsonBuilder(oscillators).toPrettyString())
 new File('${componentsOutput}').write(new groovy.json.JsonBuilder(components).toPrettyString())
 new File('${lineOutsOutput}').write(new groovy.json.JsonBuilder(lineOuts).toPrettyString())
 """

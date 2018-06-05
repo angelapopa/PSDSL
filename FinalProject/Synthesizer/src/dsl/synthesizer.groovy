@@ -6,7 +6,7 @@ def rotaryKnob(RotaryValues values) {
 }
 
 def controls = []
-def sounds = []
+def oscillators = []
 def components = []
 def lineOuts = []
 

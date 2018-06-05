@@ -30,7 +30,7 @@ controls
 		)
 	))
 */
-sounds
+oscillators
 	.add(new Oscillator(
 			name: 'myOsc',
 			type: 'SineOscillator',
