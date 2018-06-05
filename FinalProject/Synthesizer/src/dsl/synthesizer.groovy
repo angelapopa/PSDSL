@@ -7,7 +7,7 @@ def rotaryKnob(RotaryValues values) {
 
 def controls = []
 def oscillators = []
-def components = []
+def connections = []
 def lineOuts = []
 def linearRamps = []
 
@@ -18,10 +18,7 @@ class UnitGenerator {
 
 def class RotaryValues
 {
-	int x
-	int y
-	int width
-	int height
+	String name
 }
 
 def class Frequency
@@ -54,4 +51,11 @@ def class LineOut
 {
 	int startValue
 	int endValue
+}
+
+def class Connection
+{
+	String linear
+	String from
+	String to
 }

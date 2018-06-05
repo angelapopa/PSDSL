@@ -6,6 +6,15 @@
             "minimum": 50.0,
             "maximum": 10000.0
         },
-        "name": "myOsc"
+        "name": "myFirstOsc"
+    },
+    {
+        "type": "SineOscillator",
+        "frequency": {
+            "defaultValue": 500.0,
+            "minimum": 70.0,
+            "maximum": 9000.0
+        },
+        "name": "mySecondOsc"
     }
 ]

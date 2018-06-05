@@ -1,43 +1,37 @@
 /*DSL usage*/
-/*
 controls
 	.add(rotaryKnob(
 		new RotaryValues(
-			x: 10,
-			y: 2,
-			width: 20,
-			height: 20
+			name: 'myFirstKnob'
 		)
 	))
 
 controls	
 	.add(rotaryKnob(
 		new RotaryValues(
-			x: 15,
-			y: 5,
-			width: 30,
-			height: 30
+			name: 'mySecondKnob'
 		)
 	))
-	
-controls	
-	.add(rotaryKnob(
-		new RotaryValues(
-			x: 18,
-			y: 7,
-			width: 25,
-			height: 25
-		)
-	))
-*/
+
 oscillators
 	.add(new Oscillator(
-			name: 'myOsc',
+			name: 'myFirstOsc',
 			type: 'SineOscillator',
 			frequency: new Frequency(
 				minimum : 50.0,
 				maximum : 10000.0,
 				defaultValue : 300.0
+			)
+	))
+	
+oscillators
+	.add(new Oscillator(
+			name: 'mySecondOsc',
+			type: 'SineOscillator',
+			frequency: new Frequency(
+				minimum : 70.0,
+				maximum : 9000.0,
+				defaultValue : 500.0
 			)
 	))
 
@@ -61,20 +55,22 @@ lineOuts
 			
 		)
 	)
-/*	
-gridLayouts
+
+connections
 	.add(
-		new GridLayout(
-			rows: 0,
-			columns: 1
+		new Connection(
+			linear: 'ramp',
+			from: 'myFirstKnob',
+			to: 'myFirstOsc'
+		)
+	)
+
+connections
+	.add(
+		new Connection(
+			linear: 'ramp',
+			from: 'mySecondKnob',
+			to: 'mySecondOsc'
 		)
 	)
 	
-frames
-	.add(
-		new Frame(
-			width: 440,
-			height: 200
-		)
-	)			
-*/
