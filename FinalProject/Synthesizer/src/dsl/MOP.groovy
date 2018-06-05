@@ -13,9 +13,9 @@ import com.jsyn.unitgen.LinearRamp;
 import com.jsyn.unitgen.SineOscillator
 import com.jsyn.unitgen.UnitOscillator
 import com.jsyn.swing.ExponentialRangeModel;
-import com.jsyn.swing.JAppletFrame;
 import com.jsyn.swing.PortControllerFactory;
 import com.jsyn.swing.PortModelFactory;
+import com.jsyn.swing.RotaryController;
 import com.jsyn.swing.RotaryTextController;
 
 import groovy.json.JsonSlurper
@@ -115,7 +115,7 @@ s.addUnits(oscillators, lineOuts, linearRamps)
 // Start UIs
 def builder = new groovy.swing.SwingBuilder()
 def frame = builder.frame(
-		title: 'Swing',
+		title: 'Synthesizer',
 		size: [500, 300],
 		defaultCloseOperation: javax.swing.WindowConstants.EXIT_ON_CLOSE,
 		show: true

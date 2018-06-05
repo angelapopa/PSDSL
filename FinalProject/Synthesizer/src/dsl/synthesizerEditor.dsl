@@ -36,7 +36,7 @@ oscillators
 			type: 'SineOscillator',
 			frequency: new Frequency(
 				minimum : 50.0,
-				maximum : 10.000,
+				maximum : 10000.0,
 				defaultValue : 300.0
 			)
 	))
