@@ -23,49 +23,66 @@ import groovy.text.SimpleTemplateEngine
 import groovy.ui.ConsoleApplet
 import groovy.test.*
 
-// Database
+/*
+ * Database
+ */
 def filePath = new File(".").absoluteFile.getParent()
 def sluper = new JsonSlurper()
 def lineOuts = sluper.parse(new FileReader(filePath + '/src/json/lineOuts.json'))
 def oscillators = sluper.parse(new FileReader(filePath + '/src/json/oscillators.json'))
 def linearRamps = sluper.parse(new FileReader(filePath + '/src/json/linearRamps.json'))
 
-UnitOscillator myOsc
-LineOut myLineOut
+List<UnitOscillator> my_osc_list = []
+List<LineOut> my_lo_list = []
 Synthesizer s
-LinearRamp lag
+List<LinearRamp> my_lag_list = []
+//LinearRamp input
+//UnitOscillator myOsc
+//LineOut myLineOut
+//Synthesizer s
+//LinearRamp lag
 
-// Meta programming
+/*
+ * Meta programming
+ */
+// Using user-defined name to identify
+UnitOscillator.metaClass.name = 'myOsci'	// This is default name
+LinearRamp.metaClass.name = 'myLag'			// This is default name
+
+// Adding all neccessary UnitGenerators 
 Synthesizer.metaClass.addUnits << {listOsci, listLineOut, listLinearRamps ->
 	assert listOsci != null
 	listOsci.each {
 		if (it.type == 'SineOscillator') {
-			myOsc = new SineOscillator()
-			myOsc.frequency.setup(it.frequency.minimum, it.frequency.defaultValue, it.frequency.maximum)
+			def myOsc = new SineOscillator(name: it.name)
+			def freg = it.frequency
+			myOsc.frequency.setup(freg.minimum, freg.defaultValue, freg.maximum)
 			add(myOsc)
-			println "Added new $it.type "//$name"
-			println "with frequency: $it.frequency.minimum, $it.frequency.defaultValue, $it.frequency.maximum"
+			my_osc_list << myOsc
+			println "Added new $it.type $myOsc.name"
+			println "with frequency: $freg.minimum, $freg.defaultValue, $freg.maximum"
 			
 			if (listLineOut != null) {
 				listLineOut.each {
-					myLineOut = new LineOut()
+					def myLineOut = new LineOut()
 					add(myLineOut)
 					myOsc.output.connect(0, myLineOut.input, 0)
 					myOsc.output.connect(0, myLineOut.input, 1)
+					my_lo_list << myLineOut
 					println "Added new LineOut"
-					println "And connected it with Oscillator"
+					println "And connected it with $myOsc.name"
 				}
 			}
 
 			if (listLinearRamps != null) {
 				listLinearRamps.each {
-					lag = new LinearRamp()
+					def lag = new LinearRamp(name: it.name)
 					add(lag)
 					lag.output.connect(myOsc.amplitude)
 					def lag_input = it.input
 					if (lag_input != null) {
 						lag.input.setup(lag_input.minimum, lag_input.actualValue, lag_input.maximum)
-						println "Added new $it.type"
+						println "Added new $it.type $lag.name"
 						println "With input value: $lag_input.minimum, $lag_input.actualValue, $lag_input.maximum"
 					}
 					def lag_time = it.time
@@ -73,7 +90,7 @@ Synthesizer.metaClass.addUnits << {listOsci, listLineOut, listLinearRamps ->
 						lag.time.set(lag_time.duration)
 						println "With duration: $lag_time.duration"
 					}
-
+					my_lag_list << lag
 				}
 			}
 
@@ -102,15 +119,30 @@ def buildAndConnectUnits(def listOsci, def listLineOut, def listLinearRamps) {
 	s.addUnits(listOsci, listLineOut, listLinearRamps)
 }
 
+def returnItem (List<LinearRamp> list, String name) {
+	for (LinearRamp it in list) {
+		if (it.name == name) {
+			return it
+		}
+	}
+		
+}
+
+def returnItem2(def list, def name) {
+	
+}
 
 /*
  * Start main() function
  */
 // Just release the block function. In the future, we can use block funtion instead
+
 s = new JSyn().createSynthesizer()
 s.start()
 
 s.addUnits(oscillators, lineOuts, linearRamps)
+//myLineOut.start()
+println my_lag_list.name
 
 // Start UIs
 def builder = new groovy.swing.SwingBuilder()
@@ -122,7 +154,9 @@ def frame = builder.frame(
 
 		) {
 			gridLayout(cols: 1, rows: 2)
-			def amplitudeModel = PortModelFactory.createExponentialModel(lag.input)
+			def input = returnItem(my_lag_list, 'ramp')
+			print input
+			def amplitudeModel = PortModelFactory.createExponentialModel(input.input)
 			panel(new RotaryTextController(amplitudeModel, 5))
 			slider(PortControllerFactory.createExponentialPortSlider(myOsc.frequency))
 		}

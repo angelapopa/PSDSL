@@ -6,6 +6,6 @@
             "minimum": 50.0,
             "maximum": 10000.0
         },
-        "name": "myOsc"
+        "name": "myFirstOsc"
     }
 ]

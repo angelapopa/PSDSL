@@ -32,7 +32,7 @@ controls
 */
 oscillators
 	.add(new Oscillator(
-			name: 'myOsc',
+			name: 'myFirstOsc',
 			type: 'SineOscillator',
 			frequency: new Frequency(
 				minimum : 50.0,
