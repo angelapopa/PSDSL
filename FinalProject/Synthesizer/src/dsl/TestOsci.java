@@ -34,16 +34,6 @@ public class TestOsci extends JApplet {
 	private UnitOscillator osc;
 	private LinearRamp lag;
 	private LineOut lineOut;
-	/*
-	private List<Controls> controls;
-	
-	public TestOsci() {
-		// TODO Auto-generated constructor stub
-	}
-	*/
-	public TestOsci(LinearRamp lag) {
-		lag = this.lag;
-	}
 
 	public void init() {
 		synth = JSyn.createSynthesizer();
@@ -60,8 +50,8 @@ public class TestOsci extends JApplet {
 		synth.add(lag = new LinearRamp());
 		// output mixer
 		lag.output.connect(osc.amplitude);
-		lag.input.setup(lag.getx()), 0.5, 1.0); //LinearRampInput
-		lag.time.set(lag.getDuration()); //LinearRampTime
+		lag.input.setup(0.0, 0.5, 1.0); //LinearRampInput
+		lag.time.set(0.2); //LinearRampTime
 		// arrange faders in a stack
 		
 		setLayout(new GridLayout(0, 1));//GridLayout
