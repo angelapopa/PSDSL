@@ -76,21 +76,21 @@ Synthesizer.metaClass.addUnits << {listOsci, listLineOut, listLinearRamps ->
 
 			if (listLinearRamps != null) {
 				listLinearRamps.each {
-					def lag = new LinearRamp(name: it.name)
-					add(lag)
-					lag.output.connect(myOsc.amplitude)
+					def myLag = new LinearRamp(name: it.name)
+					add(myLag)
+					myLag.output.connect(myOsc.amplitude)
 					def lag_input = it.input
 					if (lag_input != null) {
-						lag.input.setup(lag_input.minimum, lag_input.actualValue, lag_input.maximum)
-						println "Added new $it.type $lag.name"
+						myLag.input.setup(lag_input.minimum, lag_input.actualValue, lag_input.maximum)
+						println "Added new $it.type $myLag.name"
 						println "With input value: $lag_input.minimum, $lag_input.actualValue, $lag_input.maximum"
 					}
 					def lag_time = it.time
 					if (lag_time != null) {
-						lag.time.set(lag_time.duration)
+						myLag.time.set(lag_time.duration)
 						println "With duration: $lag_time.duration"
 					}
-					my_lag_list << lag
+					my_lag_list << myLag
 				}
 			}
 
@@ -119,17 +119,13 @@ def buildAndConnectUnits(def listOsci, def listLineOut, def listLinearRamps) {
 	s.addUnits(listOsci, listLineOut, listLinearRamps)
 }
 
-def returnItem (List<LinearRamp> list, String name) {
-	for (LinearRamp it in list) {
+def returnItem (def list, String name) {
+	for (def it in list) {
 		if (it.name == name) {
 			return it
 		}
 	}
 		
-}
-
-def returnItem2(def list, def name) {
-	
 }
 
 /*
@@ -141,8 +137,7 @@ s = new JSyn().createSynthesizer()
 s.start()
 
 s.addUnits(oscillators, lineOuts, linearRamps)
-//myLineOut.start()
-println my_lag_list.name
+my_lo_list.get(0).start()
 
 // Start UIs
 def builder = new groovy.swing.SwingBuilder()
@@ -154,9 +149,11 @@ def frame = builder.frame(
 
 		) {
 			gridLayout(cols: 1, rows: 2)
-			def input = returnItem(my_lag_list, 'ramp')
-			print input
-			def amplitudeModel = PortModelFactory.createExponentialModel(input.input)
+			// As soon as we have user-defined connection, we will refactor code here
+			def lag = returnItem(my_lag_list, "ramp")
+			print lag
+			def amplitudeModel = PortModelFactory.createExponentialModel(lag.input)
 			panel(new RotaryTextController(amplitudeModel, 5))
-			slider(PortControllerFactory.createExponentialPortSlider(myOsc.frequency))
+			def osc = returnItem(my_osc_list, "myFirstOsc")
+			slider(PortControllerFactory.createExponentialPortSlider(osc.frequency))
 		}
