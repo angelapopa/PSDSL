@@ -24,7 +24,9 @@ import groovy.text.SimpleTemplateEngine
 import groovy.ui.ConsoleApplet
 import groovy.test.*
 
-// Database
+/*
+ * Database
+ */
 def filePath = new File(".").absoluteFile.getParent()
 def sluper = new JsonSlurper()
 def connections = sluper.parse(new FileReader(filePath + '/src/json/connections.json'))
@@ -34,16 +36,17 @@ def linearRamps = sluper.parse(new FileReader(filePath + '/src/json/linearRamps.
 def controls = sluper.parse(new FileReader(filePath + '/src/json/controls.json'))
 
 def osc_list = []		//internal list of all jsyn oscillators
-def knob_list = []		//internal list of all jsyn knobs
+def lineout_list = []	//internal list of all jsyn LineOut
 def linear_list = []	//internal list of all jsyn linear Ramps
+def knob_list = []		//internal list of all jsyn knobs
 def slider_list = [] 	//internal list of all jsyn sliders
 
-LineOut myLineOut
 Synthesizer s
-LinearRamp lag
 DoubleBoundedRangeSlider synthSlider
-RotaryTextController knob
 
+/**
+ * Meta programming
+ */
 // Using user-defined name for unit identification
 UnitOscillator.metaClass.name = 'myOsci'	// This is default name
 LinearRamp.metaClass.name = 'myLag'			// This is default name
@@ -61,80 +64,83 @@ List.metaClass.findUnit << {searchTerm ->
 	result
 }
 
-// Meta programming
+// Adding all neccessary UnitGenerators 
 Synthesizer.metaClass.addUnits << {listOsci, listLineOut, listLinearRamps, listControls ->
 	assert listOsci != null
-	println listOsci
 	listOsci.each {
+		def myOsc
 		if (it.type == 'SineOscillator') {
-			def myOsc = new SineOscillator(name: it.name)
-			myOsc.frequency.setup(it.frequency.minimum, it.frequency.defaultValue, it.frequency.maximum)
-			osc_list.add(myOsc)
-			println "Added new $it.type "//$name"
-			println "with frequency: $it.frequency.minimum, $it.frequency.defaultValue, $it.frequency.maximum"
-			
-			if (listLineOut != null) {
-				listLineOut.each {
-					myLineOut = new LineOut()
-					add(myLineOut)
-					myOsc.output.connect(0, myLineOut.input, 0)
-					myOsc.output.connect(0, myLineOut.input, 1)
-					println "Added new LineOut"
-					println "And connected it with Oscillator"
-				}
+			myOsc = new SineOscillator(name: it.name)
+		}
+		def freg = it.frequency
+		myOsc.frequency.setup(freg.minimum, freg.defaultValue, freg.maximum)
+		add(myOsc)
+		osc_list.add(myOsc)
+		println "Added new $it.type $myOsc.name"
+		println "with frequency: $freg.minimum, $freg.defaultValue, $freg.maximum"
+		
+		if (listLineOut != null) {
+			listLineOut.each {
+				def myLineOut = new LineOut()
+				add(myLineOut)
+				myOsc.output.connect(0, myLineOut.input, 0)
+				myOsc.output.connect(0, myLineOut.input, 1)
+				lineout_list.add(myLineOut)
+				println "Added new LineOut"
+				println "And connected it with $myOsc.name"
 			}
+		}
 
-			if (listLinearRamps != null) {
-				listLinearRamps.each {
-					lag = new LinearRamp(name: it.name)
-					linear_list.add(lag)
-					def lag_input = it.input
-					if (lag_input != null) {
-						lag.input.setup(lag_input.minimum, lag_input.actualValue, lag_input.maximum)
-						println "Added new $it.type"
-						println "With input value: $lag_input.minimum, $lag_input.actualValue, $lag_input.maximum"
-					}
-					def lag_time = it.time
-					if (lag_time != null) {
-						lag.time.set(lag_time.duration)
-						println "With duration: $lag_time.duration"
-					}
-
+		if (listLinearRamps != null) {
+			listLinearRamps.each {
+				def myLag = new LinearRamp(name: it.name)
+				add(myLag)
+				linear_list.add(myLag)
+				def lag_input = it.input
+				if (lag_input != null) {
+					myLag.input.setup(lag_input.minimum, lag_input.actualValue, lag_input.maximum)
+					println "Added new $it.type $myLag.name"
+					println "With input value: $lag_input.minimum, $lag_input.actualValue, $lag_input.maximum"
 				}
-			}
+				def lag_time = it.time
+				if (lag_time != null) {
+					myLag.time.set(lag_time.duration)
+					println "With duration: $lag_time.duration"
+				}
 
+			}
 		}
 	}
 	
 	/**
 	 * connecting the 'from' side of the connection (the knob)
 	 * to the 'to' side of the connection (the oscillator) 
+	 * This is independent from Synthesizer, so it should be moved outside Synthesizer.metaClass
 	 */
-	connections.each { conn ->
-		def to = osc_list.findUnit(conn.to)
-		def linearR = linear_list.findUnit(conn.linear)
-		
-		def amplitudeModel = PortModelFactory.createExponentialModel(linearR.input)
-		
-		if (UnitOscillator.isCase(to)){
-			linearR.output.connect(to.amplitude)
+	if (connections) {
+		connections.each { conn ->
+			def to = osc_list.findUnit(conn.to)
+			def linearR = linear_list.findUnit(conn.linear)
 			
-			//TODO only the second slider affects the sound, maybe more lineouts are needed? or other kind or config?
-			slider_list.add(PortControllerFactory.createExponentialPortSlider(to.frequency))
+			def amplitudeModel = PortModelFactory.createExponentialModel(linearR.input)
 			
-			def from = controls.findUnit(conn.from)
-			println 'connecting ' + from.name + ' to ' + to.name
-			//TODO use the properties of the 'from' knob
-			knob = new RotaryTextController(amplitudeModel, 5)
-			knob_list.add(knob)
-		} else {
-			//TODO what if the user mixes up 'from' and 'to'?
+			if (UnitOscillator.isCase(to)){
+				linearR.output.connect(to.amplitude)
+				
+				//TODO only the second slider affects the sound, maybe more lineouts are needed? or other kind or config?
+				slider_list.add(PortControllerFactory.createExponentialPortSlider(to.frequency))
+				
+				def from = controls.findUnit(conn.from)
+				println 'connecting ' + from.name + ' to ' + to.name
+				//TODO use the properties of the 'from' knob
+				def knob = new RotaryTextController(amplitudeModel, 5)
+				knob_list.add(knob)
+			} else {
+				//TODO what if the user mixes up 'from' and 'to'?
+			}
 		}
 	}
 	
-	//adding units to synthesizer
-	osc_list.each { it -> add(it)}
-	linear_list.each { it -> add(it)}
 }
 
 /*
@@ -152,7 +158,6 @@ Synthesizer.metaClass.addUnits << {listOsci, listLineOut, listLinearRamps, listC
 def startSynthesisEngine() {
 	s = new JSyn().createSynthesizer()
 	s.start()
-	myLineOut.start()
 }
 
 def buildAndConnectUnits(def listOsci, def listLineOut, def listLinearRamps, def listControls) {
@@ -168,8 +173,9 @@ s = new JSyn().createSynthesizer()
 s.start()
 
 s.addUnits(oscillators, lineOuts, linearRamps, controls)
+
 // sound
-myLineOut.start()
+lineout_list.get(0).start()
 
 // Start UIs
 def builder = new groovy.swing.SwingBuilder()
