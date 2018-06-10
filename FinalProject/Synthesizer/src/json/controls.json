@@ -1,10 +1,20 @@
 [
     {
+        "type": "knob",
         "digits": 5,
         "name": "myFirstKnob"
     },
     {
+        "type": "knob",
         "digits": 10,
         "name": "mySecondKnob"
+    },
+    {
+        "type": "slider",
+        "name": "myFirstSlider"
+    },
+    {
+        "type": "slider",
+        "name": "mySecondSlider"
     }
 ]

@@ -1,12 +1,22 @@
 [
     {
         "from": "myFirstKnob",
-        "linear": "ramp",
-        "to": "myFirstOsc"
+        "to": "myFirstOsc",
+        "filter": "amplitudeRamp"
+    },
+    {
+        "from": "myFirstSlider",
+        "to": "myFirstOsc",
+        "filter": "frequencyRamp"
     },
     {
         "from": "mySecondKnob",
-        "linear": "ramp",
-        "to": "mySecondOsc"
+        "to": "mySecondOsc",
+        "filter": "frequencyRamp"
+    },
+    {
+        "from": "mySecondSlider",
+        "to": "mySecondOsc",
+        "filter": "amplitudeRamp"
     }
 ]

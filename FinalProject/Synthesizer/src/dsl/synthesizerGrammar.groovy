@@ -1,9 +1,8 @@
 package dsl
 
-//DSL definition
-def rotaryKnob(RotaryValues values) {
-	return values
-}
+/*
+ * DSL definition
+ */
 
 def controls = []
 def oscillators = []
@@ -20,20 +19,37 @@ enum ControlTypes{
 	}
 }
 
+enum RampConnectionTypes{
+	AMPLITUDE("amplitude"), FREQUENCY("frequency")
+	
+	def String name
+	
+	RampConnectionTypes(String name){
+		this.name = name
+	}
+}
+
 class UnitGenerator {
 	def type
 	def name
 }
 
-def class RotaryValues
+class UnitController {
+	def type
+	def name
+}
+
+def class RotaryKnob extends UnitController
 {
-	String name
 	int digits
+}
+
+def class Slider extends UnitController
+{
 }
 
 def class Amplitude
 {
-	String uiType
 	float minimum
 	float maximum
 	float defaultValue
@@ -41,7 +57,6 @@ def class Amplitude
 
 def class Frequency
 {
-	String uiType 
 	float minimum
 	float maximum
 	float defaultValue
@@ -63,13 +78,15 @@ class LinearRampTime {
 }
 
 def class LinearRamp extends UnitGenerator {
+	String name
+	String connectsTo
 	LinearRampInput input
 	LinearRampTime time
 }
 
 def class Connection
 {
-	String linear
+	String filter
 	String from
 	String to
 }
@@ -80,15 +97,33 @@ def class Connection
 
 public String printAllControlTypeNames(){
 	def StringBuilder allNames = new StringBuilder()
-	ControlTypes.values().each{ ct ->
+		ControlTypes.values().each{ ct ->
+			allNames.append(ct.name + ", ")
+		}
+		allNames
+	}
+	
+	public boolean isValidControlType(String name){
+		boolean found = false;
+		ControlTypes.values().each { ct ->
+			if (ct.name == name){
+				found = true;
+			}
+		}
+		return found;
+	}
+
+public String printAllRampConnectionTypes(){
+	def StringBuilder allNames = new StringBuilder()
+	RampConnectionTypes.values().each{ ct ->
 		allNames.append(ct.name + ", ")
 	}
 	allNames
 }
 
-public boolean isValidEnumName(String name){
+public boolean isValidRampConnectionType(String name){
 	boolean found = false;
-	ControlTypes.values().each { ct ->
+	RampConnectionTypes.values().each { ct ->
 		if (ct.name == name){
 			found = true;
 		}

@@ -1,0 +1,28 @@
+[
+    {
+        "input": {
+            "actualValue": 300.0,
+            "minimum": 50.0,
+            "maximum": 10000.0
+        },
+        "type": "LinearRamp",
+        "time": {
+            "duration": 0.2
+        },
+        "name": "frequencyRamp",
+        "connectsTo": "frequency"
+    },
+    {
+        "input": {
+            "actualValue": 0.5,
+            "minimum": 0.0,
+            "maximum": 1.0
+        },
+        "type": "LinearRamp",
+        "time": {
+            "duration": 0.2
+        },
+        "name": "amplitudeRamp",
+        "connectsTo": "amplitude"
+    }
+]

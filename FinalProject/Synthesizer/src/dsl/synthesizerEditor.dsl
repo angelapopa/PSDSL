@@ -1,32 +1,44 @@
 /*DSL usage*/
 controls
-	.add(rotaryKnob(
-		new RotaryValues(
+	.add(new RotaryKnob(
+			type: 'knob',
 			name: 'myFirstKnob',
 			digits: 5
 		)
-	))
+	)
 
 controls	
-	.add(rotaryKnob(
-		new RotaryValues(
+	.add(new RotaryKnob(
+			type: 'knob',
 			name: 'mySecondKnob',
 			digits: 10
 		)
-	))
+	)
+
+controls
+	.add(new Slider(
+		type: 'slider',
+		name: 'myFirstSlider'
+		)
+	)
+	
+controls
+	.add(new Slider(
+		type: 'slider',
+		name: 'mySecondSlider'
+		)
+	)
 
 oscillators
 	.add(new Oscillator(
 			name: 'myFirstOsc',
 			type: 'SineOscillator',
 			amplitude: new Amplitude(
-				uiType: 'knob',
 				minimum : 0.0,
 				maximum : 1.0,
 				defaultValue : 0.5
 			),
 			frequency: new Frequency(
-				uiType: 'slider',
 				minimum : 50.0,
 				maximum : 10000.0,
 				defaultValue : 300.0
@@ -38,13 +50,11 @@ oscillators
 			name: 'mySecondOsc',
 			type: 'SineOscillator',
 			amplitude: new Amplitude(
-				uiType: 'slider',
 				minimum : 0.0,
 				maximum : 1.0,
 				defaultValue : 0.3
 			),
 			frequency: new Frequency(
-				uiType: 'knob',
 				minimum : 70.0,
 				maximum : 9000.0,
 				defaultValue : 500.0
@@ -53,13 +63,29 @@ oscillators
 
 linearRamps
 	.add(new LinearRamp(
-		name: 'ramp',
+		name: 'frequencyRamp',
+		type: 'LinearRamp',
+		input: new LinearRampInput(
+			minimum: 50.0, 
+			actualValue: 300.0, 
+			maximum: 10000.0
+		),
+		connectsTo: 'frequency',
+		time: new LinearRampTime(
+			duration: 0.2
+			)
+		))
+
+linearRamps
+	.add(new LinearRamp(
+		name: 'amplitudeRamp',
 		type: 'LinearRamp',
 		input: new LinearRampInput(
 			minimum: 0.0, 
 			actualValue: 0.5, 
 			maximum: 1.0
 		),
+		connectsTo: 'amplitude',
 		time: new LinearRampTime(
 			duration: 0.2
 			)
@@ -68,7 +94,7 @@ linearRamps
 connections
 	.add(
 		new Connection(
-			linear: 'ramp',
+			filter: 'amplitudeRamp',
 			from: 'myFirstKnob',
 			to: 'myFirstOsc'
 		)
@@ -77,9 +103,26 @@ connections
 connections
 	.add(
 		new Connection(
-			linear: 'ramp',
+			filter: 'frequencyRamp',
+			from: 'myFirstSlider',
+			to: 'myFirstOsc'
+		)
+	)
+	
+connections
+	.add(
+		new Connection(
+			filter: 'frequencyRamp',
 			from: 'mySecondKnob',
 			to: 'mySecondOsc'
 		)
 	)
-	
+
+connections
+	.add(
+		new Connection(
+			filter: 'amplitudeRamp',
+			from: 'mySecondSlider',
+			to: 'mySecondOsc'
+		)
+	)

@@ -31,7 +31,7 @@ def filePath = new File(".").absoluteFile.getParent()
 def sluper = new JsonSlurper()
 def connections = sluper.parse(new FileReader(filePath + '/src/json/connections.json'))
 def oscillators = sluper.parse(new FileReader(filePath + '/src/json/oscillators.json'))
-def linearRamps = sluper.parse(new FileReader(filePath + '/src/json/linearRamps.json'))
+def filters = sluper.parse(new FileReader(filePath + '/src/json/filters.json'))
 def controls = sluper.parse(new FileReader(filePath + '/src/json/controls.json'))
 
 def osc_list = []		//internal list of all jsyn oscillators
@@ -64,7 +64,7 @@ List.metaClass.findUnit << {searchTerm ->
 }
 
 // Adding all necessary UnitGenerators 
-Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listLinearRamps, listControls ->
+Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listFilters, listControls ->
 	assert listOsci != null
 	
 	println "Adding new LineOut"
@@ -89,56 +89,63 @@ Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listLinearRamps, listC
 		myOsc.output.connect(0, lineOutUnit.input, 0)
 		myOsc.output.connect(0, lineOutUnit.input, 1)
 		println "Connecting $myOsc.name to lineout"
-				
-		if (listLinearRamps != null) {
-			listLinearRamps.each {
-				def myLag = new LinearRamp(name: it.name)
-				add(myLag)
-				linear_list.add(myLag)
-				def lag_input = it.input
-				if (lag_input != null) {
-					myLag.input.setup(lag_input.minimum, lag_input.actualValue, lag_input.maximum)
-					println "Added new $it.type $myLag.name"
-					println "With input value: $lag_input.minimum, $lag_input.actualValue, $lag_input.maximum"
-				}
-				def lag_time = it.time
-				if (lag_time != null) {
-					myLag.time.set(lag_time.duration)
-					println "With duration: $lag_time.duration"
-				}
-
+	}
+	
+	if (listFilters != null) {
+		listFilters.each {
+			def myLag = new LinearRamp(name: it.name)
+			add(myLag)
+			linear_list.add(myLag)
+			def lag_input = it.input
+			if (lag_input != null) {
+				myLag.input.setup(lag_input.minimum, lag_input.actualValue, lag_input.maximum)
+				println "Added new $it.type $myLag.name"
+				println "With input value: $lag_input.minimum, $lag_input.actualValue, $lag_input.maximum"
 			}
+			def lag_time = it.time
+			if (lag_time != null) {
+				myLag.time.set(lag_time.duration)
+				println "With duration: $lag_time.duration"
+			}
+
 		}
 	}
 }
 
 /**
- * Connecting the 'from' side of the connection (the knob)
+ * Connecting the 'from' side of the connection (the knob, the slider)
  * to the 'to' side of the connection (the oscillator).
  * This is independent from the Synthesizer.
  */
-def addConnections(def listConnections, def listOscillators, def listLinearOutputs, def listSliders, def listControls, def listKnobs){
+def addConnections(def listConnections, def listOscillators, def listFilters, jsonFilterList, def synthSliders, def listControls, def synthKnobs){
 	if (listConnections) {
 		listConnections.each { conn ->
 			def to = listOscillators.findUnit(conn.to)
-			def linearR = listLinearOutputs.findUnit(conn.linear)
+			def synthFilter = listFilters.findUnit(conn.filter)
+			def userDefinedFilter = jsonFilterList.findUnit(conn.filter)
+			def amplitudeModel
 			
-			def amplitudeModel = PortModelFactory.createExponentialModel(linearR.input)
-			
-			if (UnitOscillator.isCase(to)){
-				linearR.output.connect(to.amplitude)
+		
+			def from = listControls.findUnit(conn.from)
+			println 'connecting ' + from.name + ' to ' + to.name + ' using filter ' + conn.filter
 				
-				listSliders.add(PortControllerFactory.createExponentialPortSlider(to.frequency))
+			if (from.type == ControlTypes.KNOB.name){
+				if (userDefinedFilter.connectsTo == RampConnectionTypes.FREQUENCY.name){
+					synthFilter.output.connect(to.frequency)
+				}
+				else {
+					synthFilter.output.connect(to.amplitude)
+				}
+				amplitudeModel = PortModelFactory.createExponentialModel(synthFilter.input)
+				synthKnobs.add(new RotaryTextController(amplitudeModel, from.digits))
+			}
 				
-				def from = listControls.findUnit(conn.from)
-				
-				println 'connecting ' + from.name + ' to ' + to.name
-				println ' where ' + from.name + ' has nr. of digits ' + from.digits
-				
-				def knob = new RotaryTextController(amplitudeModel, from.digits)
-				listKnobs.add(knob)
-			} else {
-				//TODO what if the user mixes up 'from' and 'to'?
+			if (from.type == ControlTypes.SLIDER.name){
+				if (userDefinedFilter.connectsTo == RampConnectionTypes.FREQUENCY.name){
+					synthSliders.add(PortControllerFactory.createExponentialPortSlider(to.frequency))
+				} else {
+					synthSliders.add(PortControllerFactory.createExponentialPortSlider(to.amplitude))
+				}
 			}
 		}
 	}
@@ -173,8 +180,8 @@ def buildAndConnectUnits(def listOsci, def lineOutUnit, def listLinearRamps, def
 s = new JSyn().createSynthesizer()
 s.start()
 
-s.addUnits(oscillators, lineOut, linearRamps, controls)
-addConnections(connections, osc_list, linear_list, slider_list, controls, knob_list)
+s.addUnits(oscillators, lineOut, filters, controls)
+addConnections(connections, osc_list, linear_list, filters, slider_list, controls, knob_list)
 
 // sound
 lineOut.start()
