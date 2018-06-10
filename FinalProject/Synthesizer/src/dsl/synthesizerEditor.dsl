@@ -2,14 +2,16 @@
 controls
 	.add(rotaryKnob(
 		new RotaryValues(
-			name: 'myFirstKnob'
+			name: 'myFirstKnob',
+			digits: 5
 		)
 	))
 
 controls	
 	.add(rotaryKnob(
 		new RotaryValues(
-			name: 'mySecondKnob'
+			name: 'mySecondKnob',
+			digits: 10
 		)
 	))
 

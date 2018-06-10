@@ -64,7 +64,7 @@ List.metaClass.findUnit << {searchTerm ->
 	result
 }
 
-// Adding all neccessary UnitGenerators 
+// Adding all necessary UnitGenerators 
 Synthesizer.metaClass.addUnits << {listOsci, listLineOut, listLinearRamps, listControls ->
 	assert listOsci != null
 	listOsci.each {
@@ -131,9 +131,11 @@ Synthesizer.metaClass.addUnits << {listOsci, listLineOut, listLinearRamps, listC
 				slider_list.add(PortControllerFactory.createExponentialPortSlider(to.frequency))
 				
 				def from = controls.findUnit(conn.from)
+				
 				println 'connecting ' + from.name + ' to ' + to.name
-				//TODO use the properties of the 'from' knob
-				def knob = new RotaryTextController(amplitudeModel, 5)
+				println ' where ' + from.name + ' has nr. of digits ' + from.digits 
+				
+				def knob = new RotaryTextController(amplitudeModel, from.digits)
 				knob_list.add(knob)
 			} else {
 				//TODO what if the user mixes up 'from' and 'to'?

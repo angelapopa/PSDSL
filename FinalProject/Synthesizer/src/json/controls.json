@@ -1,8 +1,10 @@
 [
     {
+        "digits": 5,
         "name": "myFirstKnob"
     },
     {
+        "digits": 10,
         "name": "mySecondKnob"
     }
 ]

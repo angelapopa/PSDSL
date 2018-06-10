@@ -19,6 +19,7 @@ class UnitGenerator {
 def class RotaryValues
 {
 	String name
+	int digits
 }
 
 def class Frequency
