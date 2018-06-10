@@ -75,9 +75,12 @@ Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listLinearRamps, listC
 		if (it.type == 'SineOscillator') {
 			myOsc = new SineOscillator(name: it.name)
 		}
+		
 		def freg = it.frequency
 		myOsc.frequency.setup(freg.minimum, freg.defaultValue, freg.maximum)
-		//TODO amplitude myOsc.amplitude.setup
+		def ampl = it.amplitude
+		myOsc.amplitude.setup(ampl.minimum, ampl.defaultValue, ampl.maximum)
+		
 		add(myOsc)
 		osc_list.add(myOsc)
 		println "Added new $it.type $myOsc.name"

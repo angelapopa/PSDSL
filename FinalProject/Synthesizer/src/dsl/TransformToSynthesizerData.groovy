@@ -13,6 +13,17 @@ ${dslDef}
 
 ${dsl}
 
+oscillators.each { osci ->
+		if (!isValidEnumName(osci.amplitude.uiType)){
+			throw new Exception("type "
+				+ osci.amplitude.uiType + " is not supported! Try one of the following >> " + printAllControlTypeNames())
+		}
+		if (!isValidEnumName(osci.frequency.uiType)){
+			throw new Exception("type "
+				+ osci.frequency.uiType + " is not supported! Try one of the following >> " + printAllControlTypeNames())
+		}
+	}
+
 new File('${controlsOutput}').write(new groovy.json.JsonBuilder(controls).toPrettyString())
 new File('${oscillatorsOutput}').write(new groovy.json.JsonBuilder(oscillators).toPrettyString())
 new File('${linearRampsOutput}').write(new groovy.json.JsonBuilder(linearRamps).toPrettyString())
