@@ -127,7 +127,6 @@ Synthesizer.metaClass.addUnits << {listOsci, listLineOut, listLinearRamps, listC
 			if (UnitOscillator.isCase(to)){
 				linearR.output.connect(to.amplitude)
 				
-				//TODO only the second slider affects the sound, maybe more lineouts are needed? or other kind or config?
 				slider_list.add(PortControllerFactory.createExponentialPortSlider(to.frequency))
 				
 				def from = controls.findUnit(conn.from)
@@ -177,7 +176,9 @@ s.start()
 s.addUnits(oscillators, lineOuts, linearRamps, controls)
 
 // sound
-lineout_list.get(0).start()
+for (line_out in lineout_list){
+	line_out.start()
+}
 
 // Start UIs
 def builder = new groovy.swing.SwingBuilder()
