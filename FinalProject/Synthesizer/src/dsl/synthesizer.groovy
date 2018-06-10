@@ -8,7 +8,6 @@ def rotaryKnob(RotaryValues values) {
 def controls = []
 def oscillators = []
 def connections = []
-def lineOuts = []
 def linearRamps = []
 
 class UnitGenerator {
@@ -46,12 +45,6 @@ class LinearRampTime {
 def class LinearRamp extends UnitGenerator {
 	LinearRampInput input
 	LinearRampTime time
-}
-
-def class LineOut
-{
-	int startValue
-	int endValue
 }
 
 def class Connection

@@ -51,13 +51,6 @@ linearRamps
 			)
 		))
 
-lineOuts
-	.add(
-		new LineOut(
-			
-		)
-	)
-
 connections
 	.add(
 		new Connection(

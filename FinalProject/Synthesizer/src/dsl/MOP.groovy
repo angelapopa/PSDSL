@@ -30,19 +30,18 @@ import groovy.test.*
 def filePath = new File(".").absoluteFile.getParent()
 def sluper = new JsonSlurper()
 def connections = sluper.parse(new FileReader(filePath + '/src/json/connections.json'))
-def lineOuts = sluper.parse(new FileReader(filePath + '/src/json/lineOuts.json'))
 def oscillators = sluper.parse(new FileReader(filePath + '/src/json/oscillators.json'))
 def linearRamps = sluper.parse(new FileReader(filePath + '/src/json/linearRamps.json'))
 def controls = sluper.parse(new FileReader(filePath + '/src/json/controls.json'))
 
 def osc_list = []		//internal list of all jsyn oscillators
-def lineout_list = []	//internal list of all jsyn LineOut
 def linear_list = []	//internal list of all jsyn linear Ramps
 def knob_list = []		//internal list of all jsyn knobs
 def slider_list = [] 	//internal list of all jsyn sliders
 
 Synthesizer s
 DoubleBoundedRangeSlider synthSlider
+LineOut lineOut = new LineOut()
 
 /**
  * Meta programming
@@ -65,8 +64,12 @@ List.metaClass.findUnit << {searchTerm ->
 }
 
 // Adding all necessary UnitGenerators 
-Synthesizer.metaClass.addUnits << {listOsci, listLineOut, listLinearRamps, listControls ->
+Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listLinearRamps, listControls ->
 	assert listOsci != null
+	
+	println "Adding new LineOut"
+	add(lineOutUnit)
+	
 	listOsci.each {
 		def myOsc
 		if (it.type == 'SineOscillator') {
@@ -74,23 +77,16 @@ Synthesizer.metaClass.addUnits << {listOsci, listLineOut, listLinearRamps, listC
 		}
 		def freg = it.frequency
 		myOsc.frequency.setup(freg.minimum, freg.defaultValue, freg.maximum)
+		//TODO amplitude myOsc.amplitude.setup
 		add(myOsc)
 		osc_list.add(myOsc)
 		println "Added new $it.type $myOsc.name"
 		println "with frequency: $freg.minimum, $freg.defaultValue, $freg.maximum"
 		
-		if (listLineOut != null) {
-			listLineOut.each {
-				def myLineOut = new LineOut()
-				add(myLineOut)
-				myOsc.output.connect(0, myLineOut.input, 0)
-				myOsc.output.connect(0, myLineOut.input, 1)
-				lineout_list.add(myLineOut)
-				println "Added new LineOut"
-				println "And connected it with $myOsc.name"
-			}
-		}
-
+		myOsc.output.connect(0, lineOutUnit.input, 0)
+		myOsc.output.connect(0, lineOutUnit.input, 1)
+		println "Connecting $myOsc.name to lineout"
+				
 		if (listLinearRamps != null) {
 			listLinearRamps.each {
 				def myLag = new LinearRamp(name: it.name)
@@ -110,7 +106,7 @@ Synthesizer.metaClass.addUnits << {listOsci, listLineOut, listLinearRamps, listC
 
 			}
 		}
-	}	
+	}
 }
 
 /**
@@ -162,8 +158,8 @@ def startSynthesisEngine() {
 	s.start()
 }
 
-def buildAndConnectUnits(def listOsci, def listLineOut, def listLinearRamps, def listControls) {
-	s.addUnits(listOsci, listLineOut, listLinearRamps, listControls)
+def buildAndConnectUnits(def listOsci, def lineOutUnit, def listLinearRamps, def listControls) {
+	s.addUnits(listOsci, lineOutUnit, listLinearRamps, listControls)
 }
 
 
@@ -174,13 +170,11 @@ def buildAndConnectUnits(def listOsci, def listLineOut, def listLinearRamps, def
 s = new JSyn().createSynthesizer()
 s.start()
 
-s.addUnits(oscillators, lineOuts, linearRamps, controls)
+s.addUnits(oscillators, lineOut, linearRamps, controls)
 addConnections(connections, osc_list, linear_list, slider_list, controls, knob_list)
 
 // sound
-for (line_out in lineout_list){
-	line_out.start()
-}
+lineOut.start()
 
 // Start UIs
 def builder = new groovy.swing.SwingBuilder()
