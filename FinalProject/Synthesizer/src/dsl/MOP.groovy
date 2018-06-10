@@ -110,38 +110,39 @@ Synthesizer.metaClass.addUnits << {listOsci, listLineOut, listLinearRamps, listC
 
 			}
 		}
-	}
-	
-	/**
-	 * connecting the 'from' side of the connection (the knob)
-	 * to the 'to' side of the connection (the oscillator) 
-	 * This is independent from Synthesizer, so it should be moved outside Synthesizer.metaClass
-	 */
-	if (connections) {
-		connections.each { conn ->
-			def to = osc_list.findUnit(conn.to)
-			def linearR = linear_list.findUnit(conn.linear)
+	}	
+}
+
+/**
+ * Connecting the 'from' side of the connection (the knob)
+ * to the 'to' side of the connection (the oscillator).
+ * This is independent from the Synthesizer.
+ */
+def addConnections(def listConnections, def listOscillators, def listLinearOutputs, def listSliders, def listControls, def listKnobs){
+	if (listConnections) {
+		listConnections.each { conn ->
+			def to = listOscillators.findUnit(conn.to)
+			def linearR = listLinearOutputs.findUnit(conn.linear)
 			
 			def amplitudeModel = PortModelFactory.createExponentialModel(linearR.input)
 			
 			if (UnitOscillator.isCase(to)){
 				linearR.output.connect(to.amplitude)
 				
-				slider_list.add(PortControllerFactory.createExponentialPortSlider(to.frequency))
+				listSliders.add(PortControllerFactory.createExponentialPortSlider(to.frequency))
 				
-				def from = controls.findUnit(conn.from)
+				def from = listControls.findUnit(conn.from)
 				
 				println 'connecting ' + from.name + ' to ' + to.name
-				println ' where ' + from.name + ' has nr. of digits ' + from.digits 
+				println ' where ' + from.name + ' has nr. of digits ' + from.digits
 				
 				def knob = new RotaryTextController(amplitudeModel, from.digits)
-				knob_list.add(knob)
+				listKnobs.add(knob)
 			} else {
 				//TODO what if the user mixes up 'from' and 'to'?
 			}
 		}
 	}
-	
 }
 
 /*
@@ -169,11 +170,12 @@ def buildAndConnectUnits(def listOsci, def listLineOut, def listLinearRamps, def
 /*
  * Start main() function
  */
-// Just release the block function. In the future, we can use block funtion instead
+// Just release the block function. In the future, we can use block function instead
 s = new JSyn().createSynthesizer()
 s.start()
 
 s.addUnits(oscillators, lineOuts, linearRamps, controls)
+addConnections(connections, osc_list, linear_list, slider_list, controls, knob_list)
 
 // sound
 for (line_out in lineout_list){
