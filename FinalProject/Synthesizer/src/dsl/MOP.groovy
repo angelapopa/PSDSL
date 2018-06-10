@@ -4,6 +4,10 @@ import java.applet.Applet
 import java.awt.BorderLayout
 import java.nio.file.attribute.AclEntry.Builder;
 
+import javax.swing.GroupLayout;
+import javax.swing.JButton
+import javax.swing.JPanel;
+
 import org.apache.ivy.core.module.descriptor.ExtendsDescriptor;
 
 import com.jsyn.JSyn;
@@ -20,6 +24,7 @@ import com.jsyn.swing.RotaryController;
 import com.jsyn.swing.RotaryTextController;
 
 import groovy.json.JsonSlurper
+import groovy.swing.factory.LayoutFactory
 import groovy.text.SimpleTemplateEngine
 import groovy.ui.ConsoleApplet
 import groovy.test.*
@@ -176,12 +181,11 @@ s.start()
 s.addUnits(oscillators, lineOuts, linearRamps, controls)
 
 // sound
-for (line_out in lineout_list){
-	line_out.start()
-}
 
 // Start UIs
 def builder = new groovy.swing.SwingBuilder()
+JPanel mPanel
+//builder.registerFactory( "groupLayout", new LayoutFactory(GroupLayout) )
 def frame = builder.frame(
 		title: 'Synthesizer',
 		size: [500, 300],
@@ -189,13 +193,51 @@ def frame = builder.frame(
 		show: true
 
 		) {
-			gridLayout(cols: 1, rows: 2)
+			/*
+			JButton a = new JButton('start 2')
 			
+			mPanel = new JPanel()
+			GroupLayout layout = new GroupLayout(mPanel);
+			mPanel.setLayout(layout)
+			GroupLayout.SequentialGroup rowTop = layout.createSequentialGroup()
+			rowTop.addComponent(a)
+			GroupLayout.SequentialGroup columnLeft = layout.createSequentialGroup()
+			columnLeft.addComponent(a)
+			layout.setVerticalGroup(
+				layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+				.addGroup(rowTop)
+				);
+			layout.setHorizontalGroup(columnLeft)*/
+			
+			gridLayout(rows: 3, cols: 2)
 			//adding knobs and sliders to the UI
 			for (k in knob_list){
 				panel(k)
+//				rowTop.addComponent(k)
 			}
 			for (sl in slider_list){
 				slider(sl)
 			}
+			
+			
+			// Buttons
+			
+			button(
+				text: 'Start',
+				actionPerformed: {
+					for (line_out in lineout_list){
+						line_out.start()
+					}
+				}
+				)
+			button(
+				text: 'Stop',
+				actionPerformed: {
+					for (line_out in lineout_list){
+						line_out.stop()
+					}
+				}
+				)
+			
 		}
+frame.add(mPanel)
