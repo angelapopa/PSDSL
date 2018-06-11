@@ -14,7 +14,7 @@
         }
     },
     {
-        "type": "SineOscillator",
+        "type": "SawtoothOscillator",
         "frequency": {
             "defaultValue": 500.0,
             "minimum": 70.0,
@@ -23,6 +23,34 @@
         "name": "mySecondOsc",
         "amplitude": {
             "defaultValue": 0.3,
+            "minimum": 0.0,
+            "maximum": 1.0
+        }
+    },
+    {
+        "type": "TriangleOscillator",
+        "frequency": {
+            "defaultValue": 800.0,
+            "minimum": 30.0,
+            "maximum": 7000.0
+        },
+        "name": "myThirdOsc",
+        "amplitude": {
+            "defaultValue": 0.7,
+            "minimum": 0.0,
+            "maximum": 1.0
+        }
+    },
+    {
+        "type": "SquareOscillator",
+        "frequency": {
+            "defaultValue": 1000.0,
+            "minimum": 90.0,
+            "maximum": 6000.0
+        },
+        "name": "myFourthOsc",
+        "amplitude": {
+            "defaultValue": 0.9,
             "minimum": 0.0,
             "maximum": 1.0
         }

@@ -8,9 +8,18 @@ import org.apache.ivy.core.module.descriptor.ExtendsDescriptor;
 
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
+import com.jsyn.unitgen.FunctionOscillator
+import com.jsyn.unitgen.ImpulseOscillator
 import com.jsyn.unitgen.LineOut;
 import com.jsyn.unitgen.LinearRamp;
+import com.jsyn.unitgen.PulseOscillator
+import com.jsyn.unitgen.RedNoise
+import com.jsyn.unitgen.SawtoothOscillator
+import com.jsyn.unitgen.SawtoothOscillatorBL
+import com.jsyn.unitgen.SawtoothOscillatorDPW
 import com.jsyn.unitgen.SineOscillator
+import com.jsyn.unitgen.SquareOscillator
+import com.jsyn.unitgen.TriangleOscillator
 import com.jsyn.unitgen.UnitOscillator
 import com.jsyn.swing.DoubleBoundedRangeSlider;
 import com.jsyn.swing.ExponentialRangeModel;
@@ -72,8 +81,35 @@ Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listFilters, listContr
 	
 	listOsci.each {
 		def myOsc
+		if (it.type == 'FunctionOscillator') {
+			myOsc = new FunctionOscillator(name: it.name)
+		}
+		if (it.type == 'ImpulseOscillator') {
+			myOsc = new ImpulseOscillator(name: it.name)
+		}
+		if (it.type == 'PulseOscillator') {
+			myOsc = new PulseOscillator(name: it.name)
+		}
+		if (it.type == 'RedNoise') {
+			myOsc = new RedNoise(name: it.name)
+		}
+		if (it.type == 'SawtoothOscillator') {
+			myOsc = new SawtoothOscillator(name: it.name)
+		}
+		if (it.type == 'SawtoothOscillatorBL') {
+			myOsc = new SawtoothOscillatorBL(name: it.name)
+		}
+		if (it.type == 'SawtoothOscillatorDPW') {
+			myOsc = new SawtoothOscillatorDPW(name: it.name)
+		}
 		if (it.type == 'SineOscillator') {
 			myOsc = new SineOscillator(name: it.name)
+		}
+		if (it.type == 'SquareOscillator') {
+			myOsc = new SquareOscillator(name: it.name)
+		}
+		if (it.type == 'TriangleOscillator') {
+			myOsc = new TriangleOscillator(name: it.name)
 		}
 		
 		def freg = it.frequency
@@ -127,13 +163,15 @@ def addConnections(def listConnections, def listOscillators, def listFilters, js
 			
 		
 			def from = listControls.findUnit(conn.from)
-			println 'connecting ' + from.name + ' to ' + to.name + ' using filter ' + conn.filter
+			print 'connecting ' + from.name + ' to ' + to.name + ' using filter ' + conn.filter +' ' 
 				
 			if (from.type == ControlTypes.KNOB.name){
 				if (userDefinedFilter.connectsTo == RampConnectionTypes.FREQUENCY.name){
+					println 'as a frequency knob'
 					synthFilter.output.connect(to.frequency)
 				}
 				else {
+					println 'as a amplitude knob'
 					synthFilter.output.connect(to.amplitude)
 				}
 				amplitudeModel = PortModelFactory.createExponentialModel(synthFilter.input)
@@ -142,8 +180,10 @@ def addConnections(def listConnections, def listOscillators, def listFilters, js
 				
 			if (from.type == ControlTypes.SLIDER.name){
 				if (userDefinedFilter.connectsTo == RampConnectionTypes.FREQUENCY.name){
+					println 'as a frequency slider'
 					synthSliders.add(PortControllerFactory.createExponentialPortSlider(to.frequency))
 				} else {
+					println 'as a amplitude slider'
 					synthSliders.add(PortControllerFactory.createExponentialPortSlider(to.amplitude))
 				}
 			}

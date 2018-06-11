@@ -1,34 +1,68 @@
 /*DSL usage*/
+
+/*knobs*/
 controls
 	.add(new RotaryKnob(
 			type: 'knob',
-			name: 'myFirstKnob',
+			name: 'myKnobForFirstOscillator',
 			digits: 5
 		)
 	)
 
+controls
+	.add(new RotaryKnob(
+			type: 'knob',
+			name: 'myFirstKnobForThirdOscillator',
+			digits: 10
+		)
+	)
+
+controls
+	.add(new RotaryKnob(
+			type: 'knob',
+			name: 'mySecondKnobForThirdOscillator',
+			digits: 10
+		)
+	)
+	
 controls	
 	.add(new RotaryKnob(
 			type: 'knob',
-			name: 'mySecondKnob',
+			name: 'myKnobForFourthOscillator',
 			digits: 10
+		)
+	)
+
+/*sliders*/
+controls
+	.add(new Slider(
+		type: 'slider',
+		name: 'mySliderForFirstOscillator'
 		)
 	)
 
 controls
 	.add(new Slider(
 		type: 'slider',
-		name: 'myFirstSlider'
+		name: 'myFirstSliderForSecondOscillator'
 		)
 	)
 	
 controls
 	.add(new Slider(
 		type: 'slider',
-		name: 'mySecondSlider'
+		name: 'mySecondSliderForSecondOscillator'
+		)
+	)
+	
+controls
+	.add(new Slider(
+		type: 'slider',
+		name: 'mySliderForFourthOscillator'
 		)
 	)
 
+/*oscillators*/
 oscillators
 	.add(new Oscillator(
 			name: 'myFirstOsc',
@@ -48,7 +82,7 @@ oscillators
 oscillators
 	.add(new Oscillator(
 			name: 'mySecondOsc',
-			type: 'SineOscillator',
+			type: 'SawtoothOscillator',
 			amplitude: new Amplitude(
 				minimum : 0.0,
 				maximum : 1.0,
@@ -61,6 +95,39 @@ oscillators
 			)
 	))
 
+oscillators
+	.add(new Oscillator(
+			name: 'myThirdOsc',
+			type: 'TriangleOscillator',
+			amplitude: new Amplitude(
+				minimum : 0.0,
+				maximum : 1.0,
+				defaultValue : 0.7
+			),
+			frequency: new Frequency(
+				minimum : 30.0,
+				maximum : 7000.0,
+				defaultValue : 800.0
+			)
+	))
+	
+oscillators
+	.add(new Oscillator(
+			name: 'myFourthOsc',
+			type: 'SquareOscillator',
+			amplitude: new Amplitude(
+				minimum : 0.0,
+				maximum : 1.0,
+				defaultValue : 0.9
+			),
+			frequency: new Frequency(
+				minimum : 90.0,
+				maximum : 6000.0,
+				defaultValue : 1000.0
+			)
+	))
+
+/*filters*/
 linearRamps
 	.add(new LinearRamp(
 		name: 'frequencyRamp',
@@ -91,38 +158,76 @@ linearRamps
 			)
 		))
 
+/*Connections btw. controllers and oscillators*/
+/*Oscillator 1*/
 connections
 	.add(
 		new Connection(
 			filter: 'amplitudeRamp',
-			from: 'myFirstKnob',
+			from: 'myKnobForFirstOscillator',
 			to: 'myFirstOsc'
 		)
 	)
-
 connections
 	.add(
 		new Connection(
 			filter: 'frequencyRamp',
-			from: 'myFirstSlider',
+			from: 'mySliderForFirstOscillator',
 			to: 'myFirstOsc'
 		)
 	)
 	
-connections
-	.add(
-		new Connection(
-			filter: 'frequencyRamp',
-			from: 'mySecondKnob',
-			to: 'mySecondOsc'
-		)
-	)
-
+/*Oscillator 2*/
 connections
 	.add(
 		new Connection(
 			filter: 'amplitudeRamp',
-			from: 'mySecondSlider',
+			from: 'myFirstSliderForSecondOscillator',
 			to: 'mySecondOsc'
+		)
+	)
+connections
+	.add(
+		new Connection(
+			filter: 'frequencyRamp',
+			from: 'mySecondSliderForSecondOscillator',
+			to: 'mySecondOsc'
+		)
+	)
+
+	
+/*Oscillator 3*/
+connections
+	.add(
+		new Connection(
+			filter: 'amplitudeRamp',
+			from: 'myFirstKnobForThirdOscillator',
+			to: 'myThirdOsc'
+		)
+	)
+connections
+	.add(
+		new Connection(
+			filter: 'frequencyRamp',
+			from: 'mySecondKnobForThirdOscillator',
+			to: 'myThirdOsc'
+		)
+	)
+
+/*Oscillator 4*/
+connections
+	.add(
+		new Connection(
+			filter: 'amplitudeRamp',
+			from: 'mySliderForFourthOscillator',
+			to: 'myFourthOsc'
+		)
+	)
+connections
+	.add(
+		new Connection(
+			filter: 'frequencyRamp',
+			from: 'myKnobForFourthOscillator',
+			to: 'myFourthOsc'
 		)
 	)

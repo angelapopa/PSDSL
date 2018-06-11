@@ -2,19 +2,37 @@
     {
         "type": "knob",
         "digits": 5,
-        "name": "myFirstKnob"
+        "name": "myKnobForFirstOscillator"
     },
     {
         "type": "knob",
         "digits": 10,
-        "name": "mySecondKnob"
+        "name": "myFirstKnobForThirdOscillator"
+    },
+    {
+        "type": "knob",
+        "digits": 10,
+        "name": "mySecondKnobForThirdOscillator"
+    },
+    {
+        "type": "knob",
+        "digits": 10,
+        "name": "myKnobForFourthOscillator"
     },
     {
         "type": "slider",
-        "name": "myFirstSlider"
+        "name": "mySliderForFirstOscillator"
     },
     {
         "type": "slider",
-        "name": "mySecondSlider"
+        "name": "myFirstSliderForSecondOscillator"
+    },
+    {
+        "type": "slider",
+        "name": "mySecondSliderForSecondOscillator"
+    },
+    {
+        "type": "slider",
+        "name": "mySliderForFourthOscillator"
     }
 ]
