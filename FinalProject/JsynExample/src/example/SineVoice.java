@@ -85,6 +85,7 @@ public class SineVoice extends Circuit implements UnitVoice {
 		
 		myVoice.getOutput().connect(0, myLineOut.input, 0);
 		myVoice.getOutput().connect(0, myLineOut.input, 1);
+		myLineOut.start();
 		
 		SoundTweaker myTweaker = new SoundTweaker(synth, "Test sound", myVoice);
 		
