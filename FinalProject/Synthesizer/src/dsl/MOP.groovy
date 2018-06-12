@@ -4,6 +4,10 @@ import java.applet.Applet
 import java.awt.BorderLayout
 import java.nio.file.attribute.AclEntry.Builder;
 
+import javax.swing.GroupLayout;
+import javax.swing.JButton
+import javax.swing.JPanel;
+
 import org.apache.ivy.core.module.descriptor.ExtendsDescriptor;
 
 import com.jsyn.JSyn;
@@ -21,6 +25,7 @@ import com.jsyn.unitgen.SineOscillator
 import com.jsyn.unitgen.SquareOscillator
 import com.jsyn.unitgen.TriangleOscillator
 import com.jsyn.unitgen.UnitOscillator
+import com.jsyn.scope.AudioScope;
 import com.jsyn.swing.DoubleBoundedRangeSlider;
 import com.jsyn.swing.ExponentialRangeModel;
 import com.jsyn.swing.PortControllerFactory;
@@ -29,6 +34,7 @@ import com.jsyn.swing.RotaryController;
 import com.jsyn.swing.RotaryTextController;
 
 import groovy.json.JsonSlurper
+import groovy.swing.factory.LayoutFactory
 import groovy.text.SimpleTemplateEngine
 import groovy.ui.ConsoleApplet
 import groovy.test.*
@@ -223,25 +229,75 @@ s.start()
 s.addUnits(oscillators, lineOut, filters, controls)
 addConnections(connections, osc_list, linear_list, filters, slider_list, controls, knob_list)
 
-// sound
-lineOut.start()
+// Visualization
+AudioScope scope = new AudioScope(s)
+for (osc in osc_list) {
+	scope.addProbe(osc.output)
+}
+//scope.addProbe(osc_list.get(0).output)
+scope.setTriggerMode(AudioScope.TriggerMode.AUTO);
+scope.getView().setControlsVisible(false);
 
 // Start UIs
 def builder = new groovy.swing.SwingBuilder()
+JPanel mPanel
+//builder.registerFactory( "groupLayout", new LayoutFactory(GroupLayout) )
 def frame = builder.frame(
 		title: 'Synthesizer',
-		size: [500, 300],
+		size: [800, 600],
 		defaultCloseOperation: javax.swing.WindowConstants.EXIT_ON_CLOSE,
 		show: true
 
 		) {
-			gridLayout(cols: 1, rows: 2)
+			/*
+			JButton a = new JButton('start 2')
 			
+			mPanel = new JPanel()
+			GroupLayout layout = new GroupLayout(mPanel);
+			mPanel.setLayout(layout)
+			GroupLayout.SequentialGroup rowTop = layout.createSequentialGroup()
+			rowTop.addComponent(a)
+			GroupLayout.SequentialGroup columnLeft = layout.createSequentialGroup()
+			columnLeft.addComponent(a)
+			layout.setVerticalGroup(
+				layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+				.addGroup(rowTop)
+				);
+			layout.setHorizontalGroup(columnLeft)*/
+			
+			gridLayout(rows: 3, cols: 3)
 			//adding knobs and sliders to the UI
 			for (k in knob_list){
 				panel(k)
+//				rowTop.addComponent(k)
 			}
 			for (sl in slider_list){
 				slider(sl)
 			}
+			mPanel = new JPanel()
+			mPanel.add(scope.getView())
+			mPanel.getToolkit().sync()
+			
+			// Buttons
+			
+			button(
+				text: 'Start',
+				actionPerformed: {
+					for (line_out in lineout_list){
+						line_out.start()	// Pull out data so the sound can be released
+						scope.start()
+					}
+				}
+				)
+			button(
+				text: 'Stop',
+				actionPerformed: {
+					for (line_out in lineout_list){
+						line_out.stop()		// Stop release all the sound
+						scope.stop()
+					}
+				}
+				)
+			
 		}
+frame.add(mPanel)
