@@ -1,4 +1,3 @@
-package dsl.enums
 
 enum RampConnectionTypes{
 	AMPLITUDE("amplitude"), FREQUENCY("frequency")
