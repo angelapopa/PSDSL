@@ -12,10 +12,13 @@ import org.apache.ivy.core.module.descriptor.ExtendsDescriptor;
 
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
+import com.jsyn.unitgen.Add;
+import com.jsyn.unitgen.Divide;
 import com.jsyn.unitgen.FunctionOscillator
 import com.jsyn.unitgen.ImpulseOscillator
 import com.jsyn.unitgen.LineOut;
 import com.jsyn.unitgen.LinearRamp;
+import com.jsyn.unitgen.Multiply;
 import com.jsyn.unitgen.PulseOscillator
 import com.jsyn.unitgen.RedNoise
 import com.jsyn.unitgen.SawtoothOscillator
@@ -23,6 +26,7 @@ import com.jsyn.unitgen.SawtoothOscillatorBL
 import com.jsyn.unitgen.SawtoothOscillatorDPW
 import com.jsyn.unitgen.SineOscillator
 import com.jsyn.unitgen.SquareOscillator
+import com.jsyn.unitgen.Subtract;
 import com.jsyn.unitgen.TriangleOscillator
 import com.jsyn.unitgen.UnitOscillator
 import com.jsyn.scope.AudioScope;
@@ -229,14 +233,16 @@ s.start()
 s.addUnits(oscillators, lineOut, filters, controls)
 addConnections(connections, osc_list, linear_list, filters, slider_list, controls, knob_list)
 
+// Multiply frequency of two oscillator
+Multiply mul = new Multiply()
+osc_list[0].output.connect(mul.inputA)
+osc_list[1].output.connect(mul.inputB)
+
 // Visualization
 AudioScope scope = new AudioScope(s)
-for (osc in osc_list) {
-	scope.addProbe(osc.output)
-}
-//scope.addProbe(osc_list.get(0).output)
-scope.setTriggerMode(AudioScope.TriggerMode.AUTO);
-scope.getView().setControlsVisible(false);
+//scope.addProbe(mul.output)
+//scope.setTriggerMode(AudioScope.TriggerMode.AUTO);
+//scope.getView().setControlsVisible(false);
 
 // Start UIs
 def builder = new groovy.swing.SwingBuilder()
@@ -265,7 +271,7 @@ def frame = builder.frame(
 				);
 			layout.setHorizontalGroup(columnLeft)*/
 			
-			gridLayout(rows: 3, cols: 3)
+			gridLayout(rows: 2, cols: 3)
 			//adding knobs and sliders to the UI
 			for (k in knob_list){
 				panel(k)
@@ -274,7 +280,21 @@ def frame = builder.frame(
 			for (sl in slider_list){
 				slider(sl)
 			}
+			// For visualization
 			mPanel = new JPanel()
+			scope.addProbe(mul.output)
+			
+			// Replace by new Arithmetic function
+			// TODO should be moved inside dropdown function
+			scope = new AudioScope(s)
+			Divide sub = new Divide()
+			// TODO should be replaced by a function combining all oscillators
+			osc_list[0].output.connect(sub.inputA)
+			osc_list[1].output.connect(sub.inputB)
+
+			scope.addProbe(sub.output)
+			scope.setTriggerMode(AudioScope.TriggerMode.AUTO);
+			scope.getView().setControlsVisible(false);
 			mPanel.add(scope.getView())
 			mPanel.getToolkit().sync()
 			
