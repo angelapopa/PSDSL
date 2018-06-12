@@ -44,8 +44,6 @@ import groovy.text.SimpleTemplateEngine
 import groovy.ui.ConsoleApplet
 import groovy.test.*
 
-import dsl.enums.*
-
 /*
  * Database
  */
@@ -60,9 +58,11 @@ def osc_list = []		//internal list of all jsyn oscillators
 def linear_list = []	//internal list of all jsyn linear Ramps
 def knob_list = []		//internal list of all jsyn knobs
 def slider_list = [] 	//internal list of all jsyn sliders
+
 Synthesizer s
 DoubleBoundedRangeSlider synthSlider
 LineOut lineOut = new LineOut()
+
 
 /**
  * Meta programming
@@ -93,37 +93,37 @@ Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listFilters, listContr
 
 	listOsci.each {
 		def myOsc
-		if (it.type == 'FunctionOscillator') {
+		if (it.type == OscillatorTypes.FUNCTION.name) {
 			myOsc = new FunctionOscillator(name: it.name)
 		}
-		if (it.type == 'ImpulseOscillator') {
+		if (it.type == OscillatorTypes.IMPULSE.name) {
 			myOsc = new ImpulseOscillator(name: it.name)
 		}
-		if (it.type == 'ImpulseOscillatorBL') {
+		if (it.type == OscillatorTypes.IMPULSEBL.name) {
 			myOsc = new ImpulseOscillatorBL(name: it.name)
 		}
-		if (it.type == 'PulseOscillator') {
+		if (it.type == OscillatorTypes.PULSE.name) {
 			myOsc = new PulseOscillator(name: it.name)
 		}
-		if (it.type == 'RedNoise') {
+		if (it.type == OscillatorTypes.REDNOISE.name) {
 			myOsc = new RedNoise(name: it.name)
 		}
-		if (it.type == 'SawtoothOscillator') {
+		if (it.type == OscillatorTypes.SAWTOOTH.name) {
 			myOsc = new SawtoothOscillator(name: it.name)
 		}
-		if (it.type == 'SawtoothOscillatorBL') {
+		if (it.type == OscillatorTypes.SAWTOOTHBL.name) {
 			myOsc = new SawtoothOscillatorBL(name: it.name)
 		}
-		if (it.type == 'SawtoothOscillatorDPW') {
+		if (it.type == OscillatorTypes.SAWTOOTHDPW.name) {
 			myOsc = new SawtoothOscillatorDPW(name: it.name)
 		}
-		if (it.type == 'SineOscillator') {
+		if (it.type == OscillatorTypes.SINE.name) {
 			myOsc = new SineOscillator(name: it.name)
 		}
-		if (it.type == 'SquareOscillator') {
+		if (it.type == OscillatorTypes.SQUARE.name) {
 			myOsc = new SquareOscillator(name: it.name)
 		}
-		if (it.type == 'TriangleOscillator') {
+		if (it.type == OscillatorTypes.TRIANGLE.name) {
 			myOsc = new TriangleOscillator(name: it.name)
 		}
 
@@ -249,9 +249,6 @@ AudioScope scope = new AudioScope(s)
 //scope.setTriggerMode(AudioScope.TriggerMode.AUTO);
 //scope.getView().setControlsVisible(false);
 
-//Sound
-lineOut.start()
-
 // Start UIs
 def builder = new groovy.swing.SwingBuilder()
 JPanel mPanel
@@ -310,21 +307,116 @@ def frame = builder.frame(
 			button(
 					text: 'Start',
 					actionPerformed: {
-						for (line_out in lineout_list){
-							line_out.start()	// Pull out data so the sound can be released
-							scope.start()
-						}
+						lineOut.start() // Pull out data so the sound can be released
+						scope.start()
 					}
 					)
 			button(
 					text: 'Stop',
 					actionPerformed: {
-						for (line_out in lineout_list){
-							line_out.stop()		// Stop release all the sound
-							scope.stop()
-						}
+						lineOut.stop()		// Stop release all the sound
+						scope.stop()
 					}
 					)
 
 		}
 frame.add(mPanel)
+
+//Enums
+//TODO: for some reason there are not found if they live in separate classes
+public enum ControlTypes{
+	KNOB("knob"), SLIDER("slider")
+	
+	def String name
+	
+	ControlTypes(String name){
+		this.name = name
+	}
+}
+
+enum RampConnectionTypes{
+	AMPLITUDE("amplitude"), FREQUENCY("frequency")
+	
+	def String name
+	
+	RampConnectionTypes(String name){
+		this.name = name
+	}
+}
+
+enum OscillatorTypes{
+	FUNCTION("FunctionOscillator"),
+	IMPULSE("ImpulseOscillator"),
+	IMPULSEBL("ImpulseOscillatorBL"),
+	PULSE("PulseOscillator"),
+	REDNOISE("RedNoise"),
+	SAWTOOTH("SawtoothOscillator"),
+	SAWTOOTHBL("SawtoothOscillatorBL"),
+	SAWTOOTHDPW("SawtoothOscillatorDPW"),
+	SINE("SineOscillator"),
+	SQUARE("SquareOscillator"),
+	TRIANGLE("TriangleOscillator")
+	
+	def String name
+	
+	OscillatorTypes(String name){
+		this.name = name
+	}
+}
+
+/*
+ * Enum Utility methods
+ */
+public String printAllOscillatorTypeNames(){
+	def StringBuilder allNames = new StringBuilder()
+	OscillatorTypes.values().each{ ct ->
+		allNames.append(ct.name + ", ")
+	}
+	allNames
+}
+
+public boolean isValidOscillatorType(String name){
+	boolean found = false;
+	OscillatorTypes.values().each { ct ->
+		if (ct.name == name){
+			found = true;
+		}
+	}
+	return found;
+}
+
+public String printAllRampConnectionTypes(){
+	def StringBuilder allNames = new StringBuilder()
+	RampConnectionTypes.values().each{ ct ->
+		allNames.append(ct.name + ", ")
+	}
+	allNames
+}
+
+public boolean isValidRampConnectionType(String name){
+	boolean found = false;
+	RampConnectionTypes.values().each { ct ->
+		if (ct.name == name){
+			found = true;
+		}
+	}
+	return found;
+}
+
+public String printAllControlTypeNames(){
+	def StringBuilder allNames = new StringBuilder()
+		ControlTypes.values().each{ ct ->
+			allNames.append(ct.name + ", ")
+		}
+		allNames
+	}
+	
+public boolean isValidControlType(String name){
+		boolean found = false;
+		ControlTypes.values().each { ct ->
+			if (ct.name == name){
+				found = true;
+			}
+		}
+		return found;
+	}
