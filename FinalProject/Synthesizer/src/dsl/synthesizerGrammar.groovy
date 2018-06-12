@@ -1,25 +1,38 @@
 package dsl
 
-//DSL definition
-def rotaryKnob(RotaryValues values) {
-	return values
-}
+/*
+ * DSL definition
+ */
 
 def controls = []
 def oscillators = []
 def connections = []
-def lineOuts = []
 def linearRamps = []
 
 class UnitGenerator {
-	def type
-	def name
+	def String type
+	def String name
 }
 
-def class RotaryValues
+class UnitController {
+	def String type
+	def String name
+}
+
+def class RotaryKnob extends UnitController
 {
-	String name
 	int digits
+}
+
+def class Slider extends UnitController
+{
+}
+
+def class Amplitude
+{
+	float minimum
+	float maximum
+	float defaultValue
 }
 
 def class Frequency
@@ -30,6 +43,7 @@ def class Frequency
 }
 
 def class Oscillator extends UnitGenerator {
+	Amplitude amplitude
 	Frequency frequency
 }
 
@@ -44,19 +58,15 @@ class LinearRampTime {
 }
 
 def class LinearRamp extends UnitGenerator {
+	String name
+	String connectsTo
 	LinearRampInput input
 	LinearRampTime time
 }
 
-def class LineOut
-{
-	int startValue
-	int endValue
-}
-
 def class Connection
 {
-	String linear
+	String filter
 	String from
 	String to
 }

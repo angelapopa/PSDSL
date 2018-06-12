@@ -12,9 +12,18 @@ import org.apache.ivy.core.module.descriptor.ExtendsDescriptor;
 
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
+import com.jsyn.unitgen.FunctionOscillator
+import com.jsyn.unitgen.ImpulseOscillator
 import com.jsyn.unitgen.LineOut;
 import com.jsyn.unitgen.LinearRamp;
+import com.jsyn.unitgen.PulseOscillator
+import com.jsyn.unitgen.RedNoise
+import com.jsyn.unitgen.SawtoothOscillator
+import com.jsyn.unitgen.SawtoothOscillatorBL
+import com.jsyn.unitgen.SawtoothOscillatorDPW
 import com.jsyn.unitgen.SineOscillator
+import com.jsyn.unitgen.SquareOscillator
+import com.jsyn.unitgen.TriangleOscillator
 import com.jsyn.unitgen.UnitOscillator
 import com.jsyn.scope.AudioScope;
 import com.jsyn.swing.DoubleBoundedRangeSlider;
@@ -36,19 +45,18 @@ import groovy.test.*
 def filePath = new File(".").absoluteFile.getParent()
 def sluper = new JsonSlurper()
 def connections = sluper.parse(new FileReader(filePath + '/src/json/connections.json'))
-def lineOuts = sluper.parse(new FileReader(filePath + '/src/json/lineOuts.json'))
 def oscillators = sluper.parse(new FileReader(filePath + '/src/json/oscillators.json'))
-def linearRamps = sluper.parse(new FileReader(filePath + '/src/json/linearRamps.json'))
+def filters = sluper.parse(new FileReader(filePath + '/src/json/filters.json'))
 def controls = sluper.parse(new FileReader(filePath + '/src/json/controls.json'))
 
 def osc_list = []		//internal list of all jsyn oscillators
-def lineout_list = []	//internal list of all jsyn LineOut
 def linear_list = []	//internal list of all jsyn linear Ramps
 def knob_list = []		//internal list of all jsyn knobs
 def slider_list = [] 	//internal list of all jsyn sliders
 
 Synthesizer s
 DoubleBoundedRangeSlider synthSlider
+LineOut lineOut = new LineOut()
 
 /**
  * Meta programming
@@ -71,83 +79,122 @@ List.metaClass.findUnit << {searchTerm ->
 }
 
 // Adding all necessary UnitGenerators 
-Synthesizer.metaClass.addUnits << {listOsci, listLineOut, listLinearRamps, listControls ->
+Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listFilters, listControls ->
 	assert listOsci != null
+	
+	println "Adding new LineOut"
+	add(lineOutUnit)
+	
 	listOsci.each {
 		def myOsc
+		if (it.type == 'FunctionOscillator') {
+			myOsc = new FunctionOscillator(name: it.name)
+		}
+		if (it.type == 'ImpulseOscillator') {
+			myOsc = new ImpulseOscillator(name: it.name)
+		}
+		if (it.type == 'PulseOscillator') {
+			myOsc = new PulseOscillator(name: it.name)
+		}
+		if (it.type == 'RedNoise') {
+			myOsc = new RedNoise(name: it.name)
+		}
+		if (it.type == 'SawtoothOscillator') {
+			myOsc = new SawtoothOscillator(name: it.name)
+		}
+		if (it.type == 'SawtoothOscillatorBL') {
+			myOsc = new SawtoothOscillatorBL(name: it.name)
+		}
+		if (it.type == 'SawtoothOscillatorDPW') {
+			myOsc = new SawtoothOscillatorDPW(name: it.name)
+		}
 		if (it.type == 'SineOscillator') {
 			myOsc = new SineOscillator(name: it.name)
 		}
+		if (it.type == 'SquareOscillator') {
+			myOsc = new SquareOscillator(name: it.name)
+		}
+		if (it.type == 'TriangleOscillator') {
+			myOsc = new TriangleOscillator(name: it.name)
+		}
+		
 		def freg = it.frequency
 		myOsc.frequency.setup(freg.minimum, freg.defaultValue, freg.maximum)
+		def ampl = it.amplitude
+		myOsc.amplitude.setup(ampl.minimum, ampl.defaultValue, ampl.maximum)
+		
 		add(myOsc)
 		osc_list.add(myOsc)
 		println "Added new $it.type $myOsc.name"
 		println "with frequency: $freg.minimum, $freg.defaultValue, $freg.maximum"
 		
-		if (listLineOut != null) {
-			listLineOut.each {
-				def myLineOut = new LineOut()
-				add(myLineOut)
-				myOsc.output.connect(0, myLineOut.input, 0)
-				myOsc.output.connect(0, myLineOut.input, 1)
-				lineout_list.add(myLineOut)
-				println "Added new LineOut"
-				println "And connected it with $myOsc.name"
+		myOsc.output.connect(0, lineOutUnit.input, 0)
+		myOsc.output.connect(0, lineOutUnit.input, 1)
+		println "Connecting $myOsc.name to lineout"
+	}
+	
+	if (listFilters != null) {
+		listFilters.each {
+			def myLag = new LinearRamp(name: it.name)
+			add(myLag)
+			linear_list.add(myLag)
+			def lag_input = it.input
+			if (lag_input != null) {
+				myLag.input.setup(lag_input.minimum, lag_input.actualValue, lag_input.maximum)
+				println "Added new $it.type $myLag.name"
+				println "With input value: $lag_input.minimum, $lag_input.actualValue, $lag_input.maximum"
 			}
+			def lag_time = it.time
+			if (lag_time != null) {
+				myLag.time.set(lag_time.duration)
+				println "With duration: $lag_time.duration"
+			}
+
 		}
+	}
+}
 
-		if (listLinearRamps != null) {
-			listLinearRamps.each {
-				def myLag = new LinearRamp(name: it.name)
-				add(myLag)
-				linear_list.add(myLag)
-				def lag_input = it.input
-				if (lag_input != null) {
-					myLag.input.setup(lag_input.minimum, lag_input.actualValue, lag_input.maximum)
-					println "Added new $it.type $myLag.name"
-					println "With input value: $lag_input.minimum, $lag_input.actualValue, $lag_input.maximum"
+/**
+ * Connecting the 'from' side of the connection (the knob, the slider)
+ * to the 'to' side of the connection (the oscillator).
+ * This is independent from the Synthesizer.
+ */
+def addConnections(def listConnections, def listOscillators, def listFilters, jsonFilterList, def synthSliders, def listControls, def synthKnobs){
+	if (listConnections) {
+		listConnections.each { conn ->
+			def to = listOscillators.findUnit(conn.to)
+			def synthFilter = listFilters.findUnit(conn.filter)
+			def userDefinedFilter = jsonFilterList.findUnit(conn.filter)
+			def amplitudeModel
+			
+		
+			def from = listControls.findUnit(conn.from)
+			print 'connecting ' + from.name + ' to ' + to.name + ' using filter ' + conn.filter +' ' 
+				
+			if (from.type == ControlTypes.KNOB.name){
+				if (userDefinedFilter.connectsTo == RampConnectionTypes.FREQUENCY.name){
+					println 'as a frequency knob'
+					synthFilter.output.connect(to.frequency)
 				}
-				def lag_time = it.time
-				if (lag_time != null) {
-					myLag.time.set(lag_time.duration)
-					println "With duration: $lag_time.duration"
+				else {
+					println 'as a amplitude knob'
+					synthFilter.output.connect(to.amplitude)
 				}
-
+				amplitudeModel = PortModelFactory.createExponentialModel(synthFilter.input)
+				synthKnobs.add(new RotaryTextController(amplitudeModel, from.digits))
+			}
+				
+			if (from.type == ControlTypes.SLIDER.name){
+				if (userDefinedFilter.connectsTo == RampConnectionTypes.FREQUENCY.name){
+					println 'as a frequency slider'
+					synthSliders.add(PortControllerFactory.createExponentialPortSlider(to.frequency))
+				} else {
+					println 'as a amplitude slider'
+					synthSliders.add(PortControllerFactory.createExponentialPortSlider(to.amplitude))
+				}
 			}
 		}
 	}
-	
-	/**
-	 * connecting the 'from' side of the connection (the knob)
-	 * to the 'to' side of the connection (the oscillator) 
-	 * This is independent from Synthesizer, so it should be moved outside Synthesizer.metaClass
-	 */
-	if (connections) {
-		connections.each { conn ->
-			def to = osc_list.findUnit(conn.to)
-			def linearR = linear_list.findUnit(conn.linear)
-			
-			def amplitudeModel = PortModelFactory.createExponentialModel(linearR.input)
-			
-			if (UnitOscillator.isCase(to)){
-				linearR.output.connect(to.amplitude)
-				
-				slider_list.add(PortControllerFactory.createExponentialPortSlider(to.frequency))
-				
-				def from = controls.findUnit(conn.from)
-				
-				println 'connecting ' + from.name + ' to ' + to.name
-				println ' where ' + from.name + ' has nr. of digits ' + from.digits 
-				
-				def knob = new RotaryTextController(amplitudeModel, from.digits)
-				knob_list.add(knob)
-			} else {
-				//TODO what if the user mixes up 'from' and 'to'?
-			}
-		}
-	}
-	
 }
 
 /*
@@ -167,19 +214,20 @@ def startSynthesisEngine() {
 	s.start()
 }
 
-def buildAndConnectUnits(def listOsci, def listLineOut, def listLinearRamps, def listControls) {
-	s.addUnits(listOsci, listLineOut, listLinearRamps, listControls)
+def buildAndConnectUnits(def listOsci, def lineOutUnit, def listLinearRamps, def listControls) {
+	s.addUnits(listOsci, lineOutUnit, listLinearRamps, listControls)
 }
 
 
 /*
  * Start main() function
  */
-// Just release the block function. In the future, we can use block funtion instead
+// Just release the block function. In the future, we can use block function instead
 s = new JSyn().createSynthesizer()
 s.start()
 
-s.addUnits(oscillators, lineOuts, linearRamps, controls)
+s.addUnits(oscillators, lineOut, filters, controls)
+addConnections(connections, osc_list, linear_list, filters, slider_list, controls, knob_list)
 
 // Visualization
 AudioScope scope = new AudioScope(s)
