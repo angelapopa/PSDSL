@@ -58,11 +58,9 @@ def osc_list = []		//internal list of all jsyn oscillators
 def linear_list = []	//internal list of all jsyn linear Ramps
 def knob_list = []		//internal list of all jsyn knobs
 def slider_list = [] 	//internal list of all jsyn sliders
-
 Synthesizer s
 DoubleBoundedRangeSlider synthSlider
 LineOut lineOut = new LineOut()
-
 
 /**
  * Meta programming
@@ -87,7 +85,7 @@ List.metaClass.findUnit << {searchTerm ->
 // Adding all necessary UnitGenerators
 Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listFilters, listControls ->
 	assert listOsci != null
-	
+
 	println "Adding new LineOut"
 	add(lineOutUnit)
 
@@ -179,8 +177,8 @@ def addConnections(def listConnections, def listOscillators, def listFilters, js
 
 			def from = listControls.findUnit(conn.from)
 			print 'connecting ' + from.name + ' to ' + to.name + ' using filter ' + conn.filter +' '
-
-			if (from.type == ControlTypes.KNOB.name){
+			// TODO: replace it with ControlTypes enum when it has been fixed
+			if (from.type == 'knob'){//ControlTypes.KNOB.name){
 				if (userDefinedFilter.connectsTo == RampConnectionTypes.FREQUENCY.name){
 					println 'as a frequency knob'
 					synthFilter.output.connect(to.frequency)
@@ -193,7 +191,7 @@ def addConnections(def listConnections, def listOscillators, def listFilters, js
 				synthKnobs.add(new RotaryTextController(amplitudeModel, from.digits))
 			}
 
-			if (from.type == ControlTypes.SLIDER.name){
+			if (from.type == 'slider'){//ControlTypes.SLIDER.name){
 				if (userDefinedFilter.connectsTo == RampConnectionTypes.FREQUENCY.name){
 					println 'as a frequency slider'
 					synthSliders.add(PortControllerFactory.createExponentialPortSlider(to.frequency))
@@ -226,8 +224,6 @@ def startSynthesisEngine() {
 def buildAndConnectUnits(def listOsci, def lineOutUnit, def listLinearRamps, def listControls) {
 	s.addUnits(listOsci, lineOutUnit, listLinearRamps, listControls)
 }
-
-
 /*
  * Start main() function
  */
@@ -245,9 +241,6 @@ osc_list[1].output.connect(mul.inputB)
 
 // Visualization
 AudioScope scope = new AudioScope(s)
-//scope.addProbe(mul.output)
-//scope.setTriggerMode(AudioScope.TriggerMode.AUTO);
-//scope.getView().setControlsVisible(false);
 
 // Start UIs
 def builder = new groovy.swing.SwingBuilder()
@@ -326,9 +319,9 @@ frame.add(mPanel)
 //TODO: for some reason there are not found if they live in separate classes
 public enum ControlTypes{
 	KNOB("knob"), SLIDER("slider")
-	
+
 	def String name
-	
+
 	ControlTypes(String name){
 		this.name = name
 	}
@@ -336,9 +329,9 @@ public enum ControlTypes{
 
 enum RampConnectionTypes{
 	AMPLITUDE("amplitude"), FREQUENCY("frequency")
-	
+
 	def String name
-	
+
 	RampConnectionTypes(String name){
 		this.name = name
 	}
@@ -356,9 +349,9 @@ enum OscillatorTypes{
 	SINE("SineOscillator"),
 	SQUARE("SquareOscillator"),
 	TRIANGLE("TriangleOscillator")
-	
+
 	def String name
-	
+
 	OscillatorTypes(String name){
 		this.name = name
 	}
@@ -405,18 +398,18 @@ public boolean isValidRampConnectionType(String name){
 
 public String printAllControlTypeNames(){
 	def StringBuilder allNames = new StringBuilder()
-		ControlTypes.values().each{ ct ->
-			allNames.append(ct.name + ", ")
-		}
-		allNames
+	ControlTypes.values().each{ ct ->
+		allNames.append(ct.name + ", ")
 	}
-	
+	allNames
+}
+
 public boolean isValidControlType(String name){
-		boolean found = false;
-		ControlTypes.values().each { ct ->
-			if (ct.name == name){
-				found = true;
-			}
+	boolean found = false;
+	ControlTypes.values().each { ct ->
+		if (ct.name == name){
+			found = true;
 		}
-		return found;
 	}
+	return found;
+}
