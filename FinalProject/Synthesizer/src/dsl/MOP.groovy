@@ -89,7 +89,7 @@ Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listFilters, listContr
 	add(lineOutUnit)
 	
 	listOsci.each {
-	
+		def myOsc
 		if (it.type == 'FunctionOscillator') {
 			myOsc = new FunctionOscillator(name: it.name)
 		}
