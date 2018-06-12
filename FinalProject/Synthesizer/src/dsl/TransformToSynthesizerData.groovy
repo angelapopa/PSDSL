@@ -1,8 +1,8 @@
 def filePath = new File(".").absolutePath.replace('.', '')
 
-def dslControlTypes = new File(filePath+ '/src/dsl/ControlTypesEnum.groovy').text
-def dslOscillatorTypes = new File(filePath+ '/src/dsl/OscillatorTypesEnum.groovy').text
-def dslRampConnectionTypes = new File(filePath+ '/src/dsl/RampConnectionTypesEnum.groovy').text
+def dslControlTypes = new File(filePath+ '/src/dsl/enums/ControlTypesEnum.groovy').text
+def dslOscillatorTypes = new File(filePath+ '/src/dsl/enums/OscillatorTypesEnum.groovy').text
+def dslRampConnectionTypes = new File(filePath+ '/src/dsl/enums/RampConnectionTypesEnum.groovy').text
 
 def dslDef = new File(filePath+ '/src/dsl/synthesizerGrammar.groovy').text
 def dsl = new File(filePath + '/src/dsl/synthesizerEditor.dsl').text
