@@ -1,4 +1,3 @@
-package dsl.enums
 
 enum OscillatorTypes{
 	FUNCTION("FunctionOscillator"), 

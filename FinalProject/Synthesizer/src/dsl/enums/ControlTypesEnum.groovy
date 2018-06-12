@@ -1,4 +1,3 @@
-package dsl.enums
 
 enum ControlTypes{
 	KNOB("knob"), SLIDER("slider")
