@@ -16,6 +16,7 @@ import com.jsyn.unitgen.LineOut;
 import com.jsyn.unitgen.LinearRamp;
 import com.jsyn.unitgen.SineOscillator
 import com.jsyn.unitgen.UnitOscillator
+import com.jsyn.scope.AudioScope;
 import com.jsyn.swing.DoubleBoundedRangeSlider;
 import com.jsyn.swing.ExponentialRangeModel;
 import com.jsyn.swing.PortControllerFactory;
@@ -180,7 +181,14 @@ s.start()
 
 s.addUnits(oscillators, lineOuts, linearRamps, controls)
 
-// sound
+// Visualization
+AudioScope scope = new AudioScope(s)
+for (osc in osc_list) {
+	scope.addProbe(osc.output)
+}
+//scope.addProbe(osc_list.get(0).output)
+scope.setTriggerMode(AudioScope.TriggerMode.AUTO);
+scope.getView().setControlsVisible(false);
 
 // Start UIs
 def builder = new groovy.swing.SwingBuilder()
@@ -188,7 +196,7 @@ JPanel mPanel
 //builder.registerFactory( "groupLayout", new LayoutFactory(GroupLayout) )
 def frame = builder.frame(
 		title: 'Synthesizer',
-		size: [500, 300],
+		size: [800, 600],
 		defaultCloseOperation: javax.swing.WindowConstants.EXIT_ON_CLOSE,
 		show: true
 
@@ -209,7 +217,7 @@ def frame = builder.frame(
 				);
 			layout.setHorizontalGroup(columnLeft)*/
 			
-			gridLayout(rows: 3, cols: 2)
+			gridLayout(rows: 3, cols: 3)
 			//adding knobs and sliders to the UI
 			for (k in knob_list){
 				panel(k)
@@ -218,7 +226,9 @@ def frame = builder.frame(
 			for (sl in slider_list){
 				slider(sl)
 			}
-			
+			mPanel = new JPanel()
+			mPanel.add(scope.getView())
+			mPanel.getToolkit().sync()
 			
 			// Buttons
 			
@@ -226,7 +236,8 @@ def frame = builder.frame(
 				text: 'Start',
 				actionPerformed: {
 					for (line_out in lineout_list){
-						line_out.start()
+						line_out.start()	// Pull out data so the sound can be released
+						scope.start()
 					}
 				}
 				)
@@ -234,7 +245,8 @@ def frame = builder.frame(
 				text: 'Stop',
 				actionPerformed: {
 					for (line_out in lineout_list){
-						line_out.stop()
+						line_out.stop()		// Stop release all the sound
+						scope.stop()
 					}
 				}
 				)
