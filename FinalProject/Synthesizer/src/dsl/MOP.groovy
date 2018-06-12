@@ -14,6 +14,7 @@ import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
 import com.jsyn.unitgen.FunctionOscillator
 import com.jsyn.unitgen.ImpulseOscillator
+import com.jsyn.unitgen.ImpulseOscillatorBL
 import com.jsyn.unitgen.LineOut;
 import com.jsyn.unitgen.LinearRamp;
 import com.jsyn.unitgen.PulseOscillator
@@ -38,6 +39,8 @@ import groovy.swing.factory.LayoutFactory
 import groovy.text.SimpleTemplateEngine
 import groovy.ui.ConsoleApplet
 import groovy.test.*
+
+import dsl.enums.*
 
 /*
  * Database
@@ -86,12 +89,15 @@ Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listFilters, listContr
 	add(lineOutUnit)
 	
 	listOsci.each {
-		def myOsc
+	
 		if (it.type == 'FunctionOscillator') {
 			myOsc = new FunctionOscillator(name: it.name)
 		}
 		if (it.type == 'ImpulseOscillator') {
 			myOsc = new ImpulseOscillator(name: it.name)
+		}
+		if (it.type == 'ImpulseOscillatorBL') {
+			myOsc = new ImpulseOscillatorBL(name: it.name)
 		}
 		if (it.type == 'PulseOscillator') {
 			myOsc = new PulseOscillator(name: it.name)
