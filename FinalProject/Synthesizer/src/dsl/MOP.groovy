@@ -60,7 +60,6 @@ def osc_list = []		//internal list of all jsyn oscillators
 def linear_list = []	//internal list of all jsyn linear Ramps
 def knob_list = []		//internal list of all jsyn knobs
 def slider_list = [] 	//internal list of all jsyn sliders
-
 Synthesizer s
 DoubleBoundedRangeSlider synthSlider
 LineOut lineOut = new LineOut()
@@ -85,13 +84,13 @@ List.metaClass.findUnit << {searchTerm ->
 	result
 }
 
-// Adding all necessary UnitGenerators 
+// Adding all necessary UnitGenerators
 Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listFilters, listControls ->
 	assert listOsci != null
 	
 	println "Adding new LineOut"
 	add(lineOutUnit)
-	
+
 	listOsci.each {
 		def myOsc
 		if (it.type == 'FunctionOscillator') {
@@ -127,22 +126,22 @@ Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listFilters, listContr
 		if (it.type == 'TriangleOscillator') {
 			myOsc = new TriangleOscillator(name: it.name)
 		}
-		
+
 		def freg = it.frequency
 		myOsc.frequency.setup(freg.minimum, freg.defaultValue, freg.maximum)
 		def ampl = it.amplitude
 		myOsc.amplitude.setup(ampl.minimum, ampl.defaultValue, ampl.maximum)
-		
+
 		add(myOsc)
 		osc_list.add(myOsc)
 		println "Added new $it.type $myOsc.name"
 		println "with frequency: $freg.minimum, $freg.defaultValue, $freg.maximum"
-		
+
 		myOsc.output.connect(0, lineOutUnit.input, 0)
 		myOsc.output.connect(0, lineOutUnit.input, 1)
 		println "Connecting $myOsc.name to lineout"
 	}
-	
+
 	if (listFilters != null) {
 		listFilters.each {
 			def myLag = new LinearRamp(name: it.name)
@@ -176,11 +175,11 @@ def addConnections(def listConnections, def listOscillators, def listFilters, js
 			def synthFilter = listFilters.findUnit(conn.filter)
 			def userDefinedFilter = jsonFilterList.findUnit(conn.filter)
 			def amplitudeModel
-			
-		
+
+
 			def from = listControls.findUnit(conn.from)
-			print 'connecting ' + from.name + ' to ' + to.name + ' using filter ' + conn.filter +' ' 
-				
+			print 'connecting ' + from.name + ' to ' + to.name + ' using filter ' + conn.filter +' '
+
 			if (from.type == ControlTypes.KNOB.name){
 				if (userDefinedFilter.connectsTo == RampConnectionTypes.FREQUENCY.name){
 					println 'as a frequency knob'
@@ -193,7 +192,7 @@ def addConnections(def listConnections, def listOscillators, def listFilters, js
 				amplitudeModel = PortModelFactory.createExponentialModel(synthFilter.input)
 				synthKnobs.add(new RotaryTextController(amplitudeModel, from.digits))
 			}
-				
+
 			if (from.type == ControlTypes.SLIDER.name){
 				if (userDefinedFilter.connectsTo == RampConnectionTypes.FREQUENCY.name){
 					println 'as a frequency slider'
@@ -250,6 +249,9 @@ AudioScope scope = new AudioScope(s)
 //scope.setTriggerMode(AudioScope.TriggerMode.AUTO);
 //scope.getView().setControlsVisible(false);
 
+//Sound
+lineOut.start()
+
 // Start UIs
 def builder = new groovy.swing.SwingBuilder()
 JPanel mPanel
@@ -262,26 +264,25 @@ def frame = builder.frame(
 
 		) {
 			/*
-			JButton a = new JButton('start 2')
-			
-			mPanel = new JPanel()
-			GroupLayout layout = new GroupLayout(mPanel);
-			mPanel.setLayout(layout)
-			GroupLayout.SequentialGroup rowTop = layout.createSequentialGroup()
-			rowTop.addComponent(a)
-			GroupLayout.SequentialGroup columnLeft = layout.createSequentialGroup()
-			columnLeft.addComponent(a)
-			layout.setVerticalGroup(
-				layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addGroup(rowTop)
-				);
-			layout.setHorizontalGroup(columnLeft)*/
-			
+	 JButton a = new JButton('start 2')
+	 mPanel = new JPanel()
+	 GroupLayout layout = new GroupLayout(mPanel);
+	 mPanel.setLayout(layout)
+	 GroupLayout.SequentialGroup rowTop = layout.createSequentialGroup()
+	 rowTop.addComponent(a)
+	 GroupLayout.SequentialGroup columnLeft = layout.createSequentialGroup()
+	 columnLeft.addComponent(a)
+	 layout.setVerticalGroup(
+	 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+	 .addGroup(rowTop)
+	 );
+	 layout.setHorizontalGroup(columnLeft)*/
+
 			gridLayout(rows: 2, cols: 3)
 			//adding knobs and sliders to the UI
 			for (k in knob_list){
 				panel(k)
-//				rowTop.addComponent(k)
+				//				rowTop.addComponent(k)
 			}
 			for (sl in slider_list){
 				slider(sl)
@@ -289,7 +290,7 @@ def frame = builder.frame(
 			// For visualization
 			mPanel = new JPanel()
 			scope.addProbe(mul.output)
-			
+
 			// Replace by new Arithmetic function
 			// TODO should be moved inside dropdown function
 			scope = new AudioScope(s)
@@ -303,27 +304,27 @@ def frame = builder.frame(
 			scope.getView().setControlsVisible(false);
 			mPanel.add(scope.getView())
 			mPanel.getToolkit().sync()
-			
+
 			// Buttons
-			
+
 			button(
-				text: 'Start',
-				actionPerformed: {
-					for (line_out in lineout_list){
-						line_out.start()	// Pull out data so the sound can be released
-						scope.start()
+					text: 'Start',
+					actionPerformed: {
+						for (line_out in lineout_list){
+							line_out.start()	// Pull out data so the sound can be released
+							scope.start()
+						}
 					}
-				}
-				)
+					)
 			button(
-				text: 'Stop',
-				actionPerformed: {
-					for (line_out in lineout_list){
-						line_out.stop()		// Stop release all the sound
-						scope.stop()
+					text: 'Stop',
+					actionPerformed: {
+						for (line_out in lineout_list){
+							line_out.stop()		// Stop release all the sound
+							scope.stop()
+						}
 					}
-				}
-				)
-			
+					)
+
 		}
 frame.add(mPanel)
