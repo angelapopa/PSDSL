@@ -9,6 +9,7 @@ import javax.swing.JButton
 import javax.swing.JPanel;
 
 import org.apache.ivy.core.module.descriptor.ExtendsDescriptor;
+import org.codehaus.groovy.transform.sc.ListOfExpressionsExpression;
 
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
@@ -43,6 +44,7 @@ import groovy.swing.factory.LayoutFactory
 import groovy.text.SimpleTemplateEngine
 import groovy.ui.ConsoleApplet
 import groovy.test.*
+import dsl.enums.ArithFunctionTypes
 
 /*
  * Database
@@ -59,8 +61,9 @@ def linear_list = []	//internal list of all jsyn linear Ramps
 def knob_list = []		//internal list of all jsyn knobs
 def slider_list = [] 	//internal list of all jsyn sliders
 Synthesizer s
-DoubleBoundedRangeSlider synthSlider
 LineOut lineOut = new LineOut()
+// Visualization
+AudioScope scope
 
 /**
  * Meta programming
@@ -178,7 +181,7 @@ def addConnections(def listConnections, def listOscillators, def listFilters, js
 			def from = listControls.findUnit(conn.from)
 			print 'connecting ' + from.name + ' to ' + to.name + ' using filter ' + conn.filter +' '
 			// TODO: replace it with ControlTypes enum when it has been fixed
-			if (from.type == 'knob'){//ControlTypes.KNOB.name){
+			if (from.type == ControlTypes.KNOB.name){
 				if (userDefinedFilter.connectsTo == RampConnectionTypes.FREQUENCY.name){
 					println 'as a frequency knob'
 					synthFilter.output.connect(to.frequency)
@@ -191,7 +194,7 @@ def addConnections(def listConnections, def listOscillators, def listFilters, js
 				synthKnobs.add(new RotaryTextController(amplitudeModel, from.digits))
 			}
 
-			if (from.type == 'slider'){//ControlTypes.SLIDER.name){
+			if (from.type == ControlTypes.SLIDER.name){
 				if (userDefinedFilter.connectsTo == RampConnectionTypes.FREQUENCY.name){
 					println 'as a frequency slider'
 					synthSliders.add(PortControllerFactory.createExponentialPortSlider(to.frequency))
@@ -215,7 +218,9 @@ def addConnections(def listConnections, def listOscillators, def listFilters, js
  }
  */
 
-// Define block functions
+/*
+ * Define block functions
+ */
 def startSynthesisEngine() {
 	s = new JSyn().createSynthesizer()
 	s.start()
@@ -224,6 +229,43 @@ def startSynthesisEngine() {
 def buildAndConnectUnits(def listOsci, def lineOutUnit, def listLinearRamps, def listControls) {
 	s.addUnits(listOsci, lineOutUnit, listLinearRamps, listControls)
 }
+
+def combineWaveform(def listOsci, ArithFunctionTypes type) {
+	def list = []	// List of Jsyn arithmetic functions necessary
+	int i
+	switch(type) {
+		case ArithFunctionTypes.ADD:
+		for (i = 0; i < listOsci.size() - 1; i++) {
+			list << new Add()
+		}
+		break
+		case ArithFunctionTypes.SUB:
+		for (i = 0; i < listOsci.size() - 1; i++) {
+			list << new Subtract()
+		}
+		break
+		case ArithFunctionTypes.MUL:
+		for (i = 0; i < listOsci.size() - 1; i++) {
+			list << new Multiply()
+		}
+		break
+		case ArithFunctionTypes.DIV:
+		for (i = 0; i < listOsci.size() - 1; i++) {
+			list << new Divide()
+		}
+		break
+	}
+	listOsci[0].output.connect(list[0].inputA)
+	listOsci[1].output.connect(list[0].inputB)
+	
+	for (i = 2; i < listOsci.size(); i++) {
+		list[i-2].output.connect(list[i-1].inputA)
+		listOsci[i].output.connect(list[i-1].inputB)
+	}
+	println "Combining all waveforms with function ${type.name}"
+	return list.last()
+}
+
 /*
  * Start main() function
  */
@@ -231,29 +273,20 @@ def buildAndConnectUnits(def listOsci, def lineOutUnit, def listLinearRamps, def
 s = new JSyn().createSynthesizer()
 s.start()
 
+// Build and connect Unit Generators
 s.addUnits(oscillators, lineOut, filters, controls)
 addConnections(connections, osc_list, linear_list, filters, slider_list, controls, knob_list)
-
-// Multiply frequency of two oscillator
-Multiply mul = new Multiply()
-osc_list[0].output.connect(mul.inputA)
-osc_list[1].output.connect(mul.inputB)
-
-// Visualization
-AudioScope scope = new AudioScope(s)
 
 // Start UIs
 def builder = new groovy.swing.SwingBuilder()
 JPanel mPanel
-//builder.registerFactory( "groupLayout", new LayoutFactory(GroupLayout) )
 def frame = builder.frame(
-		title: 'Synthesizer',
-		size: [800, 600],
-		defaultCloseOperation: javax.swing.WindowConstants.EXIT_ON_CLOSE,
-		show: true
-
-		) {
-			/*
+title: 'Synthesizer',
+size: [800, 600],
+defaultCloseOperation: javax.swing.WindowConstants.EXIT_ON_CLOSE,
+show: true
+) {
+	/*
 	 JButton a = new JButton('start 2')
 	 mPanel = new JPanel()
 	 GroupLayout layout = new GroupLayout(mPanel);
@@ -268,51 +301,44 @@ def frame = builder.frame(
 	 );
 	 layout.setHorizontalGroup(columnLeft)*/
 
-			gridLayout(rows: 2, cols: 3)
-			//adding knobs and sliders to the UI
-			for (k in knob_list){
-				panel(k)
-				//				rowTop.addComponent(k)
-			}
-			for (sl in slider_list){
-				slider(sl)
-			}
-			// For visualization
-			mPanel = new JPanel()
-			scope.addProbe(mul.output)
+	gridLayout(rows: 2, cols: 3)
+	//adding knobs and sliders to the UI
+	for (k in knob_list){
+		panel(k)
+		//				rowTop.addComponent(k)
+	}
+	for (sl in slider_list){
+		slider(sl)
+	}
+	// For visualization
+	mPanel = new JPanel()
+	// TODO should be moved inside dropdown function
+	scope = new AudioScope(s)
 
-			// Replace by new Arithmetic function
-			// TODO should be moved inside dropdown function
-			scope = new AudioScope(s)
-			Divide sub = new Divide()
-			// TODO should be replaced by a function combining all oscillators
-			osc_list[0].output.connect(sub.inputA)
-			osc_list[1].output.connect(sub.inputB)
+	scope.addProbe(combineWaveform(osc_list, ArithFunctionTypes.SUB).output)
+	scope.setTriggerMode(AudioScope.TriggerMode.AUTO);
+	scope.getView().setControlsVisible(false);
+	
+	mPanel.add(scope.getView())
+	mPanel.getToolkit().sync()
 
-			scope.addProbe(sub.output)
-			scope.setTriggerMode(AudioScope.TriggerMode.AUTO);
-			scope.getView().setControlsVisible(false);
-			mPanel.add(scope.getView())
-			mPanel.getToolkit().sync()
+	// Buttons
+	button(
+	text: 'Start',
+	actionPerformed: {
+		lineOut.start() // Pull out data so the sound can be released
+		scope.start()
+	}
+	)
+	button(
+	text: 'Stop',
+	actionPerformed: {
+		lineOut.stop()		// Stop release all the sound
+		scope.stop()
+	}
+	)
 
-			// Buttons
-
-			button(
-					text: 'Start',
-					actionPerformed: {
-						lineOut.start() // Pull out data so the sound can be released
-						scope.start()
-					}
-					)
-			button(
-					text: 'Stop',
-					actionPerformed: {
-						lineOut.stop()		// Stop release all the sound
-						scope.stop()
-					}
-					)
-
-		}
+}
 frame.add(mPanel)
 
 //Enums
