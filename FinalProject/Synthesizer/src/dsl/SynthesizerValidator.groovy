@@ -45,7 +45,10 @@ waveformOperations.each { w ->
 	if (!ArithFunctionTypes.isValidArithFunctionType(w)){
 	throw new Exception("type "
 			+ w + " is not supported! Try one of the following >> " + ArithFunctionTypes.printAllArithFunctionTypeNames())
+	}
 }
-	
+
+if (waveformOperations.size() > 1){
+	throw new Exception("Too many values. Only one operation for combining waveforms is supported!")
 }
 

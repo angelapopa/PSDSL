@@ -60,7 +60,6 @@ def osc_list = []		//internal list of all jsyn oscillators
 def linear_list = []	//internal list of all jsyn linear Ramps
 def knob_list = []		//internal list of all jsyn knobs
 def slider_list = [] 	//internal list of all jsyn sliders
-
 Synthesizer s
 LineOut lineOut = new LineOut()
 // Visualization
@@ -93,53 +92,53 @@ Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listFilters, listContr
 	//Loading OscillatorTypes
 	final GroovyClassLoader classLoader = new GroovyClassLoader();
 	def oscillatorTypesEnum = classLoader.parseClass(new File("src/dsl/enums/OscillatorTypesEnum.groovy"));
-	
+
 	println "Adding new LineOut"
 	add(lineOutUnit)
 
 	listOsci.each {
 		def myOsc
-		
+
 		switch(it.type) {
 			case  ((GroovyObject) oscillatorTypesEnum.FUNCTION).name:
-			myOsc = new FunctionOscillator(name: it.name)
-			break
-			
+				myOsc = new FunctionOscillator(name: it.name)
+				break
+
 			case ((GroovyObject) oscillatorTypesEnum.IMPULSE).name:
-			myOsc = new ImpulseOscillator(name: it.name)
-			break
-			
+				myOsc = new ImpulseOscillator(name: it.name)
+				break
+
 			case ((GroovyObject) oscillatorTypesEnum.IMPULSEBL).name:
-			myOsc = new ImpulseOscillatorBL(name: it.name)
-			break
-			
+				myOsc = new ImpulseOscillatorBL(name: it.name)
+				break
+
 			case ((GroovyObject) oscillatorTypesEnum.PULSE).name:
-			myOsc = new PulseOscillator(name: it.name)
-			break
-			
+				myOsc = new PulseOscillator(name: it.name)
+				break
+
 			case ((GroovyObject) oscillatorTypesEnum.REDNOISE).name:
-			myOsc = new RedNoise(name: it.name)
-			break
-			
+				myOsc = new RedNoise(name: it.name)
+				break
+
 			case ((GroovyObject) oscillatorTypesEnum.SAWTOOTH).name:
-			myOsc = new SawtoothOscillator(name: it.name)
-			break
-			
+				myOsc = new SawtoothOscillator(name: it.name)
+				break
+
 			case ((GroovyObject) oscillatorTypesEnum.SAWTOOTHBL).name:
-			myOsc = new SawtoothOscillatorBL(name: it.name)
-			break
-			
+				myOsc = new SawtoothOscillatorBL(name: it.name)
+				break
+
 			case ((GroovyObject) oscillatorTypesEnum.SINE).name:
-			myOsc = new SineOscillator(name: it.name)
-			break
-			
+				myOsc = new SineOscillator(name: it.name)
+				break
+
 			case ((GroovyObject) oscillatorTypesEnum.SQUARE).name:
-			myOsc = new SquareOscillator(name: it.name)
-			break
-			
+				myOsc = new SquareOscillator(name: it.name)
+				break
+
 			case ((GroovyObject) oscillatorTypesEnum.TRIANGLE).name:
-			myOsc = new TriangleOscillator(name: it.name)
-			break
+				myOsc = new TriangleOscillator(name: it.name)
+				break
 		}
 		if (it.type == ((GroovyObject) oscillatorTypesEnum.SAWTOOTHDPW).name) {
 			myOsc = new SawtoothOscillatorDPW(name: it.name)
@@ -187,12 +186,12 @@ Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listFilters, listContr
  * This is independent from the Synthesizer.
  */
 def addConnections(def listConnections, def listOscillators, def listFilters, jsonFilterList, def synthSliders, def listControls, def synthKnobs){
-	
+
 	//Loading enums
 	final GroovyClassLoader classLoader = new GroovyClassLoader();
 	def controlTypesEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/ControlTypesEnum.groovy"));
 	def rampConnectionEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/RampConnectionTypesEnum.groovy"));
-		
+
 	if (listConnections) {
 		listConnections.each { conn ->
 			def to = listOscillators.findUnit(conn.to)
@@ -259,38 +258,32 @@ def combineWaveform(def listOsci, waveform_ops) {
 	def controlTypesEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/ArithFunctionTypesEnum.groovy"));
 
 	def list = []	// List of Jsyn arithmetic functions necessary
-	
 	int i
-	//TODO I am not sure if the for loop is needed or not.
-	//Should each operation be traversed, or only the lastly added operation by user?
-	
-	//waveform_ops.each { op ->
-		switch(waveform_ops[waveform_ops.size() - 1]) { //lastly added by user
-			case ((GroovyObject) controlTypesEnumGroovy.ADD).name:
+	switch(waveform_ops[0]) {
+		case ((GroovyObject) controlTypesEnumGroovy.ADD).name:
 			for (i = 0; i < listOsci.size() - 1; i++) {
 				list << new Add()
 			}
 			break
-			case ((GroovyObject) controlTypesEnumGroovy.SUB).name:
+		case ((GroovyObject) controlTypesEnumGroovy.SUB).name:
 			for (i = 0; i < listOsci.size() - 1; i++) {
 				list << new Subtract()
 			}
 			break
-			case ((GroovyObject) controlTypesEnumGroovy.MUL).name:
+		case ((GroovyObject) controlTypesEnumGroovy.MUL).name:
 			for (i = 0; i < listOsci.size() - 1; i++) {
 				list << new Multiply()
 			}
 			break
-			case ((GroovyObject) controlTypesEnumGroovy.DIV).name:
+		case ((GroovyObject) controlTypesEnumGroovy.DIV).name:
 			for (i = 0; i < listOsci.size() - 1; i++) {
 				list << new Divide()
 			}
 			break
-		}
-	//}
+	}
 	listOsci[0].output.connect(list[0].inputA)
 	listOsci[1].output.connect(list[0].inputB)
-	
+
 	for (i = 2; i < listOsci.size(); i++) {
 		list[i-2].output.connect(list[i-1].inputA)
 		listOsci[i].output.connect(list[i-1].inputB)
@@ -317,63 +310,63 @@ addConnections(connections, osc_list, linear_list, filters, slider_list, control
 def builder = new groovy.swing.SwingBuilder()
 JPanel mPanel
 def frame = builder.frame(
-	title: 'Synthesizer',
-	size: [800, 600],
-	defaultCloseOperation: javax.swing.WindowConstants.EXIT_ON_CLOSE,
-	show: true
-	) {
-		/*
-		 JButton a = new JButton('start 2')
-		 mPanel = new JPanel()
-		 GroupLayout layout = new GroupLayout(mPanel);
-		 mPanel.setLayout(layout)
-		 GroupLayout.SequentialGroup rowTop = layout.createSequentialGroup()
-		 rowTop.addComponent(a)
-		 GroupLayout.SequentialGroup columnLeft = layout.createSequentialGroup()
-		 columnLeft.addComponent(a)
-		 layout.setVerticalGroup(
-		 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-		 .addGroup(rowTop)
-		 );
-		 layout.setHorizontalGroup(columnLeft)*/
-	
-		gridLayout(rows: 2, cols: 3)
-		//adding knobs and sliders to the UI
-		for (k in knob_list){
-			panel(k)
-			//				rowTop.addComponent(k)
+		title: 'Synthesizer',
+		size: [800, 600],
+		defaultCloseOperation: javax.swing.WindowConstants.EXIT_ON_CLOSE,
+		show: true
+		) {
+			/*
+	 JButton a = new JButton('start 2')
+	 mPanel = new JPanel()
+	 GroupLayout layout = new GroupLayout(mPanel);
+	 mPanel.setLayout(layout)
+	 GroupLayout.SequentialGroup rowTop = layout.createSequentialGroup()
+	 rowTop.addComponent(a)
+	 GroupLayout.SequentialGroup columnLeft = layout.createSequentialGroup()
+	 columnLeft.addComponent(a)
+	 layout.setVerticalGroup(
+	 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+	 .addGroup(rowTop)
+	 );
+	 layout.setHorizontalGroup(columnLeft)*/
+
+			gridLayout(rows: 2, cols: 3)
+			//adding knobs and sliders to the UI
+			for (k in knob_list){
+				panel(k)
+				//				rowTop.addComponent(k)
+			}
+			for (sl in slider_list){
+				slider(sl)
+			}
+			// For visualization
+			mPanel = new JPanel()
+			// TODO should be moved inside dropdown function
+			scope = new AudioScope(s)
+
+			def comb_w = combineWaveform(osc_list, waveformOperations)
+			println "Combining all waveforms with function ${comb_w.class.name}"
+			scope.addProbe(comb_w.output)
+			scope.setTriggerMode(AudioScope.TriggerMode.AUTO);
+			scope.getView().setControlsVisible(false);
+
+			mPanel.add(scope.getView())
+			mPanel.getToolkit().sync()
+
+			// Buttons
+			button(
+					text: 'Start',
+					actionPerformed: {
+						lineOut.start() // Pull out data so the sound can be released
+						scope.start()
+					}
+					)
+			button(
+					text: 'Stop',
+					actionPerformed: {
+						lineOut.stop()		// Stop release all the sound
+						scope.stop()
+					}
+					)
 		}
-		for (sl in slider_list){
-			slider(sl)
-		}
-		// For visualization
-		mPanel = new JPanel()
-		// TODO should be moved inside dropdown function
-		scope = new AudioScope(s)
-	
-		def comb_w = combineWaveform(osc_list, waveformOperations)
-		println "Combining all waveforms with function ${comb_w.class.name}"
-		scope.addProbe(comb_w.output)
-		scope.setTriggerMode(AudioScope.TriggerMode.AUTO);
-		scope.getView().setControlsVisible(false);
-		
-		mPanel.add(scope.getView())
-		mPanel.getToolkit().sync()
-	
-		// Buttons
-		button(
-		text: 'Start',
-		actionPerformed: {
-			lineOut.start() // Pull out data so the sound can be released
-			scope.start()
-		}
-		)
-		button(
-		text: 'Stop',
-		actionPerformed: {
-			lineOut.stop()		// Stop release all the sound
-			scope.stop()
-		}
-		)
-	}
 frame.add(mPanel)
