@@ -89,53 +89,58 @@ List.metaClass.findUnit << {searchTerm ->
 Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listFilters, listControls ->
 	assert listOsci != null
 
+	//Loading OscillatorTypes
+	final GroovyClassLoader classLoader = new GroovyClassLoader();
+	def oscillatorTypesEnum = classLoader.parseClass(new File("src/dsl/enums/OscillatorTypesEnum.groovy"));
+	
 	println "Adding new LineOut"
 	add(lineOutUnit)
 
 	listOsci.each {
 		def myOsc
+		
 		switch(it.type) {
-			case OscillatorTypes.FUNCTION.name:
+			case  ((GroovyObject) oscillatorTypesEnum.FUNCTION).name:
 			myOsc = new FunctionOscillator(name: it.name)
 			break
 			
-			case OscillatorTypes.IMPULSE.name:
+			case ((GroovyObject) oscillatorTypesEnum.IMPULSE).name:
 			myOsc = new ImpulseOscillator(name: it.name)
 			break
 			
-			case OscillatorTypes.IMPULSEBL.name:
+			case ((GroovyObject) oscillatorTypesEnum.IMPULSEBL).name:
 			myOsc = new ImpulseOscillatorBL(name: it.name)
 			break
 			
-			case OscillatorTypes.PULSE.name:
+			case ((GroovyObject) oscillatorTypesEnum.PULSE).name:
 			myOsc = new PulseOscillator(name: it.name)
 			break
 			
-			case OscillatorTypes.REDNOISE.name:
+			case ((GroovyObject) oscillatorTypesEnum.REDNOISE).name:
 			myOsc = new RedNoise(name: it.name)
 			break
 			
-			case OscillatorTypes.SAWTOOTH.name:
+			case ((GroovyObject) oscillatorTypesEnum.SAWTOOTH).name:
 			myOsc = new SawtoothOscillator(name: it.name)
 			break
 			
-			case OscillatorTypes.SAWTOOTHBL.name:
+			case ((GroovyObject) oscillatorTypesEnum.SAWTOOTHBL).name:
 			myOsc = new SawtoothOscillatorBL(name: it.name)
 			break
 			
-			case OscillatorTypes.SINE.name:
+			case ((GroovyObject) oscillatorTypesEnum.SINE).name:
 			myOsc = new SineOscillator(name: it.name)
 			break
 			
-			case OscillatorTypes.SQUARE.name:
+			case ((GroovyObject) oscillatorTypesEnum.SQUARE).name:
 			myOsc = new SquareOscillator(name: it.name)
 			break
 			
-			case OscillatorTypes.TRIANGLE.name:
+			case ((GroovyObject) oscillatorTypesEnum.TRIANGLE).name:
 			myOsc = new TriangleOscillator(name: it.name)
 			break
 		}
-		if (it.type == OscillatorTypes.SAWTOOTHDPW.name) {
+		if (it.type == ((GroovyObject) oscillatorTypesEnum.SAWTOOTHDPW).name) {
 			myOsc = new SawtoothOscillatorDPW(name: it.name)
 		}
 
@@ -181,6 +186,12 @@ Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listFilters, listContr
  * This is independent from the Synthesizer.
  */
 def addConnections(def listConnections, def listOscillators, def listFilters, jsonFilterList, def synthSliders, def listControls, def synthKnobs){
+	
+	//Loading enums
+	final GroovyClassLoader classLoader = new GroovyClassLoader();
+	def controlTypesEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/ControlTypesEnum.groovy"));
+	def rampConnectionEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/RampConnectionTypesEnum.groovy"));
+		
 	if (listConnections) {
 		listConnections.each { conn ->
 			def to = listOscillators.findUnit(conn.to)
@@ -188,12 +199,11 @@ def addConnections(def listConnections, def listOscillators, def listFilters, js
 			def userDefinedFilter = jsonFilterList.findUnit(conn.filter)
 			def amplitudeModel
 
-
 			def from = listControls.findUnit(conn.from)
 			print 'connecting ' + from.name + ' to ' + to.name + ' using filter ' + conn.filter +' '
-			// TODO: replace it with ControlTypes enum when it has been fixed
-			if (from.type == ControlTypes.KNOB.name){
-				if (userDefinedFilter.connectsTo == RampConnectionTypes.FREQUENCY.name){
+
+			if (from.type == ((GroovyObject) controlTypesEnumGroovy.KNOB).name){
+				if (userDefinedFilter.connectsTo == ((GroovyObject) rampConnectionEnumGroovy.FREQUENCY).name){
 					println 'as a frequency knob'
 					synthFilter.output.connect(to.frequency)
 				}
@@ -205,8 +215,8 @@ def addConnections(def listConnections, def listOscillators, def listFilters, js
 				synthKnobs.add(new RotaryTextController(amplitudeModel, from.digits))
 			}
 
-			if (from.type == ControlTypes.SLIDER.name){
-				if (userDefinedFilter.connectsTo == RampConnectionTypes.FREQUENCY.name){
+			if (from.type == ((GroovyObject) controlTypesEnumGroovy.SLIDER).name){
+				if (userDefinedFilter.connectsTo == ((GroovyObject) rampConnectionEnumGroovy.FREQUENCY).name){
 					println 'as a frequency slider'
 					synthSliders.add(PortControllerFactory.createExponentialPortSlider(to.frequency))
 				} else {
@@ -273,9 +283,9 @@ def combineWaveform(def listOsci, ArithFunctionTypes type) {
 		list[i-2].output.connect(list[i-1].inputA)
 		listOsci[i].output.connect(list[i-1].inputB)
 		println """
-Function ${i-2} output connect to Function ${i-1}.inputA
-Oscillator ${i} output connect to Function ${i-1}.inputB
-"""
+				Function ${i-2} output connect to Function ${i-1}.inputA
+				Oscillator ${i} output connect to Function ${i-1}.inputB
+				"""
 	}
 	println "Combining all waveforms with function ${type.name}"
 	return list.last()
@@ -296,161 +306,61 @@ addConnections(connections, osc_list, linear_list, filters, slider_list, control
 def builder = new groovy.swing.SwingBuilder()
 JPanel mPanel
 def frame = builder.frame(
-title: 'Synthesizer',
-size: [800, 600],
-defaultCloseOperation: javax.swing.WindowConstants.EXIT_ON_CLOSE,
-show: true
-) {
-	/*
-	 JButton a = new JButton('start 2')
-	 mPanel = new JPanel()
-	 GroupLayout layout = new GroupLayout(mPanel);
-	 mPanel.setLayout(layout)
-	 GroupLayout.SequentialGroup rowTop = layout.createSequentialGroup()
-	 rowTop.addComponent(a)
-	 GroupLayout.SequentialGroup columnLeft = layout.createSequentialGroup()
-	 columnLeft.addComponent(a)
-	 layout.setVerticalGroup(
-	 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-	 .addGroup(rowTop)
-	 );
-	 layout.setHorizontalGroup(columnLeft)*/
-
-	gridLayout(rows: 2, cols: 3)
-	//adding knobs and sliders to the UI
-	for (k in knob_list){
-		panel(k)
-		//				rowTop.addComponent(k)
-	}
-	for (sl in slider_list){
-		slider(sl)
-	}
-	// For visualization
-	mPanel = new JPanel()
-	// TODO should be moved inside dropdown function
-	scope = new AudioScope(s)
-
-	scope.addProbe(combineWaveform(osc_list, ArithFunctionTypes.SUB).output)
-	scope.setTriggerMode(AudioScope.TriggerMode.AUTO);
-	scope.getView().setControlsVisible(false);
+	title: 'Synthesizer',
+	size: [800, 600],
+	defaultCloseOperation: javax.swing.WindowConstants.EXIT_ON_CLOSE,
+	show: true
+	) {
+		/*
+		 JButton a = new JButton('start 2')
+		 mPanel = new JPanel()
+		 GroupLayout layout = new GroupLayout(mPanel);
+		 mPanel.setLayout(layout)
+		 GroupLayout.SequentialGroup rowTop = layout.createSequentialGroup()
+		 rowTop.addComponent(a)
+		 GroupLayout.SequentialGroup columnLeft = layout.createSequentialGroup()
+		 columnLeft.addComponent(a)
+		 layout.setVerticalGroup(
+		 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+		 .addGroup(rowTop)
+		 );
+		 layout.setHorizontalGroup(columnLeft)*/
 	
-	mPanel.add(scope.getView())
-	mPanel.getToolkit().sync()
-
-	// Buttons
-	button(
-	text: 'Start',
-	actionPerformed: {
-		lineOut.start() // Pull out data so the sound can be released
-		scope.start()
+		gridLayout(rows: 2, cols: 3)
+		//adding knobs and sliders to the UI
+		for (k in knob_list){
+			panel(k)
+			//				rowTop.addComponent(k)
+		}
+		for (sl in slider_list){
+			slider(sl)
+		}
+		// For visualization
+		mPanel = new JPanel()
+		// TODO should be moved inside dropdown function
+		scope = new AudioScope(s)
+	
+		scope.addProbe(combineWaveform(osc_list, ArithFunctionTypes.SUB).output)
+		scope.setTriggerMode(AudioScope.TriggerMode.AUTO);
+		scope.getView().setControlsVisible(false);
+		
+		mPanel.add(scope.getView())
+		mPanel.getToolkit().sync()
+	
+		// Buttons
+		button(
+		text: 'Start',
+		actionPerformed: {
+			lineOut.start() // Pull out data so the sound can be released
+			scope.start()
+		}
+		)
+		button(
+		text: 'Stop',
+		actionPerformed: {
+			lineOut.stop()		// Stop release all the sound
+			scope.stop()
+		}
+		)
 	}
-	)
-	button(
-	text: 'Stop',
-	actionPerformed: {
-		lineOut.stop()		// Stop release all the sound
-		scope.stop()
-	}
-	)
-
-}
 frame.add(mPanel)
-
-//Enums
-//TODO: for some reason there are not found if they live in separate classes
-public enum ControlTypes{
-	KNOB("knob"), SLIDER("slider")
-
-	def String name
-
-	ControlTypes(String name){
-		this.name = name
-	}
-}
-
-enum RampConnectionTypes{
-	AMPLITUDE("amplitude"), FREQUENCY("frequency")
-
-	def String name
-
-	RampConnectionTypes(String name){
-		this.name = name
-	}
-}
-
-enum OscillatorTypes{
-	FUNCTION("FunctionOscillator"),
-	IMPULSE("ImpulseOscillator"),
-	IMPULSEBL("ImpulseOscillatorBL"),
-	PULSE("PulseOscillator"),
-	REDNOISE("RedNoise"),
-	SAWTOOTH("SawtoothOscillator"),
-	SAWTOOTHBL("SawtoothOscillatorBL"),
-	SAWTOOTHDPW("SawtoothOscillatorDPW"),
-	SINE("SineOscillator"),
-	SQUARE("SquareOscillator"),
-	TRIANGLE("TriangleOscillator")
-
-	def String name
-
-	OscillatorTypes(String name){
-		this.name = name
-	}
-}
-
-/*
- * Enum Utility methods
- */
-public String printAllOscillatorTypeNames(){
-	def StringBuilder allNames = new StringBuilder()
-	OscillatorTypes.values().each{ ct ->
-		allNames.append(ct.name + ", ")
-	}
-	allNames
-}
-
-public boolean isValidOscillatorType(String name){
-	boolean found = false;
-	OscillatorTypes.values().each { ct ->
-		if (ct.name == name){
-			found = true;
-		}
-	}
-	return found;
-}
-
-public String printAllRampConnectionTypes(){
-	def StringBuilder allNames = new StringBuilder()
-	RampConnectionTypes.values().each{ ct ->
-		allNames.append(ct.name + ", ")
-	}
-	allNames
-}
-
-public boolean isValidRampConnectionType(String name){
-	boolean found = false;
-	RampConnectionTypes.values().each { ct ->
-		if (ct.name == name){
-			found = true;
-		}
-	}
-	return found;
-}
-
-public String printAllControlTypeNames(){
-	def StringBuilder allNames = new StringBuilder()
-	ControlTypes.values().each{ ct ->
-		allNames.append(ct.name + ", ")
-	}
-	allNames
-}
-
-public boolean isValidControlType(String name){
-	boolean found = false;
-	ControlTypes.values().each { ct ->
-		if (ct.name == name){
-			found = true;
-		}
-	}
-	return found;
-}

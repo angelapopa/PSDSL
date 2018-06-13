@@ -1,21 +1,21 @@
 oscillators.each { osc ->
-	if (!isValidOscillatorType(osc.type)){
+	if (!OscillatorTypes.isValidOscillatorType(osc.type)){
 		throw new Exception("type "
-			+ osc.type + " is not supported! Try one of the following >> " + printAllOscillatorTypeNames())
+			+ osc.type + " is not supported! Try one of the following >> " + OscillatorTypes.printAllOscillatorTypeNames())
 	}
 }
 
 controls.each { ct ->
-	if (!isValidControlType(ct.type)){
+	if (!ControlTypes.isValidControlType(ct.type)){
 		throw new Exception("type "
-			+ ct.type + " is not supported! Try one of the following >> " + printAllControlTypeNames())
+			+ ct.type + " is not supported! Try one of the following >> " + ControlTypes.printAllControlTypeNames())
 	}
 }
 
 linearRamps.each { ramp ->
-	if (!isValidRampConnectionType(ramp.connectsTo)){
+	if (!RampConnectionTypes.isValidRampConnectionType(ramp.connectsTo)){
 		throw new Exception("type "
-			+ ramp.connectsTo + " is not supported! Try one of the following >> " + printAllRampConnectionTypes())
+			+ ramp.connectsTo + " is not supported! Try one of the following >> " + RampConnectionTypes.printAllRampConnectionTypes())
 	}
 }
 
