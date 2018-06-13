@@ -94,38 +94,49 @@ Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listFilters, listContr
 
 	listOsci.each {
 		def myOsc
-		if (it.type == OscillatorTypes.FUNCTION.name) {
+		switch(it.type) {
+			case OscillatorTypes.FUNCTION.name:
 			myOsc = new FunctionOscillator(name: it.name)
-		}
-		if (it.type == OscillatorTypes.IMPULSE.name) {
+			break
+			
+			case OscillatorTypes.IMPULSE.name:
 			myOsc = new ImpulseOscillator(name: it.name)
-		}
-		if (it.type == OscillatorTypes.IMPULSEBL.name) {
+			break
+			
+			case OscillatorTypes.IMPULSEBL.name:
 			myOsc = new ImpulseOscillatorBL(name: it.name)
-		}
-		if (it.type == OscillatorTypes.PULSE.name) {
+			break
+			
+			case OscillatorTypes.PULSE.name:
 			myOsc = new PulseOscillator(name: it.name)
-		}
-		if (it.type == OscillatorTypes.REDNOISE.name) {
+			break
+			
+			case OscillatorTypes.REDNOISE.name:
 			myOsc = new RedNoise(name: it.name)
-		}
-		if (it.type == OscillatorTypes.SAWTOOTH.name) {
+			break
+			
+			case OscillatorTypes.SAWTOOTH.name:
 			myOsc = new SawtoothOscillator(name: it.name)
-		}
-		if (it.type == OscillatorTypes.SAWTOOTHBL.name) {
+			break
+			
+			case OscillatorTypes.SAWTOOTHBL.name:
 			myOsc = new SawtoothOscillatorBL(name: it.name)
+			break
+			
+			case OscillatorTypes.SINE.name:
+			myOsc = new SineOscillator(name: it.name)
+			break
+			
+			case OscillatorTypes.SQUARE.name:
+			myOsc = new SquareOscillator(name: it.name)
+			break
+			
+			case OscillatorTypes.TRIANGLE.name:
+			myOsc = new TriangleOscillator(name: it.name)
+			break
 		}
 		if (it.type == OscillatorTypes.SAWTOOTHDPW.name) {
 			myOsc = new SawtoothOscillatorDPW(name: it.name)
-		}
-		if (it.type == OscillatorTypes.SINE.name) {
-			myOsc = new SineOscillator(name: it.name)
-		}
-		if (it.type == OscillatorTypes.SQUARE.name) {
-			myOsc = new SquareOscillator(name: it.name)
-		}
-		if (it.type == OscillatorTypes.TRIANGLE.name) {
-			myOsc = new TriangleOscillator(name: it.name)
 		}
 
 		def freg = it.frequency
@@ -261,6 +272,10 @@ def combineWaveform(def listOsci, ArithFunctionTypes type) {
 	for (i = 2; i < listOsci.size(); i++) {
 		list[i-2].output.connect(list[i-1].inputA)
 		listOsci[i].output.connect(list[i-1].inputB)
+		println """
+Function ${i-2} output connect to Function ${i-1}.inputA
+Oscillator ${i} output connect to Function ${i-1}.inputB
+"""
 	}
 	println "Combining all waveforms with function ${type.name}"
 	return list.last()
