@@ -44,7 +44,6 @@ import groovy.swing.factory.LayoutFactory
 import groovy.text.SimpleTemplateEngine
 import groovy.ui.ConsoleApplet
 import groovy.test.*
-import dsl.enums.ArithFunctionTypes
 
 /*
  * Database
@@ -55,11 +54,13 @@ def connections = sluper.parse(new FileReader(filePath + '/src/json/connections.
 def oscillators = sluper.parse(new FileReader(filePath + '/src/json/oscillators.json'))
 def filters = sluper.parse(new FileReader(filePath + '/src/json/filters.json'))
 def controls = sluper.parse(new FileReader(filePath + '/src/json/controls.json'))
+def waveformOperations = sluper.parse(new FileReader(filePath + '/src/json/waveforms.json'))
 
 def osc_list = []		//internal list of all jsyn oscillators
 def linear_list = []	//internal list of all jsyn linear Ramps
 def knob_list = []		//internal list of all jsyn knobs
 def slider_list = [] 	//internal list of all jsyn sliders
+
 Synthesizer s
 LineOut lineOut = new LineOut()
 // Visualization
@@ -251,31 +252,42 @@ def buildAndConnectUnits(def listOsci, def lineOutUnit, def listLinearRamps, def
 	s.addUnits(listOsci, lineOutUnit, listLinearRamps, listControls)
 }
 
-def combineWaveform(def listOsci, ArithFunctionTypes type) {
+def combineWaveform(def listOsci, waveform_ops) {
+
+	//Loading enum
+	final GroovyClassLoader classLoader = new GroovyClassLoader();
+	def controlTypesEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/ArithFunctionTypesEnum.groovy"));
+
 	def list = []	// List of Jsyn arithmetic functions necessary
+	
 	int i
-	switch(type) {
-		case ArithFunctionTypes.ADD:
-		for (i = 0; i < listOsci.size() - 1; i++) {
-			list << new Add()
+	//TODO I am not sure if the for loop is needed or not.
+	//Should each operation be traversed, or only the lastly added operation by user?
+	
+	//waveform_ops.each { op ->
+		switch(waveform_ops[waveform_ops.size() - 1]) { //lastly added by user
+			case ((GroovyObject) controlTypesEnumGroovy.ADD).name:
+			for (i = 0; i < listOsci.size() - 1; i++) {
+				list << new Add()
+			}
+			break
+			case ((GroovyObject) controlTypesEnumGroovy.SUB).name:
+			for (i = 0; i < listOsci.size() - 1; i++) {
+				list << new Subtract()
+			}
+			break
+			case ((GroovyObject) controlTypesEnumGroovy.MUL).name:
+			for (i = 0; i < listOsci.size() - 1; i++) {
+				list << new Multiply()
+			}
+			break
+			case ((GroovyObject) controlTypesEnumGroovy.DIV).name:
+			for (i = 0; i < listOsci.size() - 1; i++) {
+				list << new Divide()
+			}
+			break
 		}
-		break
-		case ArithFunctionTypes.SUB:
-		for (i = 0; i < listOsci.size() - 1; i++) {
-			list << new Subtract()
-		}
-		break
-		case ArithFunctionTypes.MUL:
-		for (i = 0; i < listOsci.size() - 1; i++) {
-			list << new Multiply()
-		}
-		break
-		case ArithFunctionTypes.DIV:
-		for (i = 0; i < listOsci.size() - 1; i++) {
-			list << new Divide()
-		}
-		break
-	}
+	//}
 	listOsci[0].output.connect(list[0].inputA)
 	listOsci[1].output.connect(list[0].inputB)
 	
@@ -287,7 +299,6 @@ def combineWaveform(def listOsci, ArithFunctionTypes type) {
 				Oscillator ${i} output connect to Function ${i-1}.inputB
 				"""
 	}
-	println "Combining all waveforms with function ${type.name}"
 	return list.last()
 }
 
@@ -340,7 +351,9 @@ def frame = builder.frame(
 		// TODO should be moved inside dropdown function
 		scope = new AudioScope(s)
 	
-		scope.addProbe(combineWaveform(osc_list, ArithFunctionTypes.SUB).output)
+		def comb_w = combineWaveform(osc_list, waveformOperations)
+		println "Combining all waveforms with function ${comb_w.class.name}"
+		scope.addProbe(comb_w.output)
 		scope.setTriggerMode(AudioScope.TriggerMode.AUTO);
 		scope.getView().setControlsVisible(false);
 		

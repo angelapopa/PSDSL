@@ -7,7 +7,6 @@ package dsl.deprecated
 
 import groovy.json.JsonSlurper
 import groovy.text.SimpleTemplateEngine
-import dsl.TestOsci
 
 
 def filePath = new File(".").absolutePath.replace('.', '')

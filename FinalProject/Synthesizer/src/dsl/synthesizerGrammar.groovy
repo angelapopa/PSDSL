@@ -9,6 +9,8 @@ def oscillators = []
 def connections = []
 def linearRamps = []
 
+def waveformOperations = []
+
 class UnitGenerator {
 	def String type
 	def String name

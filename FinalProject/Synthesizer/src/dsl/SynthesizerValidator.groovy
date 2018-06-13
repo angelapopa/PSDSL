@@ -40,3 +40,12 @@ connections.each { conn ->
 		throw new Exception("Please use UnitOscillators as connection destination! " + conn.to + " is no UnitOscillator!")
 	}	
 }
+
+waveformOperations.each { w ->
+	if (!ArithFunctionTypes.isValidArithFunctionType(w)){
+	throw new Exception("type "
+			+ w + " is not supported! Try one of the following >> " + ArithFunctionTypes.printAllArithFunctionTypeNames())
+}
+	
+}
+

@@ -231,3 +231,7 @@ connections
 			to: 'myFourthOsc'
 		)
 	)
+
+/*Combination of Waveforms*/
+waveformOperations.add('Multiplication')
+waveformOperations.add('Subtraction')

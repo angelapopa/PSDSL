@@ -1,4 +1,4 @@
-package dsl;
+package dsl.deprecated;
 
 import java.awt.GridLayout;
 import java.util.List;
