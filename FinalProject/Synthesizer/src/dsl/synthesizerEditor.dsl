@@ -233,4 +233,9 @@ connections
 	)
 
 /*Combination of Waveforms*/
-waveformOperations.add('Subtraction')
+waveformOperations
+	.add(
+		new Operation(
+			name: 'Subtraction'
+		)
+	)

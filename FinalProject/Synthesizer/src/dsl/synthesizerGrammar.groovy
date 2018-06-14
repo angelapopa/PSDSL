@@ -72,3 +72,8 @@ def class Connection
 	String from
 	String to
 }
+
+def class Operation
+{
+	String name
+}

@@ -1,3 +1,5 @@
+import dsl.Operation
+
 //package dsl.enums causes problems for the transformation groovy script
 
 enum ArithFunctionTypes {
@@ -24,13 +26,21 @@ enum ArithFunctionTypes {
 		allNames
 	}
 
-	public static boolean isValidArithFunctionType(String name){
+	public static boolean isValidArithFunctionType(Operation op){
 		boolean found = false;
 		ArithFunctionTypes.values().each { ct ->
-			if (ct.name == name){
+			if (ct.name == op.name){
 				found = true;
 			}
 		}
 		return found;
+	}
+	
+	public static List getEnumNames(){
+		List<String> allNames = new ArrayList<String>()
+		ArithFunctionTypes.values().each{ ct ->
+			allNames.add(ct.name)
+		}
+		allNames
 	}
 }

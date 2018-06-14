@@ -6,6 +6,7 @@ import java.nio.file.attribute.AclEntry.Builder;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton
+import javax.swing.JComboBox
 import javax.swing.JPanel;
 
 import org.apache.ivy.core.module.descriptor.ExtendsDescriptor;
@@ -251,31 +252,27 @@ def buildAndConnectUnits(def listOsci, def lineOutUnit, def listLinearRamps, def
 	s.addUnits(listOsci, lineOutUnit, listLinearRamps, listControls)
 }
 
-def combineWaveform(def listOsci, def waveformOp) {
-
-	//Loading enum
-	final GroovyClassLoader classLoader = new GroovyClassLoader();
-	def controlTypesEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/ArithFunctionTypesEnum.groovy"));
+def combineWaveform(def listOsci, def waveformOp, def controlTypesEnum) {
 
 	def list = []	// List of Jsyn arithmetic functions necessary
 	int i
 	switch(waveformOp) {
-		case ((GroovyObject) controlTypesEnumGroovy.ADD).name:
+		case ((GroovyObject) controlTypesEnum.ADD).name:
 			for (i = 0; i < listOsci.size() - 1; i++) {
 				list << new Add()
 			}
 			break
-		case ((GroovyObject) controlTypesEnumGroovy.SUB).name:
+		case ((GroovyObject) controlTypesEnum.SUB).name:
 			for (i = 0; i < listOsci.size() - 1; i++) {
 				list << new Subtract()
 			}
 			break
-		case ((GroovyObject) controlTypesEnumGroovy.MUL).name:
+		case ((GroovyObject) controlTypesEnum.MUL).name:
 			for (i = 0; i < listOsci.size() - 1; i++) {
 				list << new Multiply()
 			}
 			break
-		case ((GroovyObject) controlTypesEnumGroovy.DIV).name:
+		case ((GroovyObject) controlTypesEnum.DIV).name:
 			for (i = 0; i < listOsci.size() - 1; i++) {
 				list << new Divide()
 			}
@@ -306,9 +303,24 @@ s.start()
 s.addUnits(oscillators, lineOut, filters, controls)
 addConnections(connections, osc_list, linear_list, filters, slider_list, controls, knob_list)
 
+//Loading waveform operations enum
+final GroovyClassLoader classLoader = new GroovyClassLoader();
+def controlTypesEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/ArithFunctionTypesEnum.groovy"));
+
+def setWaveformScope(def newScope, def oscillator_list, def selectedItem, def controlTypes){
+
+	def comb_w = combineWaveform(oscillator_list, selectedItem, controlTypes)
+	println "Combining all waveforms with function ${comb_w.class.name}"
+	newScope.addProbe(comb_w.output)
+	newScope.setTriggerMode(AudioScope.TriggerMode.AUTO);
+	newScope.getView().setControlsVisible(false);
+	newScope
+}
+
 // Start UIs
 def builder = new groovy.swing.SwingBuilder()
 JPanel mPanel
+
 def frame = builder.frame(
 		title: 'Synthesizer',
 		size: [800, 600],
@@ -339,20 +351,18 @@ def frame = builder.frame(
 			for (sl in slider_list){
 				slider(sl)
 			}
-			// For visualization
-			mPanel = new JPanel()
-			// TODO should be moved inside dropdown function
+
 			scope = new AudioScope(s)
-
-			def comb_w = combineWaveform(osc_list, waveformOperations[0])
-			println "Combining all waveforms with function ${comb_w.class.name}"
-			scope.addProbe(comb_w.output)
-			scope.setTriggerMode(AudioScope.TriggerMode.AUTO);
-			scope.getView().setControlsVisible(false);
-
-			mPanel.add(scope.getView())
-			mPanel.getToolkit().sync()
-
+			scope = setWaveformScope(scope, osc_list, waveformOperations[0].name, controlTypesEnumGroovy)
+			
+			// For visualization, sub panel is for refresh purposes
+			def subPanel = panel(id:'subPanelAdioScope')
+			mPanel = new JPanel()
+			subPanel.add(scope.getView())
+			mPanel.add(subPanel);
+			//mPanel.getToolkit().sync()
+			panel(mPanel)
+			
 			// Buttons
 			button(
 					text: 'Start',
@@ -360,13 +370,34 @@ def frame = builder.frame(
 						lineOut.start() // Pull out data so the sound can be released
 						scope.start()
 					}
-					)
+			)
+			
 			button(
 					text: 'Stop',
 					actionPerformed: {
 						lineOut.stop()		// Stop release all the sound
 						scope.stop()
 					}
-					)
+			)
+			
+			// Dropdown Waveform Operations
+			comboBox(
+				id:'comboWaveform',
+				toolTipText:'Waveform Operation',
+				items: controlTypesEnumGroovy.getEnumNames(),
+				selectedIndex: controlTypesEnumGroovy.getEnumNames().indexOf(waveformOperations[0].name),
+				actionPerformed:{ event -> 
+					scope = new AudioScope(s)
+					scope = setWaveformScope(scope, osc_list, event.source.selectedItem, controlTypesEnumGroovy)
+					
+					//repaint visualization inside the panel
+					mPanel.removeAll()
+					def newSubPanel = panel(id:'newSubPanelAdioScope')
+					newSubPanel.add(scope.getView())
+					
+					mPanel.add(newSubPanel)										
+					mPanel.revalidate()
+					mPanel.repaint()
+					}
+			)
 		}
-frame.add(mPanel)
