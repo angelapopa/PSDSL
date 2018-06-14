@@ -251,7 +251,7 @@ def buildAndConnectUnits(def listOsci, def lineOutUnit, def listLinearRamps, def
 	s.addUnits(listOsci, lineOutUnit, listLinearRamps, listControls)
 }
 
-def combineWaveform(def listOsci, waveform_ops) {
+def combineWaveform(def listOsci, def waveformOp) {
 
 	//Loading enum
 	final GroovyClassLoader classLoader = new GroovyClassLoader();
@@ -259,7 +259,7 @@ def combineWaveform(def listOsci, waveform_ops) {
 
 	def list = []	// List of Jsyn arithmetic functions necessary
 	int i
-	switch(waveform_ops[0]) {
+	switch(waveformOp) {
 		case ((GroovyObject) controlTypesEnumGroovy.ADD).name:
 			for (i = 0; i < listOsci.size() - 1; i++) {
 				list << new Add()
@@ -344,7 +344,7 @@ def frame = builder.frame(
 			// TODO should be moved inside dropdown function
 			scope = new AudioScope(s)
 
-			def comb_w = combineWaveform(osc_list, waveformOperations)
+			def comb_w = combineWaveform(osc_list, waveformOperations[0])
 			println "Combining all waveforms with function ${comb_w.class.name}"
 			scope.addProbe(comb_w.output)
 			scope.setTriggerMode(AudioScope.TriggerMode.AUTO);
