@@ -307,7 +307,7 @@ addConnections(connections, osc_list, linear_list, filters, slider_list, control
 final GroovyClassLoader classLoader = new GroovyClassLoader();
 def controlTypesEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/ArithFunctionTypesEnum.groovy"));
 
-def setWaveformScope(def newScope, def oscillator_list, def selectedItem, def controlTypes){
+def buildWaveformScope(def newScope, def oscillator_list, def selectedItem, def controlTypes){
 
 	def comb_w = combineWaveform(oscillator_list, selectedItem, controlTypes)
 	println "Combining all waveforms with function ${comb_w.class.name}"
@@ -353,7 +353,7 @@ def frame = builder.frame(
 			}
 
 			scope = new AudioScope(s)
-			scope = setWaveformScope(scope, osc_list, waveformOperations[0].name, controlTypesEnumGroovy)
+			scope = buildWaveformScope(scope, osc_list, waveformOperations[0].name, controlTypesEnumGroovy)
 			
 			// For visualization, sub panel is for refresh purposes
 			def subPanel = panel(id:'subPanelAdioScope')
@@ -388,7 +388,7 @@ def frame = builder.frame(
 				selectedIndex: controlTypesEnumGroovy.getEnumNames().indexOf(waveformOperations[0].name),
 				actionPerformed:{ event -> 
 					scope = new AudioScope(s)
-					scope = setWaveformScope(scope, osc_list, event.source.selectedItem, controlTypesEnumGroovy)
+					scope = buildWaveformScope(scope, osc_list, event.source.selectedItem, controlTypesEnumGroovy)
 					
 					//repaint visualization inside the panel
 					mPanel.removeAll()
