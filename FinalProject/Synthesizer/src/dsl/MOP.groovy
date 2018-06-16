@@ -5,6 +5,7 @@ import java.awt.BorderLayout as BL
 import java.awt.GridLayout
 import java.nio.file.attribute.AclEntry.Builder;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.JButton
@@ -35,7 +36,9 @@ import com.jsyn.unitgen.SquareOscillator
 import com.jsyn.unitgen.Subtract;
 import com.jsyn.unitgen.TriangleOscillator
 import com.jsyn.unitgen.UnitOscillator
+import com.jsyn.ports.UnitInputPort;
 import com.jsyn.scope.AudioScope;
+import com.jsyn.swing.DoubleBoundedRangeModel;
 import com.jsyn.swing.DoubleBoundedRangeSlider;
 import com.jsyn.swing.ExponentialRangeModel;
 import com.jsyn.swing.PortControllerFactory;
@@ -292,17 +295,6 @@ def combineWaveform(def listOsci, def waveformOp, def controlTypesEnum) {
 	return list.last()
 }
 
-/*
- * Start main() function
- */
-// Just release the block function. In the future, we can use block function instead
-s = new JSyn().createSynthesizer()
-s.start()
-
-// Build and connect Unit Generators
-s.addUnits(oscillators, lineOut, filters, controls)
-addConnections(connections, osc_list, linear_list, filters, slider_list, controls, knob_list)
-
 //Loading waveform operations enum
 final GroovyClassLoader classLoader = new GroovyClassLoader();
 def controlTypesEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/ArithFunctionTypesEnum.groovy"));
@@ -313,8 +305,30 @@ def buildWaveformScope(def newScope, def oscillator_list, def selectedItem, def 
 	newScope.addProbe(comb_w.output)
 	newScope.setTriggerMode(AudioScope.TriggerMode.AUTO);
 	newScope.getView().setControlsVisible(false);
-	newScope
 }
+
+def portKnobBuilder(UnitInputPort port, int digits, String label) {
+	def model = PortModelFactory.createExponentialModel(port)
+	def knob = new RotaryTextController(model, digits)
+	knob.setBorder(BorderFactory.createTitledBorder(label))
+	knob.setTitle(label)
+	knob
+}
+def portSliderBuidler(UnitInputPort port) {
+	def slider = PortControllerFactory.createExponentialPortSlider(port)
+	slider
+}
+
+/*
+ * Start main() function
+ */
+// Just release the block function. In the future, we can use block function instead
+s = new JSyn().createSynthesizer()
+s.start()
+
+// Build and connect Unit Generators
+s.addUnits(oscillators, lineOut, filters, controls)
+addConnections(connections, osc_list, linear_list, filters, slider_list, controls, knob_list)
 
 /*
  * Start UIs
@@ -335,12 +349,12 @@ def frame = builder.frame(
 			
 			/* -- SECOND PART: Audio scope -- */
 			scope = new AudioScope(s)
-			scope = buildWaveformScope(scope, osc_list, waveformOperations[0].name, controlTypesEnumGroovy)
+			buildWaveformScope(scope, osc_list, waveformOperations[0].name, controlTypesEnumGroovy)
 			// Subpanel is not necessary
 			southPanel = panel()
 			southPanel.add(scope.getView())
 			
-			/* -- THIRD PART: oscillator ports and buttons -- */
+			/* -- THIRD PART: oscillator ports -- */
 			portPanel = panel()
 			for (k in knob_list){
 				portPanel.add(k)
@@ -348,6 +362,8 @@ def frame = builder.frame(
 			for (sl in slider_list){
 				portPanel.add(sl)
 			}
+			
+			/* -- FORTH PART: buttons -- */
 			buttonPanel = panel()
 			buttonPanel.add(button(
 					text: 'Start',
