@@ -287,11 +287,8 @@ def combineWaveform(def listOsci, def waveformOp, def controlTypesEnum) {
 	for (i = 2; i < listOsci.size(); i++) {
 		list[i-2].output.connect(list[i-1].inputA)
 		listOsci[i].output.connect(list[i-1].inputB)
-		println """
-				Function ${i-2} output connect to Function ${i-1}.inputA
-				Oscillator ${i} output connect to Function ${i-1}.inputB
-				"""
 	}
+	println "Combining all waveforms with function ${waveformOp}"
 	return list.last()
 }
 
@@ -313,16 +310,17 @@ def controlTypesEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/Arit
 def buildWaveformScope(def newScope, def oscillator_list, def selectedItem, def controlTypes){
 
 	def comb_w = combineWaveform(oscillator_list, selectedItem, controlTypes)
-	println "Combining all waveforms with function ${comb_w.class.name}"
 	newScope.addProbe(comb_w.output)
 	newScope.setTriggerMode(AudioScope.TriggerMode.AUTO);
 	newScope.getView().setControlsVisible(false);
 	newScope
 }
 
-// Start UIs
+/*
+ * Start UIs
+ */
 def builder = new groovy.swing.SwingBuilder()
-JPanel northPanel, centerPanel, southPanel
+JPanel northPanel,portPanel, buttonPanel, southPanel
 
 def frame = builder.frame(
 		title: 'Synthesizer',
@@ -330,37 +328,27 @@ def frame = builder.frame(
 		defaultCloseOperation: javax.swing.WindowConstants.EXIT_ON_CLOSE,
 		show: true
 		) {
-//			borderLayout()
 			boxLayout(axis: BoxLayout.Y_AXIS)
-			/* -- NORTH: Title -- */
-			northPanel = panel()//constraints: BL.NORTH)
+			/* -- FIRST PART: Title -- */
+			northPanel = panel()
 			northPanel.add(label("Oscillator Harmonics Generation"))
 			
-			/* -- SOUTH: Audio scope -- */
+			/* -- SECOND PART: Audio scope -- */
 			scope = new AudioScope(s)
 			scope = buildWaveformScope(scope, osc_list, waveformOperations[0].name, controlTypesEnumGroovy)
-			// For visualization, sub panel is for refresh purposes
-			def subPanel = panel(id:'subPanelAdioScope')
-			southPanel = panel()//constraints: BL.SOUTH)
-			subPanel.add(scope.getView())
-			southPanel.add(subPanel);
-			//mPanel.getToolkit().sync()
+			// Subpanel is not necessary
+			southPanel = panel()
+			southPanel.add(scope.getView())
 			
-			/* -- CENTER: oscillator ports and buttons -- */
-//			centerPanel = panel(constraints: BL.WEST)
-//			centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS))
-			def portPanel = panel()
+			/* -- THIRD PART: oscillator ports and buttons -- */
+			portPanel = panel()
 			for (k in knob_list){
 				portPanel.add(k)
-//				panel(k)
 			}
 			for (sl in slider_list){
 				portPanel.add(sl)
-//				slider(sl)
 			}
-//			centerPanel.add(portPanel)
-			// Buttons; TODO: muste be added to buttonPanel
-			def buttonPanel = panel()
+			buttonPanel = panel()
 			buttonPanel.add(button(
 					text: 'Start',
 					actionPerformed: {
@@ -384,18 +372,16 @@ def frame = builder.frame(
 				items: controlTypesEnumGroovy.getEnumNames(),
 				selectedIndex: controlTypesEnumGroovy.getEnumNames().indexOf(waveformOperations[0].name),
 				actionPerformed:{ event ->
-					scope = new AudioScope(s)
-					scope = buildWaveformScope(scope, osc_list, event.source.selectedItem, controlTypesEnumGroovy)
 					
+					lineOut.stop()
+					scope.stop()
+					scope = new AudioScope(s)
+					scope.addProbe(combineWaveform(osc_list, event.source.selectedItem, controlTypesEnumGroovy).output)
 					//repaint visualization inside the panel
 					southPanel.removeAll()
-					def newSubPanel = panel(id:'newSubPanelAdioScope')
-					newSubPanel.add(scope.getView())
-					
-					southPanel.add(newSubPanel)
+					southPanel.add(scope.getView())
 					southPanel.revalidate()
 					southPanel.repaint()
 					}
 			))
-//			centerPanel.add(buttonPanel)
 		}
