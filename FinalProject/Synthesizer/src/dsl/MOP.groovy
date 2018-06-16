@@ -2,7 +2,11 @@ package dsl
 
 import java.applet.Applet
 import java.awt.BorderLayout as BL
+import java.awt.CardLayout
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout
 import java.awt.GridLayout
+import java.awt.Insets;
 import java.nio.file.attribute.AclEntry.Builder;
 
 import javax.swing.BorderFactory;
@@ -196,7 +200,8 @@ Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listFilters, listContr
  * to the 'to' side of the connection (the oscillator).
  * This is independent from the Synthesizer.
  */
-def addConnections(def listConnections, def listOscillators, def listFilters, jsonFilterList, def synthSliders, def listControls, def synthKnobs){
+def addConnections(def listConnections, def listOscillators, def listFilters, jsonFilterList, def listControls){
+	def map = [:]	// Mapping UnitInputPort (osc.frequency or amplitude) to appropriate UI elements (knob, slider...)
 	//Loading enums
 	final GroovyClassLoader classLoader = new GroovyClassLoader();
 	def controlTypesEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/ControlTypesEnum.groovy"));
@@ -207,7 +212,6 @@ def addConnections(def listConnections, def listOscillators, def listFilters, js
 			def to = listOscillators.findUnit(conn.to)
 			def synthFilter = listFilters.findUnit(conn.filter)
 			def userDefinedFilter = jsonFilterList.findUnit(conn.filter)
-			def amplitudeModel
 
 			def from = listControls.findUnit(conn.from)
 			print 'connecting ' + from.name + ' to ' + to.name + ' using filter ' + conn.filter +' '
@@ -215,27 +219,30 @@ def addConnections(def listConnections, def listOscillators, def listFilters, js
 			if (from.type == ((GroovyObject) controlTypesEnumGroovy.KNOB).name){
 				if (userDefinedFilter.connectsTo == ((GroovyObject) rampConnectionEnumGroovy.FREQUENCY).name){
 					println 'as a frequency knob'
-					synthFilter.output.connect(to.frequency)
+					synthFilter.output.connect(to.frequency)	
+					map.put(to.frequency, portKnob(synthFilter.input, from.digits, "OscFreg"))
 				}
 				else {
 					println 'as a amplitude knob'
 					synthFilter.output.connect(to.amplitude)
+					map.put(to.amplitude, portKnob(synthFilter.input, from.digits, "OscAmp"))
 				}
-				amplitudeModel = PortModelFactory.createExponentialModel(synthFilter.input)
-				synthKnobs.add(new RotaryTextController(amplitudeModel, from.digits))
 			}
 
 			if (from.type == ((GroovyObject) controlTypesEnumGroovy.SLIDER).name){
 				if (userDefinedFilter.connectsTo == ((GroovyObject) rampConnectionEnumGroovy.FREQUENCY).name){
 					println 'as a frequency slider'
-					synthSliders.add(PortControllerFactory.createExponentialPortSlider(to.frequency))
+					synthFilter.output.connect(to.frequency)	// Why it was missing in previous version
+					map.put(to.frequency, portSlider(synthFilter.input))
 				} else {
 					println 'as a amplitude slider'
-					synthSliders.add(PortControllerFactory.createExponentialPortSlider(to.amplitude))
+					synthFilter.output.connect(to.amplitude)	// Why it was missing in previous version
+					map.put(to.amplitude, portSlider(synthFilter.input))
 				}
 			}
 		}
 	}
+	map
 }
 
 /*
@@ -306,14 +313,14 @@ def buildWaveformScope(def newScope, def oscillator_list, def selectedItem, def 
 	newScope.getView().setControlsVisible(false);
 }
 
-def portKnobBuilder(UnitInputPort port, int digits, String label) {
+def portKnob(UnitInputPort port, int digits, String label) {
 	def model = PortModelFactory.createExponentialModel(port)
 	def knob = new RotaryTextController(model, digits)
 	knob.setBorder(BorderFactory.createTitledBorder(label))
 	knob.setTitle(label)
 	knob
 }
-def portSliderBuidler(UnitInputPort port) {
+def portSlider(UnitInputPort port) {
 	def slider = PortControllerFactory.createExponentialPortSlider(port)
 	slider
 }
@@ -327,7 +334,7 @@ s.start()
 
 // Build and connect Unit Generators
 s.addUnits(oscillators, lineOut, filters, controls)
-addConnections(connections, osc_list, linear_list, filters, slider_list, controls, knob_list)
+def Osc_GUI_mapping = addConnections(connections, osc_list, linear_list, filters, controls)
 
 /*
  * Start UIs
@@ -355,11 +362,18 @@ def frame = builder.frame(
 			
 			/* -- THIRD PART: oscillator ports -- */
 			portPanel = panel()
-			for (k in knob_list){
-				portPanel.add(k)
-			}
-			for (sl in slider_list){
-				portPanel.add(sl)
+			portPanel.setLayout(new BoxLayout(portPanel, BoxLayout.X_AXIS))
+			def oscPanel
+			osc_list.each {
+				oscPanel = new JPanel()
+				oscPanel.setLayout(new GridLayout(3, 1))//(oscPanel, BoxLayout.Y_AXIS))
+				oscPanel.add(label(it.name))
+				for (key in Osc_GUI_mapping.keySet()) {
+					if (key == it.frequency || key == it.amplitude) {
+						oscPanel.add(Osc_GUI_mapping.get(key))
+					}
+				}
+				portPanel.add(oscPanel)
 			}
 			
 			/* -- FORTH PART: buttons -- */
@@ -387,7 +401,6 @@ def frame = builder.frame(
 				items: controlTypesEnumGroovy.getEnumNames(),
 				selectedIndex: controlTypesEnumGroovy.getEnumNames().indexOf(waveformOperations[0].name),
 				actionPerformed:{ event ->
-					
 					lineOut.stop()
 					scope.stop()
 					scope = new AudioScope(s)
