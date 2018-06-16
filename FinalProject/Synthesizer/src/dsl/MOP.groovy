@@ -2,8 +2,10 @@ package dsl
 
 import java.applet.Applet
 import java.awt.BorderLayout as BL
+import java.awt.GridLayout
 import java.nio.file.attribute.AclEntry.Builder;
 
+import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.JButton
 import javax.swing.JComboBox
@@ -328,40 +330,38 @@ def frame = builder.frame(
 		defaultCloseOperation: javax.swing.WindowConstants.EXIT_ON_CLOSE,
 		show: true
 		) {
-			/*
-	 JButton a = new JButton('start 2')
-	 mPanel = new JPanel()
-	 GroupLayout layout = new GroupLayout(mPanel);
-	 mPanel.setLayout(layout)
-	 GroupLayout.SequentialGroup rowTop = layout.createSequentialGroup()
-	 rowTop.addComponent(a)
-	 GroupLayout.SequentialGroup columnLeft = layout.createSequentialGroup()
-	 columnLeft.addComponent(a)
-	 layout.setVerticalGroup(
-	 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-	 .addGroup(rowTop)
-	 );
-	 layout.setHorizontalGroup(columnLeft)*/
-
-			borderLayout()
-			// North place: title
-			northPanel = panel(constraints: BL.NORTH)
+//			borderLayout()
+			boxLayout(axis: BoxLayout.Y_AXIS)
+			/* -- NORTH: Title -- */
+			northPanel = panel()//constraints: BL.NORTH)
 			northPanel.add(label("Oscillator Harmonics Generation"))
-
-			// Center place: oscillator ports and buttons
-			centerPanel = panel(constraints: BL.CENTER)
-			//adding knobs and sliders to the UI
+			
+			/* -- SOUTH: Audio scope -- */
+			scope = new AudioScope(s)
+			scope = buildWaveformScope(scope, osc_list, waveformOperations[0].name, controlTypesEnumGroovy)
+			// For visualization, sub panel is for refresh purposes
+			def subPanel = panel(id:'subPanelAdioScope')
+			southPanel = panel()//constraints: BL.SOUTH)
+			subPanel.add(scope.getView())
+			southPanel.add(subPanel);
+			//mPanel.getToolkit().sync()
+			
+			/* -- CENTER: oscillator ports and buttons -- */
+//			centerPanel = panel(constraints: BL.WEST)
+//			centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS))
+			def portPanel = panel()
 			for (k in knob_list){
-				centerPanel.add(k)
-				//rowTop.addComponent(k)	// For GroupLayout only
+				portPanel.add(k)
 //				panel(k)
 			}
 			for (sl in slider_list){
-				centerPanel.add(sl)
+				portPanel.add(sl)
 //				slider(sl)
 			}
+//			centerPanel.add(portPanel)
 			// Buttons; TODO: muste be added to buttonPanel
-			centerPanel.add(button(
+			def buttonPanel = panel()
+			buttonPanel.add(button(
 					text: 'Start',
 					actionPerformed: {
 						lineOut.start() // Pull out data so the sound can be released
@@ -369,7 +369,7 @@ def frame = builder.frame(
 					}
 			))
 			
-			centerPanel.add(button(
+			buttonPanel.add(button(
 					text: 'Stop',
 					actionPerformed: {
 						lineOut.stop()		// Stop release all the sound
@@ -378,7 +378,7 @@ def frame = builder.frame(
 			))
 			
 			// Dropdown Waveform Operations
-			centerPanel.add(comboBox(
+			buttonPanel.add(comboBox(
 				id:'comboWaveform',
 				toolTipText:'Waveform Operation',
 				items: controlTypesEnumGroovy.getEnumNames(),
@@ -388,23 +388,14 @@ def frame = builder.frame(
 					scope = buildWaveformScope(scope, osc_list, event.source.selectedItem, controlTypesEnumGroovy)
 					
 					//repaint visualization inside the panel
-					scopePanel.removeAll()
+					southPanel.removeAll()
 					def newSubPanel = panel(id:'newSubPanelAdioScope')
 					newSubPanel.add(scope.getView())
 					
-					scopePanel.add(newSubPanel)
-					scopePanel.revalidate()
-					scopePanel.repaint()
+					southPanel.add(newSubPanel)
+					southPanel.revalidate()
+					southPanel.repaint()
 					}
 			))
-			
-			// South place: Audio scope
-			scope = new AudioScope(s)
-			scope = buildWaveformScope(scope, osc_list, waveformOperations[0].name, controlTypesEnumGroovy)
-			// For visualization, sub panel is for refresh purposes
-			def subPanel = panel(id:'subPanelAdioScope')
-			southPanel = panel(constraints: BL.SOUTH)
-			subPanel.add(scope.getView())
-			southPanel.add(subPanel);
-			//mPanel.getToolkit().sync()
+//			centerPanel.add(buttonPanel)
 		}
