@@ -187,13 +187,16 @@ Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listFilters, listContr
 	}
 }
 
+/*
+ * Define block functions
+ */
+
 /**
  * Connecting the 'from' side of the connection (the knob, the slider)
  * to the 'to' side of the connection (the oscillator).
  * This is independent from the Synthesizer.
  */
 def addConnections(def listConnections, def listOscillators, def listFilters, jsonFilterList, def synthSliders, def listControls, def synthKnobs){
-
 	//Loading enums
 	final GroovyClassLoader classLoader = new GroovyClassLoader();
 	def controlTypesEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/ControlTypesEnum.groovy"));
@@ -244,10 +247,6 @@ def addConnections(def listConnections, def listOscillators, def listFilters, js
  output.connect(0, lineOut.input, 1)
  }
  }
- */
-
-/*
- * Define block functions
  */
 def startSynthesisEngine() {
 	s = new JSyn().createSynthesizer()
