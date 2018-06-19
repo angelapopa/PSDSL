@@ -7,7 +7,7 @@ package dsl
 def controls = []
 def oscillators = []
 def connections = []
-def linearRamps = []
+def filters = []
 
 def waveformOperations = []
 
@@ -50,13 +50,13 @@ def class Oscillator extends UnitGenerator {
 }
 
 class LinearRampInput {
-	def minimum
-	def maximum
-	def actualValue
+	float minimum
+	float maximum
+	float actualValue
 }
 
 class LinearRampTime {
-	def duration
+	float duration
 }
 
 def class LinearRamp extends UnitGenerator {
