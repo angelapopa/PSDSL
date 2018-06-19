@@ -40,21 +40,21 @@ import com.jsyn.unitgen.SquareOscillator
 import com.jsyn.unitgen.Subtract;
 import com.jsyn.unitgen.TriangleOscillator
 import com.jsyn.unitgen.UnitOscillator
-import com.jsyn.ports.UnitInputPort;
-import com.jsyn.scope.AudioScope;
-import com.jsyn.swing.DoubleBoundedRangeModel;
-import com.jsyn.swing.DoubleBoundedRangeSlider;
-import com.jsyn.swing.ExponentialRangeModel;
-import com.jsyn.swing.PortControllerFactory;
-import com.jsyn.swing.PortModelFactory;
-import com.jsyn.swing.RotaryController;
-import com.jsyn.swing.RotaryTextController;
+import com.jsyn.ports.UnitInputPort
+import com.jsyn.scope.AudioScope
+import com.jsyn.swing.DoubleBoundedRangeModel
+import com.jsyn.swing.DoubleBoundedRangeSlider
+import com.jsyn.swing.ExponentialRangeModel
+import com.jsyn.swing.PortControllerFactory
+import com.jsyn.swing.PortModelFactory
+import com.jsyn.swing.RotaryController
+import com.jsyn.swing.RotaryTextController
 
 import groovy.json.JsonSlurper
 import groovy.swing.factory.LayoutFactory
 import groovy.text.SimpleTemplateEngine
 import groovy.ui.ConsoleApplet
-import groovy.test.*
+import groovy.testHarmonicsSynthesizer.*
 
 /*
  * Database
