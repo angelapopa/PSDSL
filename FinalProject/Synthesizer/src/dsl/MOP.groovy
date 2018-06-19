@@ -344,7 +344,6 @@ def frame = builder.frame(
 			/* -- SECOND PART: Audio scope -- */
 			scope = new AudioScope(s)
 			buildWaveformScope(scope, osc_list, waveformOperations[0].name, controlTypesEnumGroovy)
-			// Subpanel is not necessary
 			southPanel = panel()
 			southPanel.add(scope.getView())
 			
