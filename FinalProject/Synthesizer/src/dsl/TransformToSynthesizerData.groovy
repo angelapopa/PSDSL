@@ -28,7 +28,7 @@ ${dslValidator}
 
 new File('${controlsOutput}').write(new groovy.json.JsonBuilder(controls).toPrettyString())
 new File('${oscillatorsOutput}').write(new groovy.json.JsonBuilder(oscillators).toPrettyString())
-new File('${linearRampsOutput}').write(new groovy.json.JsonBuilder(linearRamps).toPrettyString())
+new File('${linearRampsOutput}').write(new groovy.json.JsonBuilder(filters).toPrettyString())
 new File('${connectionsOutput}').write(new groovy.json.JsonBuilder(connections).toPrettyString())
 new File('${waveformOutput}').write(new groovy.json.JsonBuilder(waveformOperations).toPrettyString())
 """

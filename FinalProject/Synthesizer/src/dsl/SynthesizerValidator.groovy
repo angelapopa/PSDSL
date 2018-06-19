@@ -12,7 +12,7 @@ controls.each { ct ->
 	}
 }
 
-linearRamps.each { ramp ->
+filters.each { ramp ->
 	if (!RampConnectionTypes.isValidRampConnectionType(ramp.connectsTo)){
 		throw new Exception("type "
 			+ ramp.connectsTo + " is not supported! Try one of the following >> " + RampConnectionTypes.printAllRampConnectionTypes())

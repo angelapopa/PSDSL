@@ -128,7 +128,7 @@ oscillators
 	))
 
 /*filters*/
-linearRamps
+filters
 	.add(new LinearRamp(
 		name: 'frequencyRamp',
 		type: 'LinearRamp',
@@ -143,7 +143,7 @@ linearRamps
 			)
 		))
 
-linearRamps
+filters
 	.add(new LinearRamp(
 		name: 'amplitudeRamp',
 		type: 'LinearRamp',
