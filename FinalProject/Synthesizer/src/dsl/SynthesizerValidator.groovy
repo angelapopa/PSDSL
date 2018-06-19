@@ -22,22 +22,22 @@ linearRamps.each { ramp ->
 connections.each { conn ->
 	boolean found = false
 	controls.each { ct ->
-		if (ct.name == conn.from){
+		if (ct.name == conn.fromController){
 			found = true
 		}
 	}
 	if (!found){
-		throw new Exception("Please use UnitControllers as connection source! " + conn.from + " is no UnitControllder!")
+		throw new Exception("Please use UnitControllers as connection source! " + conn.fromController + " is no UnitController!")
 	}
 
     found = false
 	oscillators.each { osc ->
-		if (osc.name == conn.to){
+		if (osc.name == conn.toOscillator){
 			found = true
 		}
 	}
 	if (!found){
-		throw new Exception("Please use UnitOscillators as connection destination! " + conn.to + " is no UnitOscillator!")
+		throw new Exception("Please use UnitOscillators as connection destination! " + conn.toOscillator + " is no UnitOscillator!")
 	}	
 }
 

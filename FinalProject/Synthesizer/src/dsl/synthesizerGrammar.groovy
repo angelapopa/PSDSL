@@ -69,8 +69,8 @@ def class LinearRamp extends UnitGenerator {
 def class Connection
 {
 	String filter
-	String from
-	String to
+	String fromController
+	String toOscillator
 }
 
 def class Operation

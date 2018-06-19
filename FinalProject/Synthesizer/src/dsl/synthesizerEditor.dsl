@@ -164,16 +164,16 @@ connections
 	.add(
 		new Connection(
 			filter: 'amplitudeRamp',
-			from: 'myKnobForFirstOscillator',
-			to: 'myFirstOsc'
+			fromController: 'myKnobForFirstOscillator',
+			toOscillator: 'myFirstOsc'
 		)
 	)
 connections
 	.add(
 		new Connection(
 			filter: 'frequencyRamp',
-			from: 'mySliderForFirstOscillator',
-			to: 'myFirstOsc'
+			fromController: 'mySliderForFirstOscillator',
+			toOscillator: 'myFirstOsc'
 		)
 	)
 	
@@ -182,16 +182,16 @@ connections
 	.add(
 		new Connection(
 			filter: 'amplitudeRamp',
-			from: 'myFirstSliderForSecondOscillator',
-			to: 'mySecondOsc'
+			fromController: 'myFirstSliderForSecondOscillator',
+			toOscillator: 'mySecondOsc'
 		)
 	)
 connections
 	.add(
 		new Connection(
 			filter: 'frequencyRamp',
-			from: 'mySecondSliderForSecondOscillator',
-			to: 'mySecondOsc'
+			fromController: 'mySecondSliderForSecondOscillator',
+			toOscillator: 'mySecondOsc'
 		)
 	)
 
@@ -201,41 +201,42 @@ connections
 	.add(
 		new Connection(
 			filter: 'amplitudeRamp',
-			from: 'myFirstKnobForThirdOscillator',
-			to: 'myThirdOsc'
+			fromController: 'myFirstKnobForThirdOscillator',
+			toOscillator: 'myThirdOsc'
 		)
 	)
 connections
 	.add(
 		new Connection(
 			filter: 'frequencyRamp',
-			from: 'mySecondKnobForThirdOscillator',
-			to: 'myThirdOsc'
+			fromController: 'mySecondKnobForThirdOscillator',
+			toOscillator: 'myThirdOsc'
 		)
 	)
-
+	
 /*Oscillator 4*/
 connections
 	.add(
 		new Connection(
 			filter: 'amplitudeRamp',
-			from: 'mySliderForFourthOscillator',
-			to: 'myFourthOsc'
+			fromController: 'mySliderForFourthOscillator',
+			toOscillator: 'myFourthOsc'
 		)
 	)
 connections
 	.add(
 		new Connection(
 			filter: 'frequencyRamp',
-			from: 'myKnobForFourthOscillator',
-			to: 'myFourthOsc'
+			fromController: 'myKnobForFourthOscillator',
+			toOscillator: 'myFourthOsc'
 		)
 	)
+	
 
 /*Combination of Waveforms*/
 waveformOperations
 	.add(
 		new Operation(
-			name: 'Subtraction'
+			name: 'Division'
 		)
 	)

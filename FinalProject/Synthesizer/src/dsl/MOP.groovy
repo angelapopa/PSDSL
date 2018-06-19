@@ -209,35 +209,33 @@ def addConnections(def listConnections, def listOscillators, def listFilters, js
 
 	if (listConnections) {
 		listConnections.each { conn ->
-			def to = listOscillators.findUnit(conn.to)
+			def toOscillator = listOscillators.findUnit(conn.toOscillator)
 			def synthFilter = listFilters.findUnit(conn.filter)
 			def userDefinedFilter = jsonFilterList.findUnit(conn.filter)
 
-			def from = listControls.findUnit(conn.from)
-			print 'connecting ' + from.name + ' to ' + to.name + ' using filter ' + conn.filter +' '
+			def fromController = listControls.findUnit(conn.fromController)
+			print 'connecting ' + fromController.name + ' to ' + toOscillator.name + ' using filter ' + conn.filter +' '
 
-			if (from.type == ((GroovyObject) controlTypesEnumGroovy.KNOB).name){
+			if (fromController.type == ((GroovyObject) controlTypesEnumGroovy.KNOB).name){
 				if (userDefinedFilter.connectsTo == ((GroovyObject) rampConnectionEnumGroovy.FREQUENCY).name){
 					println 'as a frequency knob'
-					synthFilter.output.connect(to.frequency)	
-					map.put(to.frequency, portKnob(synthFilter.input, from.digits, "OscFreg"))
+					synthFilter.output.connect(toOscillator.frequency)	
+					map.put(toOscillator.frequency, portKnob(synthFilter.input, fromController.digits, "Frequency"))
 				}
 				else {
 					println 'as a amplitude knob'
-					synthFilter.output.connect(to.amplitude)
-					map.put(to.amplitude, portKnob(synthFilter.input, from.digits, "OscAmp"))
+					synthFilter.output.connect(toOscillator.amplitude)
+					map.put(toOscillator.amplitude, portKnob(synthFilter.input, fromController.digits, "Amplitude"))
 				}
 			}
 
-			if (from.type == ((GroovyObject) controlTypesEnumGroovy.SLIDER).name){
+			if (fromController.type == ((GroovyObject) controlTypesEnumGroovy.SLIDER).name){
 				if (userDefinedFilter.connectsTo == ((GroovyObject) rampConnectionEnumGroovy.FREQUENCY).name){
 					println 'as a frequency slider'
-					synthFilter.output.connect(to.frequency)	// Why it was missing in previous version
-					map.put(to.frequency, portSlider(synthFilter.input))
+					map.put(toOscillator.frequency, portSlider(toOscillator.frequency))
 				} else {
 					println 'as a amplitude slider'
-					synthFilter.output.connect(to.amplitude)	// Why it was missing in previous version
-					map.put(to.amplitude, portSlider(synthFilter.input))
+					map.put(toOscillator.amplitude, portSlider(toOscillator.amplitude))
 				}
 			}
 		}
@@ -245,16 +243,6 @@ def addConnections(def listConnections, def listOscillators, def listFilters, js
 	map
 }
 
-/*
- UnitOscillator.metaClass.connectToLineOut << {lineOut, leftChannel, rightChannel = false ->
- if (leftChannel) {
- output.connect(0, lineOut.input, 0)
- }
- if (rightChannel) {
- output.connect(0, lineOut.input, 1)
- }
- }
- */
 def startSynthesisEngine() {
 	s = new JSyn().createSynthesizer()
 	s.start()
@@ -364,12 +352,20 @@ def frame = builder.frame(
 			portPanel = panel()
 			portPanel.setLayout(new BoxLayout(portPanel, BoxLayout.X_AXIS))
 			def oscPanel
-			osc_list.each {
+			
+			Set oscNameSet = []
+			connections.each {
+				oscNameSet.add(it.toOscillator)
+			}
+			
+			oscNameSet.each {
 				oscPanel = new JPanel()
-				oscPanel.setLayout(new GridLayout(3, 1))//(oscPanel, BoxLayout.Y_AXIS))
-				oscPanel.add(label(it.name))
+				oscPanel.setLayout(new GridLayout(3, 1))
+				oscPanel.add(label(it))
+				
+				def current_oscillator = osc_list.findUnit(it)
 				for (key in Osc_GUI_mapping.keySet()) {
-					if (key == it.frequency || key == it.amplitude) {
+					if (key == current_oscillator.frequency || key == current_oscillator.amplitude) {
 						oscPanel.add(Osc_GUI_mapping.get(key))
 					}
 				}
@@ -378,21 +374,6 @@ def frame = builder.frame(
 			
 			/* -- FORTH PART: buttons -- */
 			buttonPanel = panel()
-			buttonPanel.add(button(
-					text: 'Start',
-					actionPerformed: {
-						lineOut.start() // Pull out data so the sound can be released
-						scope.start()
-					}
-			))
-			
-			buttonPanel.add(button(
-					text: 'Stop',
-					actionPerformed: {
-						lineOut.stop()		// Stop release all the sound
-						scope.stop()
-					}
-			))
 			
 			// Dropdown Waveform Operations
 			buttonPanel.add(comboBox(
@@ -412,4 +393,22 @@ def frame = builder.frame(
 					southPanel.repaint()
 					}
 			))
+			
+			buttonPanel.add(button(
+					text: 'Start',
+					actionPerformed: {
+						lineOut.start() // Pull out data so the sound can be released
+						scope.start()
+					}
+			))
+			
+			buttonPanel.add(button(
+					text: 'Stop',
+					actionPerformed: {
+						lineOut.stop()		// Stop release all the sound
+						scope.stop()
+					}
+			))
+			
+			
 		}

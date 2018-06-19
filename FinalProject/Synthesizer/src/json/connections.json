@@ -1,42 +1,42 @@
 [
     {
-        "from": "myKnobForFirstOscillator",
-        "to": "myFirstOsc",
-        "filter": "amplitudeRamp"
+        "toOscillator": "myFirstOsc",
+        "filter": "amplitudeRamp",
+        "fromController": "myKnobForFirstOscillator"
     },
     {
-        "from": "mySliderForFirstOscillator",
-        "to": "myFirstOsc",
-        "filter": "frequencyRamp"
+        "toOscillator": "myFirstOsc",
+        "filter": "frequencyRamp",
+        "fromController": "mySliderForFirstOscillator"
     },
     {
-        "from": "myFirstSliderForSecondOscillator",
-        "to": "mySecondOsc",
-        "filter": "amplitudeRamp"
+        "toOscillator": "mySecondOsc",
+        "filter": "amplitudeRamp",
+        "fromController": "myFirstSliderForSecondOscillator"
     },
     {
-        "from": "mySecondSliderForSecondOscillator",
-        "to": "mySecondOsc",
-        "filter": "frequencyRamp"
+        "toOscillator": "mySecondOsc",
+        "filter": "frequencyRamp",
+        "fromController": "mySecondSliderForSecondOscillator"
     },
     {
-        "from": "myFirstKnobForThirdOscillator",
-        "to": "myThirdOsc",
-        "filter": "amplitudeRamp"
+        "toOscillator": "myThirdOsc",
+        "filter": "amplitudeRamp",
+        "fromController": "myFirstKnobForThirdOscillator"
     },
     {
-        "from": "mySecondKnobForThirdOscillator",
-        "to": "myThirdOsc",
-        "filter": "frequencyRamp"
+        "toOscillator": "myThirdOsc",
+        "filter": "frequencyRamp",
+        "fromController": "mySecondKnobForThirdOscillator"
     },
     {
-        "from": "mySliderForFourthOscillator",
-        "to": "myFourthOsc",
-        "filter": "amplitudeRamp"
+        "toOscillator": "myFourthOsc",
+        "filter": "amplitudeRamp",
+        "fromController": "mySliderForFourthOscillator"
     },
     {
-        "from": "myKnobForFourthOscillator",
-        "to": "myFourthOsc",
-        "filter": "frequencyRamp"
+        "toOscillator": "myFourthOsc",
+        "filter": "frequencyRamp",
+        "fromController": "myKnobForFourthOscillator"
     }
 ]
