@@ -1,12 +1,14 @@
 package dsl
 
 import groovy.json.JsonSlurper
+import groovy.swing.SwingBuilder;
 import groovy.testHarmonicsSynthesizer.*
 
 import java.awt.GridLayout
 
 import javax.swing.BorderFactory
 import javax.swing.BoxLayout
+import javax.swing.JFrame;
 import javax.swing.JPanel
 
 import com.jsyn.JSyn
@@ -35,9 +37,9 @@ import com.jsyn.unitgen.Subtract
 import com.jsyn.unitgen.TriangleOscillator
 import com.jsyn.unitgen.UnitOscillator
 
-/*
- * Database
- */
+// -----------------------------------
+// Database
+// -----------------------------------
 def filePath = new File(".").absoluteFile.getParent()
 def sluper = new JsonSlurper()
 def connections = sluper.parse(new FileReader(filePath + '/src/json/connections.json'))
@@ -52,15 +54,26 @@ Synthesizer s
 LineOut lineOut = new LineOut()
 // Visualization
 AudioScope scope
+final GroovyClassLoader classLoader = new GroovyClassLoader()
+def functionTypesEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/ArithFunctionTypesEnum.groovy"))
+// Connection
+def Osc_GUI_mapping
+// GUI
+SwingBuilder builder
+JFrame frame
 
+// -----------------------------------
+// Meta programming
+// -----------------------------------
 /**
- * Meta programming
+ * Using user-defined name for unit identification
  */
-// Using user-defined name for unit identification
 UnitOscillator.metaClass.name = 'myOsci'	// This is default name
 LinearRamp.metaClass.name = 'myLag'			// This is default name
 
-//special list method to find elements by name
+/**
+ * Special list method to find elements by name
+ */
 List.metaClass.findUnit << {searchTerm ->
 	def result
 	each {
@@ -73,12 +86,13 @@ List.metaClass.findUnit << {searchTerm ->
 	result
 }
 
-// Adding all necessary UnitGenerators
+/**
+ * Adding all necessary UnitGenerators
+ */
 Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listFilters, listControls ->
 	assert listOsci != null
 
 	//Loading OscillatorTypes
-	final GroovyClassLoader classLoader = new GroovyClassLoader();
 	def oscillatorTypesEnum = classLoader.parseClass(new File("src/dsl/enums/OscillatorTypesEnum.groovy"));
 
 	println "Adding new LineOut"
@@ -86,7 +100,6 @@ Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listFilters, listContr
 
 	listOsci.each {
 		def myOsc
-
 		switch(it.type) {
 			case  ((GroovyObject) oscillatorTypesEnum.FUNCTION).name:
 				myOsc = new FunctionOscillator(name: it.name)
@@ -168,9 +181,9 @@ Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listFilters, listContr
 	}
 }
 
-/*
- * Define block functions
- */
+// -----------------------------------
+// Block functions
+// -----------------------------------
 
 /**
  * Connecting the 'from' side of the connection (the knob, the slider)
@@ -180,9 +193,10 @@ Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listFilters, listContr
 def addConnections(def listConnections, def listOscillators, def listFilters, jsonFilterList, def listControls){
 	def map = [:]	// Mapping UnitInputPort (osc.frequency or amplitude) to appropriate UI elements (knob, slider...)
 	//Loading enums
-	final GroovyClassLoader classLoader = new GroovyClassLoader();
-	def controlTypesEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/ControlTypesEnum.groovy"));
-	def rampConnectionEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/RampConnectionTypesEnum.groovy"));
+	// TODO: remove local var "controlTypesEnumGroovy" to use global var
+	final GroovyClassLoader classLoader = new GroovyClassLoader()
+	def controlTypesEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/ControlTypesEnum.groovy"))
+	def rampConnectionEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/RampConnectionTypesEnum.groovy"))
 
 	if (listConnections) {
 		listConnections.each { conn ->
@@ -220,36 +234,59 @@ def addConnections(def listConnections, def listOscillators, def listFilters, js
 	map
 }
 
-def startSynthesisEngine() {
-	s = new JSyn().createSynthesizer()
-	s.start()
+/**
+ * Create knob for oscillator frequency or amplitude
+ * @param port
+ * @param digits
+ * @param label: Name of port displaying in portPanel
+ * @return
+ */
+def portKnob(UnitInputPort port, int digits, String label) {
+	def model = PortModelFactory.createExponentialModel(port)
+	def knob = new RotaryTextController(model, digits)
+	knob.setBorder(BorderFactory.createTitledBorder(label))
+	knob.setTitle(label)
+	knob
 }
 
-def buildAndConnectUnits(def listOsci, def lineOutUnit, def listLinearRamps, def listControls) {
-	s.addUnits(listOsci, lineOutUnit, listLinearRamps, listControls)
+/**
+ * Create slider for oscillator frequency or amplitude
+ * @param port
+ * @return
+ */
+def portSlider(UnitInputPort port) {
+	def slider = PortControllerFactory.createExponentialPortSlider(port)
+	slider
 }
 
-def combineWaveform(def listOsci, def waveformOp, def controlTypesEnum) {
+/**
+ * Return the Harmonics of all oscillator waveform based on an Jsyn Arithmetic Function
+ * @param listOsci
+ * @param waveformOp: Jsyn Arithmetic Function. http://www.softsynth.com/jsyn/docs/unitlist.php
+ * @param functionTypesEnum: Mapping between Jsyn Arithmetic Function with function name displaying in combobox
+ * @return
+ */
+def combineWaveform(def listOsci, def waveformOp, def functionTypesEnum) {
 
 	def list = []	// List of Jsyn arithmetic functions necessary
 	int i
 	switch(waveformOp) {
-		case ((GroovyObject) controlTypesEnum.ADD).name:
+		case ((GroovyObject) functionTypesEnum.ADD).name:
 			for (i = 0; i < listOsci.size() - 1; i++) {
 				list << new Add()
 			}
 			break
-		case ((GroovyObject) controlTypesEnum.SUB).name:
+		case ((GroovyObject) functionTypesEnum.SUB).name:
 			for (i = 0; i < listOsci.size() - 1; i++) {
 				list << new Subtract()
 			}
 			break
-		case ((GroovyObject) controlTypesEnum.MUL).name:
+		case ((GroovyObject) functionTypesEnum.MUL).name:
 			for (i = 0; i < listOsci.size() - 1; i++) {
 				list << new Multiply()
 			}
 			break
-		case ((GroovyObject) controlTypesEnum.DIV).name:
+		case ((GroovyObject) functionTypesEnum.DIV).name:
 			for (i = 0; i < listOsci.size() - 1; i++) {
 				list << new Divide()
 			}
@@ -266,48 +303,51 @@ def combineWaveform(def listOsci, def waveformOp, def controlTypesEnum) {
 	return list.last()
 }
 
-//Loading waveform operations enum
-final GroovyClassLoader classLoader = new GroovyClassLoader();
-def controlTypesEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/ArithFunctionTypesEnum.groovy"));
-
-def buildWaveformScope(def newScope, def oscillator_list, def selectedItem, def controlTypes){
-
-	def comb_w = combineWaveform(oscillator_list, selectedItem, controlTypes)
+/**
+ * Create scope for the combined Harmonics
+ * @param newScope
+ * @param oscillator_list
+ * @param waveformOp
+ * @param functionTypesEnumGroovy
+ * @return
+ */
+def buildWaveformScope(def newScope, def oscillator_list, def waveformOp, def functionTypesEnumGroovy){
+	def comb_w = combineWaveform(oscillator_list, waveformOp, functionTypesEnumGroovy)
 	newScope.addProbe(comb_w.output)
 	newScope.setTriggerMode(AudioScope.TriggerMode.AUTO);
 	newScope.getView().setControlsVisible(false);
 }
 
-def portKnob(UnitInputPort port, int digits, String label) {
-	def model = PortModelFactory.createExponentialModel(port)
-	def knob = new RotaryTextController(model, digits)
-	knob.setBorder(BorderFactory.createTitledBorder(label))
-	knob.setTitle(label)
-	knob
-}
-def portSlider(UnitInputPort port) {
-	def slider = PortControllerFactory.createExponentialPortSlider(port)
-	slider
+// -----------------------------------
+// Main() function
+// -----------------------------------
+def startSynthesisEngine() {
+	s = new JSyn().createSynthesizer()
+	s.start()
 }
 
-/*
- * Start main() function
+def buildAndConnectUnits(def listOsci, def lineOutUnit, def listLinearRamps, def listControls) {
+	s.addUnits(listOsci, lineOutUnit, listLinearRamps, listControls)
+}
+
+/**
+ * Just release the block function. In the future, we can use block function instead
  */
-// Just release the block function. In the future, we can use block function instead
 s = new JSyn().createSynthesizer()
 s.start()
 
-// Build and connect Unit Generators
-s.addUnits(oscillators, lineOut, filters, controls)
-def Osc_GUI_mapping = addConnections(connections, osc_list, linear_list, filters, controls)
-
-/*
- * Start UIs
+/**
+ * Build and connect Unit Generators
  */
-def builder = new groovy.swing.SwingBuilder()
-JPanel northPanel,portPanel, buttonPanel, southPanel
+s.addUnits(oscillators, lineOut, filters, controls)
+Osc_GUI_mapping = addConnections(connections, osc_list, linear_list, filters, controls)
 
-def frame = builder.frame(
+// -----------------------------------
+// GUI
+// -----------------------------------
+builder = new groovy.swing.SwingBuilder()
+
+frame = builder.frame(
 		title: 'Synthesizer',
 		size: [800, 600],
 		defaultCloseOperation: javax.swing.WindowConstants.EXIT_ON_CLOSE,
@@ -315,12 +355,12 @@ def frame = builder.frame(
 		) {
 			boxLayout(axis: BoxLayout.Y_AXIS)
 			/* -- FIRST PART: Title -- */
-			northPanel = panel()
-			northPanel.add(label("Oscillator Harmonics Generation"))
+			titlePanel = panel()
+			titlePanel.add(label("Oscillator Harmonics Generation"))
 			
 			/* -- SECOND PART: Audio scope -- */
 			scope = new AudioScope(s)
-			buildWaveformScope(scope, osc_list, waveformOperations[0].name, controlTypesEnumGroovy)
+			buildWaveformScope(scope, osc_list, waveformOperations[0].name, functionTypesEnumGroovy)
 			southPanel = panel()
 			southPanel.add(scope.getView())
 			
@@ -355,13 +395,13 @@ def frame = builder.frame(
 			buttonPanel.add(comboBox(
 				id:'comboWaveform',
 				toolTipText:'Waveform Operation',
-				items: controlTypesEnumGroovy.getEnumNames(),
-				selectedIndex: controlTypesEnumGroovy.getEnumNames().indexOf(waveformOperations[0].name),
+				items: functionTypesEnumGroovy.getEnumNames(),
+				selectedIndex: functionTypesEnumGroovy.getEnumNames().indexOf(waveformOperations[0].name),
 				actionPerformed:{ event ->
 					lineOut.stop()
 					scope.stop()
 					scope = new AudioScope(s)
-					scope.addProbe(combineWaveform(osc_list, event.source.selectedItem, controlTypesEnumGroovy).output)
+					buildWaveformScope(scope, osc_list, event.source.selectedItem, functionTypesEnumGroovy)
 					//repaint visualization inside the panel
 					southPanel.removeAll()
 					southPanel.add(scope.getView())
