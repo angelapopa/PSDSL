@@ -1,35 +1,29 @@
 package dsl
 
-import java.applet.Applet
-import java.awt.BorderLayout as BL
-import java.awt.CardLayout
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout
+import groovy.json.JsonSlurper
+import groovy.testHarmonicsSynthesizer.*
+
 import java.awt.GridLayout
-import java.awt.Insets;
-import java.nio.file.attribute.AclEntry.Builder;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.GroupLayout;
-import javax.swing.JButton
-import javax.swing.JComboBox
-import javax.swing.JPanel;
-import javax.swing.SpringLayout.Constraints;
+import javax.swing.BorderFactory
+import javax.swing.BoxLayout
+import javax.swing.JPanel
 
-import org.apache.ivy.core.module.descriptor.ExtendsDescriptor;
-import org.codehaus.groovy.transform.sc.ListOfExpressionsExpression;
-
-import com.jsyn.JSyn;
-import com.jsyn.Synthesizer;
-import com.jsyn.unitgen.Add;
-import com.jsyn.unitgen.Divide;
+import com.jsyn.JSyn
+import com.jsyn.Synthesizer
+import com.jsyn.ports.UnitInputPort
+import com.jsyn.scope.AudioScope
+import com.jsyn.swing.PortControllerFactory
+import com.jsyn.swing.PortModelFactory
+import com.jsyn.swing.RotaryTextController
+import com.jsyn.unitgen.Add
+import com.jsyn.unitgen.Divide
 import com.jsyn.unitgen.FunctionOscillator
 import com.jsyn.unitgen.ImpulseOscillator
 import com.jsyn.unitgen.ImpulseOscillatorBL
-import com.jsyn.unitgen.LineOut;
-import com.jsyn.unitgen.LinearRamp;
-import com.jsyn.unitgen.Multiply;
+import com.jsyn.unitgen.LineOut
+import com.jsyn.unitgen.LinearRamp
+import com.jsyn.unitgen.Multiply
 import com.jsyn.unitgen.PulseOscillator
 import com.jsyn.unitgen.RedNoise
 import com.jsyn.unitgen.SawtoothOscillator
@@ -37,24 +31,9 @@ import com.jsyn.unitgen.SawtoothOscillatorBL
 import com.jsyn.unitgen.SawtoothOscillatorDPW
 import com.jsyn.unitgen.SineOscillator
 import com.jsyn.unitgen.SquareOscillator
-import com.jsyn.unitgen.Subtract;
+import com.jsyn.unitgen.Subtract
 import com.jsyn.unitgen.TriangleOscillator
 import com.jsyn.unitgen.UnitOscillator
-import com.jsyn.ports.UnitInputPort
-import com.jsyn.scope.AudioScope
-import com.jsyn.swing.DoubleBoundedRangeModel
-import com.jsyn.swing.DoubleBoundedRangeSlider
-import com.jsyn.swing.ExponentialRangeModel
-import com.jsyn.swing.PortControllerFactory
-import com.jsyn.swing.PortModelFactory
-import com.jsyn.swing.RotaryController
-import com.jsyn.swing.RotaryTextController
-
-import groovy.json.JsonSlurper
-import groovy.swing.factory.LayoutFactory
-import groovy.text.SimpleTemplateEngine
-import groovy.ui.ConsoleApplet
-import groovy.testHarmonicsSynthesizer.*
 
 /*
  * Database
@@ -69,8 +48,6 @@ def waveformOperations = sluper.parse(new FileReader(filePath + '/src/json/wavef
 
 def osc_list = []		//internal list of all jsyn oscillators
 def linear_list = []	//internal list of all jsyn linear Ramps
-def knob_list = []		//internal list of all jsyn knobs
-def slider_list = [] 	//internal list of all jsyn sliders
 Synthesizer s
 LineOut lineOut = new LineOut()
 // Visualization
