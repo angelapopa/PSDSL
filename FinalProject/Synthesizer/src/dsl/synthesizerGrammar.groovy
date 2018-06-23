@@ -21,30 +21,30 @@ class UnitController {
 	def String name
 }
 
-def class RotaryKnob extends UnitController
+class RotaryKnob extends UnitController
 {
 	int digits
 }
 
-def class Slider extends UnitController
+class Slider extends UnitController
 {
 }
 
-def class Amplitude
-{
-	float minimum
-	float maximum
-	float defaultValue
-}
-
-def class Frequency
+class Amplitude
 {
 	float minimum
 	float maximum
 	float defaultValue
 }
 
-def class Oscillator extends UnitGenerator {
+class Frequency
+{
+	float minimum
+	float maximum
+	float defaultValue
+}
+
+class Oscillator extends UnitGenerator {
 	Amplitude amplitude
 	Frequency frequency
 }
@@ -59,7 +59,7 @@ class LinearRampTime {
 	float duration
 }
 
-def class LinearRamp extends UnitGenerator {
+class LinearRamp extends UnitGenerator {
 	String name
 	String connectsTo
 	LinearRampInput input
@@ -77,3 +77,4 @@ def class Operation
 {
 	String name
 }
+
