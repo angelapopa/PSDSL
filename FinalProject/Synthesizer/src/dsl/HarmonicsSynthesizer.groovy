@@ -1,8 +1,7 @@
 package dsl
 
 import groovy.json.JsonSlurper
-import groovy.swing.SwingBuilder;
-import groovy.testHarmonicsSynthesizer.*
+import groovy.swing.SwingBuilder
 
 import java.awt.GridLayout
 
@@ -57,10 +56,18 @@ AudioScope scope
 final GroovyClassLoader classLoader = new GroovyClassLoader()
 def functionTypesEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/ArithFunctionTypesEnum.groovy"))
 // Connection
-def Osc_GUI_mapping
+def Osc_GUI_mapping		// Mapping UnitInputPort (osc.frequency or amplitude) to appropriate UI elements (knob, slider...)
 // GUI
 SwingBuilder builder
 JFrame frame
+
+public HarmonicsSynthesizer() {
+		osc_list = []
+		linear_list = []
+		lineOut = new LineOut()
+		classLoader = new GroovyClassLoader()
+		functionTypesEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/ArithFunctionTypesEnum.groovy"))
+	}
 
 // -----------------------------------
 // Meta programming
@@ -89,14 +96,14 @@ List.metaClass.findUnit << {searchTerm ->
 /**
  * Adding all necessary UnitGenerators
  */
-Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listFilters, listControls ->
+Synthesizer.metaClass.addUnits << {listOsci, listFilters, listControls ->
 	assert listOsci != null
 
 	//Loading OscillatorTypes
 	def oscillatorTypesEnum = classLoader.parseClass(new File("src/dsl/enums/OscillatorTypesEnum.groovy"));
 
 	println "Adding new LineOut"
-	add(lineOutUnit)
+	add(lineOut)
 
 	listOsci.each {
 		def myOsc
@@ -145,40 +152,42 @@ Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listFilters, listContr
 			myOsc = new SawtoothOscillatorDPW(name: it.name)
 		}
 
-		def freg = it.frequency
-		myOsc.frequency.setup(freg.minimum, freg.defaultValue, freg.maximum)
+		def freq = it.frequency
+		assert freq != null
+		myOsc.frequency.setup(freq.minimum, freq.defaultValue, freq.maximum)
 		def ampl = it.amplitude
+		assert ampl != null
 		myOsc.amplitude.setup(ampl.minimum, ampl.defaultValue, ampl.maximum)
 
 		add(myOsc)
 		osc_list.add(myOsc)
 		println "Added new $it.type $myOsc.name"
-		println "with frequency: $freg.minimum, $freg.defaultValue, $freg.maximum"
+		println "with frequency: $freq.minimum, $freq.defaultValue, $freq.maximum"
 
-		myOsc.output.connect(0, lineOutUnit.input, 0)
-		myOsc.output.connect(0, lineOutUnit.input, 1)
+		myOsc.output.connect(0, lineOut.input, 0)
+		myOsc.output.connect(0, lineOut.input, 1)
 		println "Connecting $myOsc.name to lineout"
 	}
 
-	if (listFilters != null) {
-		listFilters.each {
-			def myLag = new LinearRamp(name: it.name)
-			add(myLag)
-			linear_list.add(myLag)
-			def lag_input = it.input
-			if (lag_input != null) {
-				myLag.input.setup(lag_input.minimum, lag_input.actualValue, lag_input.maximum)
-				println "Added new $it.type $myLag.name"
-				println "With input value: $lag_input.minimum, $lag_input.actualValue, $lag_input.maximum"
-			}
-			def lag_time = it.time
-			if (lag_time != null) {
-				myLag.time.set(lag_time.duration)
-				println "With duration: $lag_time.duration"
-			}
-
+	assert listFilters != null
+	listFilters.each {
+		def myLag = new LinearRamp(name: it.name)
+		add(myLag)
+		linear_list.add(myLag)
+		def lag_input = it.input
+		if (lag_input != null) {
+			myLag.input.setup(lag_input.minimum, lag_input.actualValue, lag_input.maximum)
+			println "Added new $it.type $myLag.name"
+			println "With input value: $lag_input.minimum, $lag_input.actualValue, $lag_input.maximum"
 		}
+		def lag_time = it.time
+		if (lag_time != null) {
+			myLag.time.set(lag_time.duration)
+			println "With duration: $lag_time.duration"
+		}
+
 	}
+
 }
 
 // -----------------------------------
@@ -190,18 +199,22 @@ Synthesizer.metaClass.addUnits << {listOsci, lineOutUnit, listFilters, listContr
  * to the 'to' side of the connection (the oscillator).
  * This is independent from the Synthesizer.
  */
-def addConnections(def listConnections, def listOscillators, def listFilters, jsonFilterList, def listControls){
+def addConnections(def listConnections, def listOsc, def listFilter, def jsonFilterList, def listControls){
 	def map = [:]	// Mapping UnitInputPort (osc.frequency or amplitude) to appropriate UI elements (knob, slider...)
+	assert listConnections != null
+	assert listOsc != null
+	assert listFilter != null
+	assert jsonFilterList != null
+	assert listControls != null
 	//Loading enums
 	// TODO: remove local var "controlTypesEnumGroovy" to use global var
 	final GroovyClassLoader classLoader = new GroovyClassLoader()
 	def controlTypesEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/ControlTypesEnum.groovy"))
 	def rampConnectionEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/RampConnectionTypesEnum.groovy"))
 
-	if (listConnections) {
 		listConnections.each { conn ->
-			def toOscillator = listOscillators.findUnit(conn.toOscillator)
-			def synthFilter = listFilters.findUnit(conn.filter)
+			def toOscillator = listOsc.findUnit(conn.toOscillator)
+			def synthFilter = listFilter.findUnit(conn.filter)
 			def userDefinedFilter = jsonFilterList.findUnit(conn.filter)
 
 			def fromController = listControls.findUnit(conn.fromController)
@@ -210,7 +223,7 @@ def addConnections(def listConnections, def listOscillators, def listFilters, js
 			if (fromController.type == ((GroovyObject) controlTypesEnumGroovy.KNOB).name){
 				if (userDefinedFilter.connectsTo == ((GroovyObject) rampConnectionEnumGroovy.FREQUENCY).name){
 					println 'as a frequency knob'
-					synthFilter.output.connect(toOscillator.frequency)	
+					synthFilter.output.connect(toOscillator.frequency)
 					map.put(toOscillator.frequency, portKnob(synthFilter.input, fromController.digits, "Frequency"))
 				}
 				else {
@@ -230,7 +243,7 @@ def addConnections(def listConnections, def listOscillators, def listFilters, js
 				}
 			}
 		}
-	}
+	
 	map
 }
 
@@ -326,9 +339,12 @@ def startSynthesisEngine() {
 	s.start()
 }
 
-def buildAndConnectUnits(def listOsci, def lineOutUnit, def listLinearRamps, def listControls) {
-	s.addUnits(listOsci, lineOutUnit, listLinearRamps, listControls)
+def buildAndConnectUnits(def jsonConnections, def jsonOsci, def jsonFilters, def jsonControls) {
+	s.addUnits(jsonOsci, jsonFilters, jsonControls)
+
+	Osc_GUI_mapping = addConnections(jsonConnections, osc_list, linear_list, jsonFilters, jsonControls)
 }
+
 
 /**
  * Just release the block function. In the future, we can use block function instead
@@ -339,12 +355,13 @@ s.start()
 /**
  * Build and connect Unit Generators
  */
-s.addUnits(oscillators, lineOut, filters, controls)
+s.addUnits(oscillators, filters, controls)
 Osc_GUI_mapping = addConnections(connections, osc_list, linear_list, filters, controls)
 
 // -----------------------------------
 // GUI
 // -----------------------------------
+
 builder = new groovy.swing.SwingBuilder()
 
 frame = builder.frame(
@@ -357,28 +374,28 @@ frame = builder.frame(
 			/* -- FIRST PART: Title -- */
 			titlePanel = panel()
 			titlePanel.add(label("Oscillator Harmonics Generation"))
-			
+
 			/* -- SECOND PART: Audio scope -- */
 			scope = new AudioScope(s)
 			buildWaveformScope(scope, osc_list, waveformOperations[0].name, functionTypesEnumGroovy)
 			southPanel = panel()
 			southPanel.add(scope.getView())
-			
+
 			/* -- THIRD PART: oscillator ports -- */
 			portPanel = panel()
 			portPanel.setLayout(new BoxLayout(portPanel, BoxLayout.X_AXIS))
 			def oscPanel
-			
+
 			Set oscNameSet = []
 			connections.each {
 				oscNameSet.add(it.toOscillator)
 			}
-			
+
 			oscNameSet.each {
 				oscPanel = new JPanel()
 				oscPanel.setLayout(new GridLayout(3, 1))
 				oscPanel.add(label(it))
-				
+
 				def current_oscillator = osc_list.findUnit(it)
 				for (key in Osc_GUI_mapping.keySet()) {
 					if (key == current_oscillator.frequency || key == current_oscillator.amplitude) {
@@ -387,44 +404,45 @@ frame = builder.frame(
 				}
 				portPanel.add(oscPanel)
 			}
-			
+
 			/* -- FORTH PART: buttons -- */
 			buttonPanel = panel()
-			
+
 			// Dropdown Waveform Operations
 			buttonPanel.add(comboBox(
-				id:'comboWaveform',
-				toolTipText:'Waveform Operation',
-				items: functionTypesEnumGroovy.getEnumNames(),
-				selectedIndex: functionTypesEnumGroovy.getEnumNames().indexOf(waveformOperations[0].name),
-				actionPerformed:{ event ->
-					lineOut.stop()
-					scope.stop()
-					scope = new AudioScope(s)
-					buildWaveformScope(scope, osc_list, event.source.selectedItem, functionTypesEnumGroovy)
-					//repaint visualization inside the panel
-					southPanel.removeAll()
-					southPanel.add(scope.getView())
-					southPanel.revalidate()
-					southPanel.repaint()
+					id:'comboWaveform',
+					toolTipText:'Waveform Operation',
+					items: functionTypesEnumGroovy.getEnumNames(),
+					selectedIndex: functionTypesEnumGroovy.getEnumNames().indexOf(waveformOperations[0].name),
+					actionPerformed:{ event ->
+						lineOut.stop()
+						scope.stop()
+						scope = new AudioScope(s)
+						buildWaveformScope(scope, osc_list, event.source.selectedItem, functionTypesEnumGroovy)
+						//repaint visualization inside the panel
+						southPanel.removeAll()
+						southPanel.add(scope.getView())
+						southPanel.revalidate()
+						southPanel.repaint()
 					}
-			))
-			
+					))
+
 			buttonPanel.add(button(
 					text: 'Start',
 					actionPerformed: {
 						lineOut.start() // Pull out data so the sound can be released
 						scope.start()
 					}
-			))
-			
+					))
+
 			buttonPanel.add(button(
 					text: 'Stop',
 					actionPerformed: {
 						lineOut.stop()		// Stop release all the sound
 						scope.stop()
 					}
-			))
-			
-			
+					))
+
+
 		}
+
