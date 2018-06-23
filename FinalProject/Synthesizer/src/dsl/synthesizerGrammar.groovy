@@ -12,13 +12,13 @@ def filters = []
 def waveformOperations = []
 
 class UnitGenerator {
-	def String type
-	def String name
+	String type
+	String name
 }
 
 class UnitController {
-	def String type
-	def String name
+	String type
+	String name
 }
 
 class RotaryKnob extends UnitController
@@ -66,15 +66,14 @@ class LinearRamp extends UnitGenerator {
 	LinearRampTime time
 }
 
-def class Connection
+class Connection
 {
 	String filter
 	String fromController
 	String toOscillator
 }
 
-def class Operation
+class Operation
 {
 	String name
 }
-
