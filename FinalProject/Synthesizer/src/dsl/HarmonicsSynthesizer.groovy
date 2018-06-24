@@ -43,7 +43,9 @@ LineOut lineOut = new LineOut()
 // Visualization
 AudioScope scope
 final GroovyClassLoader classLoader = new GroovyClassLoader()
-def functionTypesEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/ArithFunctionTypesEnum.groovy"))
+def functionTypesEnum = classLoader.parseClass(new File("src/dsl/enums/ArithFunctionTypesEnum.groovy"))
+// Enum types
+def oscillatorTypesEnum = classLoader.parseClass(new File("src/dsl/enums/OscillatorTypesEnum.groovy"))
 // Connection
 def Osc_GUI_mapping		// Mapping UnitInputPort (osc.frequency or amplitude) to appropriate UI elements (knob, slider...)
 // GUI
@@ -79,9 +81,6 @@ List.metaClass.findUnit << {searchTerm ->
  */
 Synthesizer.metaClass.addUnits << {listOsci, listFilters, listControls ->
 	assert listOsci != null
-
-	//Loading OscillatorTypes
-	def oscillatorTypesEnum = classLoader.parseClass(new File("src/dsl/enums/OscillatorTypesEnum.groovy"));
 
 	println "Adding new LineOut"
 	add(lineOut)
@@ -150,23 +149,25 @@ Synthesizer.metaClass.addUnits << {listOsci, listFilters, listControls ->
 		println "Connecting $myOsc.name to lineout"
 	}
 
-	assert listFilters != null
-	listFilters.each {
-		def myLag = new LinearRamp(name: it.name)
-		add(myLag)
-		linear_list.add(myLag)
-		def lag_input = it.input
-		if (lag_input != null) {
-			myLag.input.setup(lag_input.minimum, lag_input.actualValue, lag_input.maximum)
-			println "Added new $it.type $myLag.name"
-			println "With input value: $lag_input.minimum, $lag_input.actualValue, $lag_input.maximum"
+	if (listFilters != null) {
+		listFilters.each {
+			def myLag = new LinearRamp(name: it.name)
+			if (myLag != null) {
+				add(myLag)
+				linear_list.add(myLag)
+				def lag_input = it.input
+				if (lag_input != null) {
+					myLag.input.setup(lag_input.minimum, lag_input.actualValue, lag_input.maximum)
+					println "Added new $it.type $myLag.name"
+					println "With input value: $lag_input.minimum, $lag_input.actualValue, $lag_input.maximum"
+				}
+				def lag_time = it.time
+				if (lag_time != null) {
+					myLag.time.set(lag_time.duration)
+					println "With duration: $lag_time.duration"
+				}
+			}
 		}
-		def lag_time = it.time
-		if (lag_time != null) {
-			myLag.time.set(lag_time.duration)
-			println "With duration: $lag_time.duration"
-		}
-
 	}
 
 }
@@ -374,7 +375,7 @@ frame = builder.frame(
 
 			/* -- SECOND PART: Audio scope -- */
 			scope = new AudioScope(s)
-			buildWaveformScope(scope, osc_list, waveformOperations[0].name, functionTypesEnumGroovy)
+			buildWaveformScope(scope, osc_list, waveformOperations[0].name, functionTypesEnum)
 			scopePanel = panel()
 			scopePanel.add(scope.getView())
 
@@ -409,13 +410,13 @@ frame = builder.frame(
 			buttonPanel.add(comboBox(
 					id:'comboWaveform',
 					toolTipText:'Waveform Operation',
-					items: functionTypesEnumGroovy.getEnumNames(),
-					selectedIndex: functionTypesEnumGroovy.getEnumNames().indexOf(waveformOperations[0].name),
+					items: functionTypesEnum.getEnumNames(),
+					selectedIndex: functionTypesEnum.getEnumNames().indexOf(waveformOperations[0].name),
 					actionPerformed:{ event ->
 						lineOut.stop()
 						scope.stop()
 						scope = new AudioScope(s)
-						buildWaveformScope(scope, osc_list, event.source.selectedItem, functionTypesEnumGroovy)
+						buildWaveformScope(scope, osc_list, event.source.selectedItem, functionTypesEnum)
 						//repaint visualization inside the panel
 						scopePanel.removeAll()
 						scopePanel.add(scope.getView())
