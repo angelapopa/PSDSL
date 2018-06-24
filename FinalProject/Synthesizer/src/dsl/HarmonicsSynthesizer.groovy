@@ -7,7 +7,7 @@ import java.awt.GridLayout
 
 import javax.swing.BorderFactory
 import javax.swing.BoxLayout
-import javax.swing.JFrame;
+import javax.swing.JFrame
 import javax.swing.JPanel
 
 import com.jsyn.JSyn
@@ -36,17 +36,6 @@ import com.jsyn.unitgen.Subtract
 import com.jsyn.unitgen.TriangleOscillator
 import com.jsyn.unitgen.UnitOscillator
 
-// -----------------------------------
-// Database
-// -----------------------------------
-def filePath = new File(".").absoluteFile.getParent()
-def sluper = new JsonSlurper()
-def connections = sluper.parse(new FileReader(filePath + '/src/json/connections.json'))
-def oscillators = sluper.parse(new FileReader(filePath + '/src/json/oscillators.json'))
-def filters = sluper.parse(new FileReader(filePath + '/src/json/filters.json'))
-def controls = sluper.parse(new FileReader(filePath + '/src/json/controls.json'))
-def waveformOperations = sluper.parse(new FileReader(filePath + '/src/json/waveforms.json'))
-
 def osc_list = []		//internal list of all jsyn oscillators
 def linear_list = []	//internal list of all jsyn linear Ramps
 Synthesizer s
@@ -60,14 +49,6 @@ def Osc_GUI_mapping		// Mapping UnitInputPort (osc.frequency or amplitude) to ap
 // GUI
 SwingBuilder builder
 JFrame frame
-
-public HarmonicsSynthesizer() {
-		osc_list = []
-		linear_list = []
-		lineOut = new LineOut()
-		classLoader = new GroovyClassLoader()
-		functionTypesEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/ArithFunctionTypesEnum.groovy"))
-	}
 
 // -----------------------------------
 // Meta programming
@@ -193,6 +174,13 @@ Synthesizer.metaClass.addUnits << {listOsci, listFilters, listControls ->
 // -----------------------------------
 // Block functions
 // -----------------------------------
+public HarmonicsSynthesizer() {
+	osc_list = []
+	linear_list = []
+	lineOut = new LineOut()
+	classLoader = new GroovyClassLoader()
+	functionTypesEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/ArithFunctionTypesEnum.groovy"))
+}
 
 /**
  * Connecting the 'from' side of the connection (the knob, the slider)
@@ -212,38 +200,38 @@ def addConnections(def listConnections, def listOsc, def listFilter, def jsonFil
 	def controlTypesEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/ControlTypesEnum.groovy"))
 	def rampConnectionEnumGroovy = classLoader.parseClass(new File("src/dsl/enums/RampConnectionTypesEnum.groovy"))
 
-		listConnections.each { conn ->
-			def toOscillator = listOsc.findUnit(conn.toOscillator)
-			def synthFilter = listFilter.findUnit(conn.filter)
-			def userDefinedFilter = jsonFilterList.findUnit(conn.filter)
+	listConnections.each { conn ->
+		def toOscillator = listOsc.findUnit(conn.toOscillator)
+		def synthFilter = listFilter.findUnit(conn.filter)
+		def userDefinedFilter = jsonFilterList.findUnit(conn.filter)
 
-			def fromController = listControls.findUnit(conn.fromController)
-			print 'connecting ' + fromController.name + ' to ' + toOscillator.name + ' using filter ' + conn.filter +' '
+		def fromController = listControls.findUnit(conn.fromController)
+		print 'connecting ' + fromController.name + ' to ' + toOscillator.name + ' using filter ' + conn.filter +' '
 
-			if (fromController.type == ((GroovyObject) controlTypesEnumGroovy.KNOB).name){
-				if (userDefinedFilter.connectsTo == ((GroovyObject) rampConnectionEnumGroovy.FREQUENCY).name){
-					println 'as a frequency knob'
-					synthFilter.output.connect(toOscillator.frequency)
-					map.put(toOscillator.frequency, portKnob(synthFilter.input, fromController.digits, "Frequency"))
-				}
-				else {
-					println 'as a amplitude knob'
-					synthFilter.output.connect(toOscillator.amplitude)
-					map.put(toOscillator.amplitude, portKnob(synthFilter.input, fromController.digits, "Amplitude"))
-				}
+		if (fromController.type == ((GroovyObject) controlTypesEnumGroovy.KNOB).name){
+			if (userDefinedFilter.connectsTo == ((GroovyObject) rampConnectionEnumGroovy.FREQUENCY).name){
+				println 'as a frequency knob'
+				synthFilter.output.connect(toOscillator.frequency)
+				map.put(toOscillator.frequency, portKnob(synthFilter.input, fromController.digits, "Frequency"))
 			}
-
-			if (fromController.type == ((GroovyObject) controlTypesEnumGroovy.SLIDER).name){
-				if (userDefinedFilter.connectsTo == ((GroovyObject) rampConnectionEnumGroovy.FREQUENCY).name){
-					println 'as a frequency slider'
-					map.put(toOscillator.frequency, portSlider(toOscillator.frequency))
-				} else {
-					println 'as a amplitude slider'
-					map.put(toOscillator.amplitude, portSlider(toOscillator.amplitude))
-				}
+			else {
+				println 'as a amplitude knob'
+				synthFilter.output.connect(toOscillator.amplitude)
+				map.put(toOscillator.amplitude, portKnob(synthFilter.input, fromController.digits, "Amplitude"))
 			}
 		}
-	
+
+		if (fromController.type == ((GroovyObject) controlTypesEnumGroovy.SLIDER).name){
+			if (userDefinedFilter.connectsTo == ((GroovyObject) rampConnectionEnumGroovy.FREQUENCY).name){
+				println 'as a frequency slider'
+				map.put(toOscillator.frequency, portSlider(toOscillator.frequency))
+			} else {
+				println 'as a amplitude slider'
+				map.put(toOscillator.amplitude, portSlider(toOscillator.amplitude))
+			}
+		}
+	}
+
 	map
 }
 
@@ -334,6 +322,17 @@ def buildWaveformScope(def newScope, def oscillator_list, def waveformOp, def fu
 // -----------------------------------
 // Main() function
 // -----------------------------------
+/**
+ * Database
+ */
+def filePath = new File(".").absoluteFile.getParent()
+def sluper = new JsonSlurper()
+def connections = sluper.parse(new FileReader(filePath + '/src/json/connections.json'))
+def oscillators = sluper.parse(new FileReader(filePath + '/src/json/oscillators.json'))
+def filters = sluper.parse(new FileReader(filePath + '/src/json/filters.json'))
+def controls = sluper.parse(new FileReader(filePath + '/src/json/controls.json'))
+def waveformOperations = sluper.parse(new FileReader(filePath + '/src/json/waveforms.json'))
+
 def startSynthesisEngine() {
 	s = new JSyn().createSynthesizer()
 	s.start()
@@ -341,7 +340,6 @@ def startSynthesisEngine() {
 
 def buildAndConnectUnits(def jsonConnections, def jsonOsci, def jsonFilters, def jsonControls) {
 	s.addUnits(jsonOsci, jsonFilters, jsonControls)
-
 	Osc_GUI_mapping = addConnections(jsonConnections, osc_list, linear_list, jsonFilters, jsonControls)
 }
 
@@ -363,7 +361,6 @@ Osc_GUI_mapping = addConnections(connections, osc_list, linear_list, filters, co
 // -----------------------------------
 
 builder = new groovy.swing.SwingBuilder()
-
 frame = builder.frame(
 		title: 'Synthesizer',
 		size: [800, 600],
@@ -378,8 +375,8 @@ frame = builder.frame(
 			/* -- SECOND PART: Audio scope -- */
 			scope = new AudioScope(s)
 			buildWaveformScope(scope, osc_list, waveformOperations[0].name, functionTypesEnumGroovy)
-			southPanel = panel()
-			southPanel.add(scope.getView())
+			scopePanel = panel()
+			scopePanel.add(scope.getView())
 
 			/* -- THIRD PART: oscillator ports -- */
 			portPanel = panel()
@@ -420,10 +417,10 @@ frame = builder.frame(
 						scope = new AudioScope(s)
 						buildWaveformScope(scope, osc_list, event.source.selectedItem, functionTypesEnumGroovy)
 						//repaint visualization inside the panel
-						southPanel.removeAll()
-						southPanel.add(scope.getView())
-						southPanel.revalidate()
-						southPanel.repaint()
+						scopePanel.removeAll()
+						scopePanel.add(scope.getView())
+						scopePanel.revalidate()
+						scopePanel.repaint()
 					}
 					))
 
@@ -442,7 +439,5 @@ frame = builder.frame(
 						scope.stop()
 					}
 					))
-
-
 		}
 
