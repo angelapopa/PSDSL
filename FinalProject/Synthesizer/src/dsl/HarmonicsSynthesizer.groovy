@@ -13,6 +13,7 @@ import javax.swing.JPanel
 import com.jsyn.JSyn
 import com.jsyn.Synthesizer
 import com.jsyn.ports.UnitInputPort
+import com.jsyn.ports.UnitOutputPort;
 import com.jsyn.scope.AudioScope
 import com.jsyn.swing.PortControllerFactory
 import com.jsyn.swing.PortModelFactory
@@ -143,10 +144,6 @@ Synthesizer.metaClass.addUnits << {listOsci, listFilters, listControls ->
 		osc_list.add(myOsc)
 		println "Added new $it.type $myOsc.name"
 		println "with frequency: $freq.minimum, $freq.defaultValue, $freq.maximum"
-
-		myOsc.output.connect(0, lineOut.input, 0)
-		myOsc.output.connect(0, lineOut.input, 1)
-		println "Connecting $myOsc.name to lineout"
 	}
 
 	if (listFilters != null) {
@@ -313,11 +310,19 @@ def combineWaveform(def listOsci, def waveformOp, def functionTypesEnum) {
  * @param functionTypesEnumGroovy
  * @return
  */
-def buildWaveformScope(def newScope, def oscillator_list, def waveformOp, def functionTypesEnumGroovy){
+def buildWaveformScope(def newScope, def oscillator_list, def waveformOp, def functionTypesEnumGroovy, def lineOut){
 	def comb_w = combineWaveform(oscillator_list, waveformOp, functionTypesEnumGroovy)
+	connectToLineOut(lineOut, comb_w)
 	newScope.addProbe(comb_w.output)
 	newScope.setTriggerMode(AudioScope.TriggerMode.AUTO);
 	newScope.getView().setControlsVisible(false);
+}
+
+def connectToLineOut(def lineOut, def port) {
+	port.output.connect(0, lineOut.input, 0)
+	port.output.connect(0, lineOut.input, 1)
+	println "Connecting $port to lineout"
+	
 }
 
 // -----------------------------------
@@ -375,7 +380,7 @@ frame = builder.frame(
 
 			/* -- SECOND PART: Audio scope -- */
 			scope = new AudioScope(s)
-			buildWaveformScope(scope, osc_list, waveformOperations[0].name, functionTypesEnum)
+			buildWaveformScope(scope, osc_list, waveformOperations[0].name, functionTypesEnum, lineOut)
 			scopePanel = panel()
 			scopePanel.add(scope.getView())
 
@@ -413,10 +418,11 @@ frame = builder.frame(
 					items: functionTypesEnum.getEnumNames(),
 					selectedIndex: functionTypesEnum.getEnumNames().indexOf(waveformOperations[0].name),
 					actionPerformed:{ event ->
+						lineOut.input.disconnectAll()
 						lineOut.stop()
 						scope.stop()
 						scope = new AudioScope(s)
-						buildWaveformScope(scope, osc_list, event.source.selectedItem, functionTypesEnum)
+						buildWaveformScope(scope, osc_list, event.source.selectedItem, functionTypesEnum, lineOut)
 						//repaint visualization inside the panel
 						scopePanel.removeAll()
 						scopePanel.add(scope.getView())
