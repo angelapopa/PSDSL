@@ -38,7 +38,7 @@ import javax.swing.JPanel
 
 class HarmonicsSynthesizerWrapper {
 	def osc_list		//internal list of all jsyn oscillators
-	def linear_list		//internal list of all jsyn linear Ramps
+	def filter_list		//internal list of all jsyn filter (Linear Ramps, FilterHighPass...)
 	Synthesizer s
 	LineOut lineOut
 	// Visualization
@@ -56,7 +56,7 @@ class HarmonicsSynthesizerWrapper {
 	public HarmonicsSynthesizerWrapper() {
 		super();
 		osc_list = []
-		linear_list = []
+		filter_list = []
 		lineOut = new LineOut()
 		classLoader = new GroovyClassLoader()
 		functionTypesEnum = classLoader.parseClass(new File("src/dsl/enums/ArithFunctionTypesEnum.groovy"))
@@ -167,7 +167,7 @@ class HarmonicsSynthesizerWrapper {
 					def myLag = new LinearRamp(name: it.name)
 					if (myLag != null) {
 						add(myLag)
-						linear_list.add(myLag)
+						filter_list.add(myLag)
 						def lag_input = it.input
 						if (lag_input != null) {
 							myLag.input.setup(lag_input.minimum, lag_input.actualValue, lag_input.maximum)
@@ -205,7 +205,7 @@ class HarmonicsSynthesizerWrapper {
 		if (listConnections) {
 			listConnections.each { conn ->
 				def toOscillator = osc_list.findUnit(conn.toOscillator)
-				def synthFilter = linear_list.findUnit(conn.filter)
+				def synthFilter = filter_list.findUnit(conn.filter)
 				def userDefinedFilter = jsonFilterList.findUnit(conn.filter)
 
 				def fromController = listControls.findUnit(conn.fromController)

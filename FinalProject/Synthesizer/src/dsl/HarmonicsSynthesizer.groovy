@@ -37,7 +37,7 @@ import com.jsyn.unitgen.TriangleOscillator
 import com.jsyn.unitgen.UnitOscillator
 
 def osc_list = []		//internal list of all jsyn oscillators
-def linear_list = []	//internal list of all jsyn linear Ramps
+def filter_list = []	//internal list of all jsyn filter (Linear Ramps, FilterHighPass...)
 Synthesizer s
 LineOut lineOut = new LineOut()
 // Visualization
@@ -154,7 +154,7 @@ Synthesizer.metaClass.addUnits << {listOsci, listFilters, listControls ->
 			def myLag = new LinearRamp(name: it.name)
 			if (myLag != null) {
 				add(myLag)
-				linear_list.add(myLag)
+				filter_list.add(myLag)
 				def lag_input = it.input
 				if (lag_input != null) {
 					myLag.input.setup(lag_input.minimum, lag_input.actualValue, lag_input.maximum)
@@ -355,7 +355,7 @@ s.start()
  * Build and connect Unit Generators
  */
 s.addUnits(oscillators, filters, controls)
-Osc_GUI_mapping = addConnections(connections, osc_list, linear_list, filters, controls)
+Osc_GUI_mapping = addConnections(connections, osc_list, filter_list, filters, controls)
 
 // -----------------------------------
 // GUI
