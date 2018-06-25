@@ -2,6 +2,7 @@ package dsl
 
 import com.jsyn.*
 import com.jsyn.ports.UnitInputPort
+import com.jsyn.ports.UnitOutputPort
 import com.jsyn.scope.AudioScope
 import com.jsyn.swing.RotaryTextController
 import com.jsyn.unitgen.Add
@@ -156,10 +157,6 @@ class HarmonicsSynthesizerWrapper {
 				osc_list.add(myOsc)
 				println "Added new $it.type $myOsc.name"
 				println "with frequency: $freq.minimum, $freq.defaultValue, $freq.maximum"
-
-				myOsc.output.connect(0, lineOut.input, 0)
-				myOsc.output.connect(0, lineOut.input, 1)
-				println "Connecting $myOsc.name to lineout"
 			}
 
 			if (listFilters != null) {
@@ -315,11 +312,19 @@ class HarmonicsSynthesizerWrapper {
 	 * @param functionTypesEnumGroovy
 	 * @return
 	 */
-	def buildWaveformScope(def newScope, def oscillator_list, def waveformOp, def functionTypesEnumGroovy){
+	def buildWaveformScope(def newScope, def oscillator_list, def waveformOp, def functionTypesEnumGroovy, def lineOut){
 		def comb_w = combineWaveform(oscillator_list, waveformOp, functionTypesEnumGroovy)
+		connectToLineOut(lineOut, comb_w)
 		newScope.addProbe(comb_w.output)
 		newScope.setTriggerMode(AudioScope.TriggerMode.AUTO);
 		newScope.getView().setControlsVisible(false);
+	}
+	
+	def connectToLineOut(def lineOut, UnitOutputPort port) {
+		port.output.connect(0, lineOut.input, 0)
+		port.output.connect(0, lineOut.input, 1)
+		println "Connecting $port to lineout"
+		
 	}
 
 	def startSynthesisEngine() {
@@ -350,7 +355,12 @@ class HarmonicsSynthesizerWrapper {
 
 					/* -- SECOND PART: Audio scope -- */
 					scope = new AudioScope(s)
-					buildWaveformScope(scope, osc_list, waveformOperations[0].name, functionTypesEnum)
+//					buildWaveformScope(scope, osc_list, waveformOperations[0].name, functionTypesEnum, lineOut)
+					def comb_w = combineWaveform(osc_list, waveformOperations[0].name, functionTypesEnum)
+					connectToLineOut(lineOut, comb_w)
+					scope.addProbe(comb_w.output)
+					scope.setTriggerMode(AudioScope.TriggerMode.AUTO);
+					scope.getView().setControlsVisible(false);
 					scopePanel = panel()
 					scopePanel.add(scope.getView())
 
@@ -389,9 +399,13 @@ class HarmonicsSynthesizerWrapper {
 							selectedIndex: functionTypesEnum.getEnumNames().indexOf(waveformOperations[0].name),
 							actionPerformed:{ event ->
 								lineOut.stop()
+								lineOut.input.disconnectAll()
 								scope.stop()
 								scope = new AudioScope(s)
-								buildWaveformScope(scope, osc_list, event.source.selectedItem, functionTypesEnum)
+//								buildWaveformScope(scope, osc_list, event.source.selectedItem, functionTypesEnum, lineOut)
+								comb_w = combineWaveform(osc_list, event.source.selectedItem, functionTypesEnum)
+								connectToLineOut(lineOut, comb_w)
+								scope.addProbe(comb_w.output)
 								//repaint visualization inside the panel
 								scopePanel.removeAll()
 								scopePanel.add(scope.getView())
@@ -432,5 +446,7 @@ class HarmonicsSynthesizerWrapper {
 		test.startSynthesisEngine()
 		test.buildAndConnectUnits(connections, oscillators, filters, controls)
 		test.setupGUI(connections, waveformOperations)
+		
+		def a = new LinearRamp()
 	}
 }
