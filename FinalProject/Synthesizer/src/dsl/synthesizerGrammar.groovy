@@ -1,5 +1,7 @@
 package dsl
 
+import org.apache.ivy.core.module.descriptor.ExtendsDescriptor;
+
 /*
  * DSL definition
  */
@@ -14,6 +16,11 @@ def waveformOperations = []
 class UnitGenerator {
 	String type
 	String name
+}
+
+class UnitFilter extends UnitGenerator {
+	Amplitude amplitude
+	Frequency frequency
 }
 
 class UnitController {
@@ -64,6 +71,14 @@ class LinearRamp extends UnitGenerator {
 	String connectsTo
 	LinearRampInput input
 	LinearRampTime time
+}
+
+class FilterHighPass extends UnitFilter {
+	String connectsTo
+}
+
+class FilterLowPass extends UnitFilter {
+	String connectsTo
 }
 
 class Connection

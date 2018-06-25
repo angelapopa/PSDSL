@@ -7,6 +7,7 @@ import com.jsyn.scope.AudioScope
 import com.jsyn.swing.RotaryTextController
 import com.jsyn.unitgen.Add
 import com.jsyn.unitgen.Divide
+import com.jsyn.unitgen.FilterHighPass
 import com.jsyn.unitgen.FunctionOscillator
 import com.jsyn.unitgen.ImpulseOscillator
 import com.jsyn.unitgen.ImpulseOscillatorBL
@@ -32,6 +33,7 @@ import groovy.json.JsonSlurper
 import groovy.swing.SwingBuilder
 
 import java.awt.GridLayout
+
 import javax.swing.BoxLayout
 import javax.swing.JFrame
 import javax.swing.BorderFactory
@@ -46,7 +48,7 @@ class HarmonicsSynthesizerWrapper {
 	AudioScope scope
 	// Enum
 	final GroovyClassLoader classLoader
-	def functionTypesEnum, oscillatorTypesEnum
+	def functionTypesEnum, oscillatorTypesEnum, filterTypesEnum
 	// Connection
 	def Osc_GUI_mapping
 	// GUI
@@ -60,9 +62,10 @@ class HarmonicsSynthesizerWrapper {
 		filter_list = []
 		lineOut = new LineOut()
 		classLoader = new GroovyClassLoader()
+		// Loading enum types
 		functionTypesEnum = classLoader.parseClass(new File("src/dsl/enums/ArithFunctionTypesEnum.groovy"))
-		//Loading OscillatorTypes
-		oscillatorTypesEnum = classLoader.parseClass(new File("src/dsl/enums/OscillatorTypesEnum.groovy"));
+		oscillatorTypesEnum = classLoader.parseClass(new File("src/dsl/enums/OscillatorTypesEnum.groovy"))
+		filterTypesEnum = classLoader.parseClass(new File("src/dsl/enums/FilterTypesEnum.groovy"))
 	}
 
 	def metaFunction() {
@@ -72,8 +75,8 @@ class HarmonicsSynthesizerWrapper {
 		/**
 		 * Using user-defined name for unit identification
 		 */
-		UnitOscillator.metaClass.name = 'myOsci'	// This is default name
-		LinearRamp.metaClass.name = 'myLag'			// This is default name
+		UnitGenerator.metaClass.name = 'myUnitGen'	// This is default name
+//		UnitFilter.metaClass.name = 'myFilter'		// This is default name
 
 		/**
 		 * Special list method to find elements by name
@@ -83,6 +86,18 @@ class HarmonicsSynthesizerWrapper {
 			each {
 				for (int i=0; i < it.size(); i++){
 					if (searchTerm == it[i].name){
+						result = it[i]
+					}
+				}
+			}
+			result
+		}
+		
+		List.metaClass.findUnitByType << {searchTerm ->
+			def result
+			each {
+				for (int i=0; i < it.size(); i++){
+					if (searchTerm == it[i].type){
 						result = it[i]
 					}
 				}
@@ -103,44 +118,44 @@ class HarmonicsSynthesizerWrapper {
 				def myOsc
 				switch(it.type) {
 					case  ((GroovyObject) oscillatorTypesEnum.FUNCTION).name:
-						myOsc = new FunctionOscillator(name: it.name)
-						break
+					myOsc = new FunctionOscillator(name: it.name)
+					break
 
 					case ((GroovyObject) oscillatorTypesEnum.IMPULSE).name:
-						myOsc = new ImpulseOscillator(name: it.name)
-						break
+					myOsc = new ImpulseOscillator(name: it.name)
+					break
 
 					case ((GroovyObject) oscillatorTypesEnum.IMPULSEBL).name:
-						myOsc = new ImpulseOscillatorBL(name: it.name)
-						break
+					myOsc = new ImpulseOscillatorBL(name: it.name)
+					break
 
 					case ((GroovyObject) oscillatorTypesEnum.PULSE).name:
-						myOsc = new PulseOscillator(name: it.name)
-						break
+					myOsc = new PulseOscillator(name: it.name)
+					break
 
 					case ((GroovyObject) oscillatorTypesEnum.REDNOISE).name:
-						myOsc = new RedNoise(name: it.name)
-						break
+					myOsc = new RedNoise(name: it.name)
+					break
 
 					case ((GroovyObject) oscillatorTypesEnum.SAWTOOTH).name:
-						myOsc = new SawtoothOscillator(name: it.name)
-						break
+					myOsc = new SawtoothOscillator(name: it.name)
+					break
 
 					case ((GroovyObject) oscillatorTypesEnum.SAWTOOTHBL).name:
-						myOsc = new SawtoothOscillatorBL(name: it.name)
-						break
+					myOsc = new SawtoothOscillatorBL(name: it.name)
+					break
 
 					case ((GroovyObject) oscillatorTypesEnum.SINE).name:
-						myOsc = new SineOscillator(name: it.name)
-						break
+					myOsc = new SineOscillator(name: it.name)
+					break
 
 					case ((GroovyObject) oscillatorTypesEnum.SQUARE).name:
-						myOsc = new SquareOscillator(name: it.name)
-						break
+					myOsc = new SquareOscillator(name: it.name)
+					break
 
 					case ((GroovyObject) oscillatorTypesEnum.TRIANGLE).name:
-						myOsc = new TriangleOscillator(name: it.name)
-						break
+					myOsc = new TriangleOscillator(name: it.name)
+					break
 				}
 				if (it.type == ((GroovyObject) oscillatorTypesEnum.SAWTOOTHDPW).name) {
 					myOsc = new SawtoothOscillatorDPW(name: it.name)
@@ -161,21 +176,47 @@ class HarmonicsSynthesizerWrapper {
 
 			if (listFilters != null) {
 				listFilters.each {
-					def myLag = new LinearRamp(name: it.name)
-					if (myLag != null) {
-						add(myLag)
-						filter_list.add(myLag)
+					def myFilter
+					switch(it.type) {
+						case ((GroovyObject)filterTypesEnum.LINEAR_RAMP).name:
+						myFilter = new LinearRamp(name: it.name)
 						def lag_input = it.input
 						if (lag_input != null) {
-							myLag.input.setup(lag_input.minimum, lag_input.actualValue, lag_input.maximum)
-							println "Added new $it.type $myLag.name"
+							myFilter.input.setup(lag_input.minimum, lag_input.actualValue, lag_input.maximum)
+							println "Added new $it.type $myFilter.name"
 							println "With input value: $lag_input.minimum, $lag_input.actualValue, $lag_input.maximum"
 						}
 						def lag_time = it.time
 						if (lag_time != null) {
-							myLag.time.set(lag_time.duration)
+							myFilter.time.set(lag_time.duration)
 							println "With duration: $lag_time.duration"
 						}
+						break
+						
+						case ((GroovyObject)filterTypesEnum.HIGH_PASS).name:
+						myFilter = new FilterHighPass(name: it.name)
+//						add(myHighPass)
+//						filter_list.add(myHighPass)
+						
+						break
+						
+						case ((GroovyObject)filterTypesEnum.LOW_PASS).name:
+						myFilter = new FilterHighPass(name: it.name)
+						
+						break
+					}
+					add(myFilter)
+					filter_list.add(myFilter)
+					/*osc_list.each {
+					 it.output.connect(myFilter.input)
+				 	}*/
+					def filterFreq = it.frequency
+					if (filterFreq != null) {
+						myFilter.frequency.setup(filterFreq.minimum, filterFreq.defaultValue, filterFreq.maximum)
+					}
+					def filterAmpl = it.amplitude
+					if (filterAmpl != null) {
+						myFilter.amplitude.setup(filterAmpl.minimum, filterAmpl.defaultValue, filterAmpl.maximum)
 					}
 				}
 			}
@@ -273,25 +314,25 @@ class HarmonicsSynthesizerWrapper {
 		int i
 		switch(waveformOp) {
 			case ((GroovyObject) functionTypesEnum.ADD).name:
-				for (i = 0; i < listOsci.size() - 1; i++) {
-					list << new Add()
-				}
-				break
+			for (i = 0; i < listOsci.size() - 1; i++) {
+				list << new Add()
+			}
+			break
 			case ((GroovyObject) functionTypesEnum.SUB).name:
-				for (i = 0; i < listOsci.size() - 1; i++) {
-					list << new Subtract()
-				}
-				break
+			for (i = 0; i < listOsci.size() - 1; i++) {
+				list << new Subtract()
+			}
+			break
 			case ((GroovyObject) functionTypesEnum.MUL).name:
-				for (i = 0; i < listOsci.size() - 1; i++) {
-					list << new Multiply()
-				}
-				break
+			for (i = 0; i < listOsci.size() - 1; i++) {
+				list << new Multiply()
+			}
+			break
 			case ((GroovyObject) functionTypesEnum.DIV).name:
-				for (i = 0; i < listOsci.size() - 1; i++) {
-					list << new Divide()
-				}
-				break
+			for (i = 0; i < listOsci.size() - 1; i++) {
+				list << new Divide()
+			}
+			break
 		}
 		listOsci[0].output.connect(list[0].inputA)
 		listOsci[1].output.connect(list[0].inputB)
@@ -303,7 +344,14 @@ class HarmonicsSynthesizerWrapper {
 		println "Combining all waveforms with function ${waveformOp}"
 		return list.last()
 	}
+	
+	def connectToLineOut(def lineOut, def port) {
+		port.output.connect(0, lineOut.input, 0)
+		port.output.connect(0, lineOut.input, 1)
+		println "Connecting $port to lineout"
 
+	}
+	
 	/**
 	 * Create scope for the combined Harmonics
 	 * @param newScope
@@ -319,13 +367,6 @@ class HarmonicsSynthesizerWrapper {
 		newScope.setTriggerMode(AudioScope.TriggerMode.AUTO);
 		newScope.getView().setControlsVisible(false);
 	}
-	
-	def connectToLineOut(def lineOut, UnitOutputPort port) {
-		port.output.connect(0, lineOut.input, 0)
-		port.output.connect(0, lineOut.input, 1)
-		println "Connecting $port to lineout"
-		
-	}
 
 	def startSynthesisEngine() {
 		s = new JSyn().createSynthesizer()
@@ -340,96 +381,135 @@ class HarmonicsSynthesizerWrapper {
 	// -----------------------------------
 	// GUI
 	// -----------------------------------
-	def setupGUI(def connections, def waveformOperations) {
+	def setupGUI(def connections, def waveformOperations, List filters) {
 		builder = new groovy.swing.SwingBuilder()
 		frame = builder.frame(
-				title: 'Synthesizer',
-				size: [800, 600],
-				defaultCloseOperation: javax.swing.WindowConstants.EXIT_ON_CLOSE,
-				show: true
-				) {
-					boxLayout(axis: BoxLayout.Y_AXIS)
-					/* -- FIRST PART: Title -- */
-					titlePanel = panel()
-					titlePanel.add(label("Oscillator Harmonics Generation"))
+		title: 'Synthesizer',
+		size: [800, 600],
+		defaultCloseOperation: javax.swing.WindowConstants.EXIT_ON_CLOSE,
+		show: true
+		) {
+			boxLayout(axis: BoxLayout.Y_AXIS)
+			/* -- FIRST PART: Title -- */
+			titlePanel = panel()
+			titlePanel.add(label("Harmonic Oscillator Simulation"))
 
-					/* -- SECOND PART: Audio scope -- */
-					scope = new AudioScope(s)
-//					buildWaveformScope(scope, osc_list, waveformOperations[0].name, functionTypesEnum, lineOut)
-					def comb_w = combineWaveform(osc_list, waveformOperations[0].name, functionTypesEnum)
-					connectToLineOut(lineOut, comb_w)
-					scope.addProbe(comb_w.output)
-					scope.setTriggerMode(AudioScope.TriggerMode.AUTO);
-					scope.getView().setControlsVisible(false);
-					scopePanel = panel()
-					scopePanel.add(scope.getView())
+			/* -- SECOND PART: Audio scope -- */
+			// At first time, default filter is LinearRamp
+			// So the combined waveform will connect directly to LineOut
+			scope = new AudioScope(s)
+			//					buildWaveformScope(scope, osc_list, waveformOperations[0].name, functionTypesEnum, lineOut)
+			def comb_w = combineWaveform(osc_list, waveformOperations[0].name, functionTypesEnum)
+			connectToLineOut(lineOut, comb_w)
+			scope.addProbe(comb_w.output)
+			scope.setTriggerMode(AudioScope.TriggerMode.AUTO);
+			scope.getView().setControlsVisible(false);
+			scopePanel = panel()
+			scopePanel.add(scope.getView())
 
-					/* -- THIRD PART: oscillator ports -- */
-					portPanel = panel()
-					portPanel.setLayout(new BoxLayout(portPanel, BoxLayout.X_AXIS))
-					def oscPanel
+			/* -- THIRD PART: oscillator ports -- */
+			portPanel = panel()
+			portPanel.setLayout(new BoxLayout(portPanel, BoxLayout.X_AXIS))
+			def oscPanel
 
-					Set oscNameSet = []
-					connections.each {
-						oscNameSet.add(it.toOscillator)
+			Set oscNameSet = []
+			connections.each {
+				oscNameSet.add(it.toOscillator)
+			}
+
+			oscNameSet.each {
+				oscPanel = new JPanel()
+				oscPanel.setLayout(new GridLayout(3, 1))
+				oscPanel.add(label(it))
+
+				def current_oscillator = osc_list.findUnit(it)
+				for (key in Osc_GUI_mapping.keySet()) {
+					if (key == current_oscillator.frequency || key == current_oscillator.amplitude) {
+						oscPanel.add(Osc_GUI_mapping.get(key))
 					}
-
-					oscNameSet.each {
-						oscPanel = new JPanel()
-						oscPanel.setLayout(new GridLayout(3, 1))
-						oscPanel.add(label(it))
-
-						def current_oscillator = osc_list.findUnit(it)
-						for (key in Osc_GUI_mapping.keySet()) {
-							if (key == current_oscillator.frequency || key == current_oscillator.amplitude) {
-								oscPanel.add(Osc_GUI_mapping.get(key))
-							}
-						}
-						portPanel.add(oscPanel)
-					}
-
-					/* -- FORTH PART: buttons -- */
-					buttonPanel = panel()
-
-					// Dropdown Waveform Operations
-					buttonPanel.add(comboBox(
-							id:'comboWaveform',
-							toolTipText:'Waveform Operation',
-							items: functionTypesEnum.getEnumNames(),
-							selectedIndex: functionTypesEnum.getEnumNames().indexOf(waveformOperations[0].name),
-							actionPerformed:{ event ->
-								lineOut.stop()
-								lineOut.input.disconnectAll()
-								scope.stop()
-								scope = new AudioScope(s)
-//								buildWaveformScope(scope, osc_list, event.source.selectedItem, functionTypesEnum, lineOut)
-								comb_w = combineWaveform(osc_list, event.source.selectedItem, functionTypesEnum)
-								connectToLineOut(lineOut, comb_w)
-								scope.addProbe(comb_w.output)
-								//repaint visualization inside the panel
-								scopePanel.removeAll()
-								scopePanel.add(scope.getView())
-								scopePanel.revalidate()
-								scopePanel.repaint()
-							}
-							))
-
-					buttonPanel.add(button(
-							text: 'Start',
-							actionPerformed: {
-								lineOut.start() // Pull out data so the sound can be released
-								scope.start()
-							}
-							))
-
-					buttonPanel.add(button(
-							text: 'Stop',
-							actionPerformed: {
-								lineOut.stop()		// Stop release all the sound
-								scope.stop()
-							}
-							))
 				}
+				portPanel.add(oscPanel)
+			}
+
+			/* -- FORTH PART: buttons -- */
+			buttonPanel = panel()
+			// Find all Filter types and assign values for dropdownFilter
+			List currentFilterTypesEnum = filters.type.unique()
+			buttonPanel.add(comboBox(
+				id: 'dropdownFilter',
+				toolTipText: 'Filter',
+				items: currentFilterTypesEnum,
+				selectedIndex: 0,
+				actionPerformed: { event ->
+					lineOut.input.disconnectAll()
+					scope.stop()
+					scope = new AudioScope(s)
+					def current_filterName = filters.findUnitByType(event.source.selectedItem).name
+					def current_filter = filter_list.findUnit(current_filterName)
+					switch (event.source.selectedItem) {	// Check type of filters for further processing
+						case ((GroovyObject) filterTypesEnum.HIGH_PASS).name:
+						case ((GroovyObject) filterTypesEnum.LOW_PASS).name:
+						comb_w.output.connect(current_filter.input)
+						connectToLineOut(lineOut, current_filter)
+						scope.addProbe(current_filter.output)
+						break
+						
+						case ((GroovyObject) filterTypesEnum.LINEAR_RAMP).name:
+						connectToLineOut(lineOut, comb_w)
+						scope.addProbe(comb_w.output)
+						break
+					}
+					
+					//repaint visualization inside the panel
+					scopePanel.removeAll()
+					scopePanel.add(scope.getView())
+					scopePanel.revalidate()
+					scopePanel.repaint()
+					scope.start()
+				}
+				))
+
+			// Dropdown Waveform Operations
+			buttonPanel.add(comboBox(
+			id:'dropdownWaveform',
+			toolTipText:'Waveform Operation',
+			items: functionTypesEnum.getEnumNames(),
+			selectedIndex: functionTypesEnum.getEnumNames().indexOf(waveformOperations[0].name),
+			actionPerformed:{ event ->
+				lineOut.input.disconnectAll()
+//				scope.stop()
+				scope = new AudioScope(s)
+				//								buildWaveformScope(scope, osc_list, event.source.selectedItem, functionTypesEnum, lineOut)
+				comb_w = combineWaveform(osc_list, event.source.selectedItem, functionTypesEnum)
+				connectToLineOut(lineOut, comb_w)
+				scope.addProbe(comb_w.output)
+				//repaint visualization inside the panel
+				scopePanel.removeAll()
+				scopePanel.add(scope.getView())
+				scopePanel.revalidate()
+				scopePanel.repaint()
+				scope.start()
+			}
+			))
+
+			buttonPanel.add(button(
+			text: 'Start',
+			actionPerformed: {
+				
+				lineOut.start() // Pull out data so the sound can be released
+				scope.start()
+			}
+			))
+
+			buttonPanel.add(button(
+			text: 'Stop',
+			actionPerformed: {
+				lineOut.stop()		// Stop release all the sound
+				scope.stop()
+				s.stop()
+			}
+			))
+		}
 	}
 
 	static main(args) {
@@ -445,8 +525,6 @@ class HarmonicsSynthesizerWrapper {
 		test.metaFunction()
 		test.startSynthesisEngine()
 		test.buildAndConnectUnits(connections, oscillators, filters, controls)
-		test.setupGUI(connections, waveformOperations)
-		
-		def a = new LinearRamp()
+		test.setupGUI(connections, waveformOperations, filters)
 	}
 }

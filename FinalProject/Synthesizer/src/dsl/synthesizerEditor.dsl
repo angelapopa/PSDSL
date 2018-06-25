@@ -157,6 +157,17 @@ filters
 			duration: 0.2
 			)
 		))
+filters
+	.add(new FilterHighPass(
+		name: '',
+		type: 'FilterHighPass',
+		amplitude: new Amplitude(
+				minimum : 0.0,
+				maximum : 1.0,
+				defaultValue : 0.3
+			)
+	))
+
 
 /*Connections btw. controllers and oscillators*/
 /*Oscillator 1*/

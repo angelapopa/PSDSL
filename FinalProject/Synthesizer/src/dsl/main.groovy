@@ -5,4 +5,4 @@
 def filePath = new File(".").absolutePath.replace('.', '')
 
 new GroovyShell().evaluate(new File(filePath + '/src/dsl/TransformToSynthesizerData.groovy'))
-new GroovyShell().evaluate(new File(filePath + '/src/dsl/HarmonicsSynthesizer.groovy'))
+new GroovyShell().evaluate(new File(filePath + '/src/dsl/HarmonicsSynthesizerWrapper.groovy'))

@@ -44,8 +44,9 @@ LineOut lineOut = new LineOut()
 // Visualization
 AudioScope scope
 final GroovyClassLoader classLoader = new GroovyClassLoader()
-def functionTypesEnum = classLoader.parseClass(new File("src/dsl/enums/ArithFunctionTypesEnum.groovy"))
 // Enum types
+def functionTypesEnum = classLoader.parseClass(new File("src/dsl/enums/ArithFunctionTypesEnum.groovy"))
+def filterTypesEnum = classLoader.parseClass(new File("src/dsl/enums/FilterTypesEnum.groovy"))
 def oscillatorTypesEnum = classLoader.parseClass(new File("src/dsl/enums/OscillatorTypesEnum.groovy"))
 // Connection
 def Osc_GUI_mapping		// Mapping UnitInputPort (osc.frequency or amplitude) to appropriate UI elements (knob, slider...)
@@ -148,21 +149,29 @@ Synthesizer.metaClass.addUnits << {listOsci, listFilters, listControls ->
 
 	if (listFilters != null) {
 		listFilters.each {
-			def myLag = new LinearRamp(name: it.name)
-			if (myLag != null) {
-				add(myLag)
-				filter_list.add(myLag)
-				def lag_input = it.input
-				if (lag_input != null) {
-					myLag.input.setup(lag_input.minimum, lag_input.actualValue, lag_input.maximum)
-					println "Added new $it.type $myLag.name"
-					println "With input value: $lag_input.minimum, $lag_input.actualValue, $lag_input.maximum"
+			def myFilter
+			switch(it.type) {
+				case ((GroovyObject)filterTypesEnum.LINEAR_RAMP).name:
+				myFilter = new LinearRamp(name: it.name)
+				if (myFilter != null) {
+					add(myFilter)
+					filter_list.add(myFilter)
+					def lag_input = it.input
+					if (lag_input != null) {
+						myFilter.input.setup(lag_input.minimum, lag_input.actualValue, lag_input.maximum)
+						println "Added new $it.type $myFilter.name"
+						println "With input value: $lag_input.minimum, $lag_input.actualValue, $lag_input.maximum"
+					}
+					def lag_time = it.time
+					if (lag_time != null) {
+						myFilter.time.set(lag_time.duration)
+						println "With duration: $lag_time.duration"
+					}
 				}
-				def lag_time = it.time
-				if (lag_time != null) {
-					myLag.time.set(lag_time.duration)
-					println "With duration: $lag_time.duration"
-				}
+				break
+				
+				default:
+				break
 			}
 		}
 	}
@@ -376,7 +385,7 @@ frame = builder.frame(
 			boxLayout(axis: BoxLayout.Y_AXIS)
 			/* -- FIRST PART: Title -- */
 			titlePanel = panel()
-			titlePanel.add(label("Oscillator Harmonics Generation"))
+			titlePanel.add(label("Harmonic Oscillator Simulation"))
 
 			/* -- SECOND PART: Audio scope -- */
 			scope = new AudioScope(s)
