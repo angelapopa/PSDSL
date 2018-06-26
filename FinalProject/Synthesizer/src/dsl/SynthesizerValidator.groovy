@@ -13,7 +13,8 @@ controls.each { ct ->
 }
 
 filters.each { ramp ->
-	if (!RampConnectionTypes.isValidRampConnectionType(ramp.connectsTo)){
+	if (ramp.type == (GroovyObject) FilterTypes.LINEAR_RAMP &&
+		!RampConnectionTypes.isValidRampConnectionType(ramp.connectsTo)){
 		throw new Exception("type "
 			+ ramp.connectsTo + " is not supported! Try one of the following >> " + RampConnectionTypes.printAllRampConnectionTypes())
 	}
