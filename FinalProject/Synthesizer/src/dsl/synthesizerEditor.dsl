@@ -159,7 +159,7 @@ filters
 		))
 filters
 	.add(new FilterHighPass(
-		name: '',
+		name: 'myHighPass',
 		type: 'FilterHighPass',
 		amplitude: new Amplitude(
 				minimum : 0.0,

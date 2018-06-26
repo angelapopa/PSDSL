@@ -74,11 +74,11 @@ class LinearRamp extends UnitGenerator {
 }
 
 class FilterHighPass extends UnitFilter {
-	String connectsTo
+	
 }
 
 class FilterLowPass extends UnitFilter {
-	String connectsTo
+	
 }
 
 class Connection

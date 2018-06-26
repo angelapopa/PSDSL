@@ -1,4 +1,3 @@
-package dsl.enums
 
 import java.util.List;
 
@@ -9,7 +8,7 @@ public enum FilterTypes {
 	
 	String name
 
-	private FilterTypes(String name) {
+	FilterTypes(String name) {
 		this.name = name
 	}	
 	
