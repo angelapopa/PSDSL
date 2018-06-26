@@ -1,0 +1,38 @@
+[
+    {
+        "type": "knob",
+        "digits": 5,
+        "name": "myKnobForFirstOscillator"
+    },
+    {
+        "type": "knob",
+        "digits": 10,
+        "name": "myFirstKnobForThirdOscillator"
+    },
+    {
+        "type": "knob",
+        "digits": 10,
+        "name": "mySecondKnobForThirdOscillator"
+    },
+    {
+        "type": "knob",
+        "digits": 10,
+        "name": "myKnobForFourthOscillator"
+    },
+    {
+        "type": "slider",
+        "name": "mySliderForFirstOscillator"
+    },
+    {
+        "type": "slider",
+        "name": "myFirstSliderForSecondOscillator"
+    },
+    {
+        "type": "slider",
+        "name": "mySecondSliderForSecondOscillator"
+    },
+    {
+        "type": "slider",
+        "name": "mySliderForFourthOscillator"
+    }
+]

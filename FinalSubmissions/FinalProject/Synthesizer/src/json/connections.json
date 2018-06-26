@@ -1,0 +1,42 @@
+[
+    {
+        "toOscillator": "myFirstOsc",
+        "filter": "amplitudeRamp",
+        "fromController": "myKnobForFirstOscillator"
+    },
+    {
+        "toOscillator": "myFirstOsc",
+        "filter": "frequencyRamp",
+        "fromController": "mySliderForFirstOscillator"
+    },
+    {
+        "toOscillator": "mySecondOsc",
+        "filter": "amplitudeRamp",
+        "fromController": "myFirstSliderForSecondOscillator"
+    },
+    {
+        "toOscillator": "mySecondOsc",
+        "filter": "frequencyRamp",
+        "fromController": "mySecondSliderForSecondOscillator"
+    },
+    {
+        "toOscillator": "myThirdOsc",
+        "filter": "amplitudeRamp",
+        "fromController": "myFirstKnobForThirdOscillator"
+    },
+    {
+        "toOscillator": "myThirdOsc",
+        "filter": "frequencyRamp",
+        "fromController": "mySecondKnobForThirdOscillator"
+    },
+    {
+        "toOscillator": "myFourthOsc",
+        "filter": "amplitudeRamp",
+        "fromController": "mySliderForFourthOscillator"
+    },
+    {
+        "toOscillator": "myFourthOsc",
+        "filter": "frequencyRamp",
+        "fromController": "myKnobForFourthOscillator"
+    }
+]
