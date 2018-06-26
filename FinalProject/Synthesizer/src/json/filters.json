@@ -24,5 +24,15 @@
         },
         "name": "amplitudeRamp",
         "connectsTo": "amplitude"
+    },
+    {
+        "type": "FilterHighPass",
+        "frequency": null,
+        "name": "myHighPass",
+        "amplitude": {
+            "defaultValue": 0.3,
+            "minimum": 0.0,
+            "maximum": 1.0
+        }
     }
 ]

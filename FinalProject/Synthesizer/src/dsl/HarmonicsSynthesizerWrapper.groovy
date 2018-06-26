@@ -506,7 +506,6 @@ class HarmonicsSynthesizerWrapper {
 			actionPerformed: {
 				lineOut.stop()		// Stop release all the sound
 				scope.stop()
-				s.stop()
 			}
 			))
 		}
