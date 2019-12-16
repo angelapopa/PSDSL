@@ -1,6 +1,4 @@
-# PSDSL
-PS DSL SS2018
+# 
+This repository holds code exercises for PS DSL course (SS2018), Department of Computer Science, University of Innsbruck.
 
-authors: Nga Pham, Angela Popa
-
-Level: assignment 5
+Authors: Nga Pham, Angela Popa
